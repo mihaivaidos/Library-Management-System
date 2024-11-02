@@ -90,4 +90,9 @@ public class Loan {
                 ", member=" + member +
                 '}';
     }
+
+    public boolean isOverdue() {
+        return !returnDate.after(dueDate);
+    }
+
 }
