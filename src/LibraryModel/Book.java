@@ -12,8 +12,7 @@ public class Book implements HasID{
     private int copiesAvailable;
     private Category category;
     private Publisher publisher;
-    private String author2;
-    private List<Review> reviews;
+    private final List<Review> reviews;
 
     public Book(int bookID, String bookName, Author author, boolean isAvailable, int copiesAvailable, Category category, Publisher publisher) {
         this.bookID = bookID;
@@ -23,14 +22,6 @@ public class Book implements HasID{
         this.copiesAvailable = copiesAvailable;
         this.category = category;
         this.publisher = publisher;
-    }
-
-    public Book(int bookID, String title, String author, boolean isAvailable, int copiesAvailable) {
-        this.bookID = bookID;
-        this.bookName = title;
-        this.author2 = author;
-        this.isAvailable = isAvailable;
-        this.copiesAvailable = copiesAvailable;
         this.reviews = new ArrayList<>();
     }
 
