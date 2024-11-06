@@ -9,3 +9,4 @@ Main functions of the application:
 - Review system: Members can leave ratings and reviews for books they have read and returned to help other members choose.
 
 The aim of these functions is to optimize the management and use of library resources and provide a flexible system for daily library work.
+![UMLbibliotecaMAP.jpg](UMLbibliotecaMAP.jpg)
