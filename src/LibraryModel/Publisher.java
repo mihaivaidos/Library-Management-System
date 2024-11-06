@@ -1,14 +1,15 @@
 package LibraryModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Publisher extends Person {
 
     private List<Book> publishedBooks;
 
-    public Publisher(int ID, String name, String email, String phoneNumber, List<Book> publishedBooks) {
+    public Publisher(int ID, String name, String email, String phoneNumber) {
         super(ID, name, email, phoneNumber);
-        this.publishedBooks = publishedBooks;
+        this.publishedBooks = new ArrayList<>();
     }
 
     public List<Book> getPublishedBooks() {

@@ -1,20 +1,23 @@
 package LibraryModel;
 
-public class Review {
+public class Review implements HasID{
 
     private int reviewID;
     private int rating;
     private String comments;
     private Book book;
+    private Member member;
 
-    public Review(int reviewID, int rating, String comments, Book book) {
+    public Review(int reviewID, int rating, String comments, Book book, Member member) {
         this.reviewID = reviewID;
         this.rating = rating;
         this.comments = comments;
         this.book = book;
+        this.member = member;
     }
 
-    public int getReviewID() {
+    @Override
+    public int getID() {
         return reviewID;
     }
 
@@ -44,6 +47,14 @@ public class Review {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     @Override

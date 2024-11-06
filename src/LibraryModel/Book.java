@@ -1,6 +1,9 @@
 package LibraryModel;
 
-public class Book {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Book implements HasID{
 
     private int bookID;
     private String bookName;
@@ -9,6 +12,8 @@ public class Book {
     private int copiesAvailable;
     private Category category;
     private Publisher publisher;
+    private String author2;
+    private List<Review> reviews;
 
     public Book(int bookID, String bookName, Author author, boolean isAvailable, int copiesAvailable, Category category, Publisher publisher) {
         this.bookID = bookID;
@@ -20,7 +25,17 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public int getBookID() {
+    public Book(int bookID, String title, String author, boolean isAvailable, int copiesAvailable) {
+        this.bookID = bookID;
+        this.bookName = title;
+        this.author2 = author;
+        this.isAvailable = isAvailable;
+        this.copiesAvailable = copiesAvailable;
+        this.reviews = new ArrayList<>();
+    }
+
+    @Override
+    public int getID() {
         return bookID;
     }
 
@@ -74,6 +89,14 @@ public class Book {
 
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
     }
 
     @Override

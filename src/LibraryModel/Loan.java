@@ -2,7 +2,7 @@ package LibraryModel;
 
 import java.util.Date;
 
-public class Loan {
+public class Loan implements HasID{
 
     private int loanID;
     private Date loanDate;
@@ -22,7 +22,8 @@ public class Loan {
         this.member = member;
     }
 
-    public int getLoanID() {
+    @Override
+    public int getID() {
         return loanID;
     }
 

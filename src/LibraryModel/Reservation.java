@@ -2,19 +2,22 @@ package LibraryModel;
 
 import java.util.Date;
 
-public class Reservation {
+public class Reservation implements HasID{
 
     private int reservationID;
     private Date reservationDate;
     private Book book;
+    private Member member;
 
-    public Reservation(int reservationID, Date reservationDate, Book book) {
+    public Reservation(int reservationID, Date reservationDate, Book book, Member member) {
         this.reservationID = reservationID;
         this.reservationDate = reservationDate;
         this.book = book;
+        this.member = member;
     }
 
-    public int getReservationID() {
+    @Override
+    public int getID() {
         return reservationID;
     }
 
@@ -36,6 +39,14 @@ public class Reservation {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
     @Override

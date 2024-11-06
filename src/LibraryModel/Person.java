@@ -1,6 +1,6 @@
 package LibraryModel;
 
-public abstract class Person {
+public abstract class Person implements HasID{
     private int ID;
     private String name;
     private String email;
