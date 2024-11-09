@@ -8,7 +8,7 @@ public class Category implements HasID{
     private int categoryID;
     private String categoryName;
     private String description;
-    private final List<Book> books;
+    private List<Book> books;
 
     public Category(int categoryID, String categoryName, String description) {
         this.categoryID = categoryID;
@@ -45,8 +45,8 @@ public class Category implements HasID{
         return books;
     }
 
-    public void addBook(Book book) {
-        books.add(book);
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

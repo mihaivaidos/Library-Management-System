@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Author extends Person {
 
-    private final List<Book> books;
+    private List<Book> books;
 
     public Author(int ID, String name, String email, String phoneNumber) {
         super(ID, name, email, phoneNumber);
@@ -16,8 +16,8 @@ public class Author extends Person {
         return books;
     }
 
-    public void addBook(Book book) {
-        books.add(book);
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override

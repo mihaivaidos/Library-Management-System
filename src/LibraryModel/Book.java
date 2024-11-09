@@ -9,17 +9,17 @@ public class Book implements HasID{
     private String bookName;
     private Author author;
     private boolean isAvailable;
-    private int copiesAvailable;
+    //private int copiesAvailable;
     private Category category;
     private Publisher publisher;
-    private final List<Review> reviews;
+    private List<Review> reviews;
 
-    public Book(int bookID, String bookName, Author author, boolean isAvailable, int copiesAvailable, Category category, Publisher publisher) {
+    public Book(int bookID, String bookName, Author author, boolean isAvailable, Category category, Publisher publisher) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
         this.isAvailable = isAvailable;
-        this.copiesAvailable = copiesAvailable;
+        //this.copiesAvailable = copiesAvailable;
         this.category = category;
         this.publisher = publisher;
         this.reviews = new ArrayList<>();
@@ -58,13 +58,13 @@ public class Book implements HasID{
         isAvailable = available;
     }
 
-    public int getCopiesAvailable() {
-        return copiesAvailable;
-    }
-
-    public void setCopiesAvailable(int copiesAvailable) {
-        this.copiesAvailable = copiesAvailable;
-    }
+//    public int getCopiesAvailable() {
+//        return copiesAvailable;
+//    }
+//
+//    public void setCopiesAvailable(int copiesAvailable) {
+//        this.copiesAvailable = copiesAvailable;
+//    }
 
     public Category getCategory() {
         return category;
@@ -86,8 +86,8 @@ public class Book implements HasID{
         return reviews;
     }
 
-    public void addReview(Review review) {
-        reviews.add(review);
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     @Override
@@ -97,7 +97,6 @@ public class Book implements HasID{
                 ", bookName='" + bookName + '\'' +
                 ", author=" + author +
                 ", isAvailable=" + isAvailable +
-                ", copiesAvailable=" + copiesAvailable +
                 ", category=" + category +
                 ", publisher=" + publisher +
                 '}';
