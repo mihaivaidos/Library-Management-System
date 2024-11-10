@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 Calculate due date for new loan
 Add book to a category
 View all books in a category
+Delete review
  */
 
 public class LibraryService {
@@ -71,6 +72,19 @@ public class LibraryService {
                     Review review = new Review(++newReviewID, rating, reviewText, book, member);
                     book.getReviews().add(review);
                     reviewRepo.add(review);
+                }
+            }
+        }
+    }
+
+    public void deleteReviewFromBook(int memberID, int bookID) {
+        Member member = memberRepo.get(memberID);
+        Book book = bookRepo.get(bookID);
+        if(book != null && member != null) {
+            for(Review review : book.getReviews()) {
+                if(review.getMember().getID() == memberID) {
+                    book.getReviews().remove(review);
+                    reviewRepo.delete(review.getID());
                 }
             }
         }
@@ -144,7 +158,9 @@ public class LibraryService {
                 // Create a new loan for the member with reservation
                 Loan newLoan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, memberRes);
                 loanRepo.add(newLoan);
+                memberRes.getLoans().add(newLoan);
                 memberRes.getLoanHistory().add(newLoan);
+                memberRes.getReservations().remove(reservation);
                 reservationRepo.delete(reservation.getID());  // Remove the reservation
                 book.setAvailable(false);
             }
@@ -247,8 +263,9 @@ public class LibraryService {
     }
 
     public List<Book> getAllBooksInCategory(int categoryID) {
-        Category category = categoryRepo.get(categoryID);
-        return category.getBooks();
+        return bookRepo.getAll().stream()
+                .filter(book -> book.getCategory().getID() == categoryID)
+                .collect(Collectors.toList());
     }
 
     public List<Publisher> getAllPublishers() {
