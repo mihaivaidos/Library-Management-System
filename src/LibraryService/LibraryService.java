@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Optional;
 
 /*
-Add book
-Update book
+    Add book
+    Update book
 Delete book
 Get all books
 View books by a publisher
 View books by an author
-Add review to a book
-View all reviews to a book
-Borrow a book (reserve one if not available)
-Return a book
-View active loans
+        Add review to a book
+        View all reviews to a book
+        Borrow a book (reserve one if not available)
+        Return a book
+        View active loans
 View active reservation
 View loan history for a member
 Calculate due date for new loan
@@ -159,4 +159,41 @@ public class LibraryService {
         return new Date(System.currentTimeMillis() + loanPeriod);
     }
 
-}
+    public void addBook(String bookName, Author author, boolean isAvailable, Category category, Publisher publisher) {
+        // Generate a unique ID
+        bookRepo.add(new Book(++newBookID, bookName, author, isAvailable, category, publisher));
+    }
+
+    public void updateBook(int bookID, String newBookName, Author newAuthor, boolean newIsAvailable, Category newCategory, Publisher newPublisher) {
+        Book book = bookRepo.get(bookID);
+        if (book != null) {
+            if (newBookName != null) {
+                book.setBookName(newBookName);
+            }
+            if (newAuthor != null) {
+                book.setAuthor(newAuthor);
+            }
+            book.setAvailable(newIsAvailable);
+            if (newCategory != null) {
+                book.setCategory(newCategory);
+            }
+            if (newPublisher != null) {
+                book.setPublisher(newPublisher);
+            }
+            bookRepo.save(book);
+        }
+        else {
+            // Book is not found
+            System.out.println("Book with ID " + bookID + " not found.");
+        }
+    }
+
+    public void deleteBook(int bookID) {
+        Book book = bookRepo.get(bookID);
+        if (book != null) {
+            bookRepo.delete(bookID);
+        } else {
+            System.out.println("Book with ID " + bookID + " not found.");
+        }
+    }
+
