@@ -7,14 +7,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /*
     Add book
     Update book
-Delete book
-Get all books
-View books by a publisher
-View books by an author
+    Delete book
+            Get all books
+            View books by a publisher
+            View books by an author
         Add review to a book
         View all reviews to a book
         Borrow a book (reserve one if not available)
@@ -87,7 +88,7 @@ public class LibraryService {
         Member member = memberRepo.get(memberID);
 
         if (book != null && member != null) {
-            if(!checkMemberHasOverdueLoans(memberID)) {
+            if (!checkMemberHasOverdueLoans(memberID)) {
                 int activeLoans = getActiveLoansForMember(memberID).size();
                 if (activeLoans <= 2) {
                     if (book.isAvailable()) {
@@ -180,7 +181,7 @@ public class LibraryService {
             if (newPublisher != null) {
                 book.setPublisher(newPublisher);
             }
-            bookRepo.save(book);
+            bookRepo.update(book);
         }
         else {
             // Book is not found
@@ -197,3 +198,29 @@ public class LibraryService {
         }
     }
 
+    public List<Book> getAllBooks() {
+        return (List<Book>) bookRepo.getAll();
+    }
+
+//    public List<Book> getBooksByPublisher(Publisher publisher) {
+//        List<Book> booksByPublisher = new ArrayList<>();
+//        for (Book book : bookRepo.getAll()) {
+//            if (book.getPublisher().equals(publisher)) {
+//                booksByPublisher.add(book);
+//            }
+//        }
+//        return booksByPublisher;
+//    }
+    public List<Book> getBooksByPublisher(Publisher publisher) {
+        return bookRepo.getAll().stream()
+            .filter(book -> book.getPublisher().equals(publisher))
+            .collect(Collectors.toList());
+    }
+
+    public List<Book> getBooksByAuthor(Author author) {
+        return bookRepo.getAll().stream()
+                .filter(book -> book.getAuthor().equals(author))
+                .collect(Collectors.toList());
+    }
+
+}
