@@ -184,23 +184,13 @@ public class LibraryService {
             }
             bookRepo.update(book);
         }
-        else {
-            // Book is not found
-            System.out.println("Book with ID " + bookID + " not found.");
-        }
     }
 
     public void deleteBook(int bookID) {
         Book book = bookRepo.get(bookID);
         if (book != null) {
             bookRepo.delete(bookID);
-        } else {
-            System.out.println("Book with ID " + bookID + " not found.");
         }
-    }
-
-    public List<Book> getAllBooks() {
-        return (List<Book>) bookRepo.getAll();
     }
 
 //    public List<Book> getBooksByPublisher(Publisher publisher) {
@@ -239,5 +229,51 @@ public class LibraryService {
         }
     }
 
+    public void addBookToCategory(int bookID, int categoryID) {
+        Book book = bookRepo.get(bookID);
+        Category category = categoryRepo.get(categoryID);
+
+        if (book != null && category != null) {
+            book.setCategory(category);
+            category.getBooks().add(book);
+        }
+    }
+
+    public List<Book> getAllBooksInCategory(int categoryID) {
+        Category category = categoryRepo.get(categoryID);
+        return category.getBooks();
+    }
+
+    public List<Publisher> getAllPublishers() {
+        return publisherRepo.getAll();
+    }
+
+    public List<Author> getAllAuthors() {
+        return authorRepo.getAll();
+    }
+
+    public List<Category> getAllCategories() {
+        return categoryRepo.getAll();
+    }
+
+    public List<Reservation> getAllReservations() {
+        return reservationRepo.getAll();
+    }
+
+    public List<Loan> getAllLoans() {
+        return loanRepo.getAll();
+    }
+
+    public List<Member> getAllMembers() {
+        return memberRepo.getAll();
+    }
+
+    public List<Review> getAllReviews() {
+        return reviewRepo.getAll();
+    }
+
+    public List<Book> getAllBooks() {
+        return bookRepo.getAll();
+    }
 
 }

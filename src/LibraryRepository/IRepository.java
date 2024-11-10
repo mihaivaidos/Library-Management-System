@@ -10,5 +10,4 @@ public interface IRepository<T extends HasID> {
     void update(T obj);
     void delete(int id);
     List<T> getAll();
-    void save(T obj);
 }
