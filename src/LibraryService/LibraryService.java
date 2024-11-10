@@ -129,7 +129,7 @@ public class LibraryService {
             loan.setStatus("RETURNED");
             loan.setReturnDate(new Date());
             Book book = loan.getBook();
-            book.setAvailable(true); // Make book available again
+            book.setAvailable(true);
             Member member = loan.getMember();
             member.getLoans().remove(loan);
 
@@ -140,12 +140,13 @@ public class LibraryService {
 
             if (nextReservation.isPresent()) {
                 Reservation reservation = nextReservation.get();
+                Member memberRes = reservation.getMember();
                 // Create a new loan for the member with reservation
-                Loan newLoan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, member);
+                Loan newLoan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, memberRes);
                 loanRepo.add(newLoan);
-                member.getLoanHistory().add(newLoan);
+                memberRes.getLoanHistory().add(newLoan);
                 reservationRepo.delete(reservation.getID());  // Remove the reservation
-                book.setAvailable(false);  // Mark book as unavailable again
+                book.setAvailable(false);
             }
         }
     }
@@ -161,26 +162,32 @@ public class LibraryService {
         return new Date(System.currentTimeMillis() + loanPeriod);
     }
 
-    public void addBook(String bookName, Author author, boolean isAvailable, Category category, Publisher publisher) {
-        // Generate a unique ID
-        bookRepo.add(new Book(++newBookID, bookName, author, isAvailable, category, publisher));
+    public void addBook(String bookName, int authorID, int categoryID, int publisherID) {
+        Author author = authorRepo.get(authorID);
+        Category category = categoryRepo.get(categoryID);
+        Publisher publisher = publisherRepo.get(publisherID);
+        Book book = new Book(++newBookID, bookName, author, true, category, publisher);
+        bookRepo.add(book);
     }
 
-    public void updateBook(int bookID, String newBookName, Author newAuthor, boolean newIsAvailable, Category newCategory, Publisher newPublisher) {
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
         Book book = bookRepo.get(bookID);
+        Author author = authorRepo.get(newAuthorID);
+        Category category = categoryRepo.get(newCategoryID);
+        Publisher publisher = publisherRepo.get(newPublisherID);
         if (book != null) {
             if (newBookName != null) {
                 book.setBookName(newBookName);
             }
-            if (newAuthor != null) {
-                book.setAuthor(newAuthor);
+            if (author != null) {
+                book.setAuthor(author);
             }
             book.setAvailable(newIsAvailable);
-            if (newCategory != null) {
-                book.setCategory(newCategory);
+            if (category != null) {
+                book.setCategory(category);
             }
-            if (newPublisher != null) {
-                book.setPublisher(newPublisher);
+            if (publisher != null) {
+                book.setPublisher(publisher);
             }
             bookRepo.update(book);
         }
@@ -202,15 +209,15 @@ public class LibraryService {
 //        }
 //        return booksByPublisher;
 //    }
-    public List<Book> getBooksByPublisher(Publisher publisher) {
+    public List<Book> getBooksByPublisher(int publisherID) {
         return bookRepo.getAll().stream()
-            .filter(book -> book.getPublisher().equals(publisher))
+            .filter(book -> book.getPublisher().getID() == publisherID)
             .collect(Collectors.toList());
     }
 
-    public List<Book> getBooksByAuthor(Author author) {
+    public List<Book> getBooksByAuthor(int authorID) {
         return bookRepo.getAll().stream()
-                .filter(book -> book.getAuthor().equals(author))
+                .filter(book -> book.getAuthor().getID() == authorID)
                 .collect(Collectors.toList());
     }
 
