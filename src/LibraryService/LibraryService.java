@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
         Borrow a book (reserve one if not available)
         Return a book
         View active loans
-View active reservation
-View loan history for a member
+                View active reservation
+                View loan history for a member
 Calculate due date for new loan
 Add book to a category
 View all books in a category
@@ -98,7 +98,8 @@ public class LibraryService {
                         book.setAvailable(false);  // Mark book as unavailable
                         member.getLoans().add(loan);
                         member.getLoanHistory().add(loan);
-                    } else {
+                    }
+                    else {
                         // Book is not available, create a reservation
                         Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
                         reservationRepo.add(reservation);
@@ -222,5 +223,21 @@ public class LibraryService {
                 .filter(book -> book.getAuthor().equals(author))
                 .collect(Collectors.toList());
     }
+
+    public List<Reservation> getActiveReservationsForMember(int memberID) {
+        Member member = memberRepo.get(memberID);
+        return member.getReservations();
+    }
+
+    public List<Loan> getLoanHistoryForMember(int memberID) {
+        Member member = memberRepo.get(memberID);
+        if (member != null) {
+            return member.getLoanHistory();
+        }
+        else {
+            return new ArrayList<>();
+        }
+    }
+
 
 }
