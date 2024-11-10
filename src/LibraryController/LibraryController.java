@@ -17,6 +17,11 @@ public class LibraryController {
         System.out.println("Review added successfully!");
     }
 
+    public void deleteReviewFromBook(int memberID, int bookID) {
+        libraryService.deleteReviewFromBook(memberID, bookID);
+        System.out.println("Review deleted successfully!");
+    }
+
     public void viewAllReviewsOfBook(int bookID) {
         List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
         System.out.println("Reviews for book: " + bookID);
@@ -73,8 +78,9 @@ public class LibraryController {
         System.out.println("Available Books:");
         for (Book book : libraryService.getAllBooks()) {
             String status = book.isAvailable() ? "Available" : "Borrowed";
+            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
             System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + book.getCategory().getCategoryName() + ", Status: " + status);
+                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
         }
     }
 
@@ -97,13 +103,25 @@ public class LibraryController {
     }
 
     public void viewBooksByPublisher(int publisherID) {
-        List<Book> books = libraryService.getBooksByPublisher(publisherID);
-        books.forEach(System.out::println);
+        System.out.println("Books by publisher: " + publisherID);
+        List<Book> publisherBooks = libraryService.getBooksByPublisher(publisherID);
+        for (Book book : publisherBooks) {
+            String status = book.isAvailable() ? "Available" : "Borrowed";
+            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
+            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
+                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
+        }
     }
 
     public void viewBooksByAuthor(int authorID) {
+        System.out.println("Books by author: " + authorID);
         List<Book> books = libraryService.getBooksByAuthor(authorID);
-        books.forEach(System.out::println);
+        for (Book book : books) {
+            String status = book.isAvailable() ? "Available" : "Borrowed";
+            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
+            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
+                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
+        }
     }
 
     public void viewActiveReservations(int memberID) {

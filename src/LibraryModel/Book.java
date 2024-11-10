@@ -27,7 +27,7 @@ public class Book implements HasID{
 
     @Override
     public int getID() {
-        return 0;
+        return bookID;
     }
 
     public void setBookID(int bookID) {
