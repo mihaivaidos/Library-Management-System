@@ -69,4 +69,41 @@ public class LibraryController {
         }
     }
 
+    public void viewAllBooks() {
+        System.out.println("Available Books:");
+        for (Book book : libraryService.getAllBooks()) {
+            String status = book.isAvailable() ? "Available" : "Borrowed";
+            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
+                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + book.getCategory().getCategoryName() + ", Status: " + status);
+        }
+    }
+
+    public void viewAllPublishers() {
+        System.out.println("Publishers:");
+        List<Publisher> publishers = libraryService.getAllPublishers();
+        for (Publisher publisher : publishers) {
+            System.out.println("ID: " + publisher.getID() + ", Name: " + publisher.getName()
+                    + ", Email: " + publisher.getEmail() + ", Phone: " + publisher.getPhoneNumber());
+        }
+    }
+
+    public void viewAllAuthors() {
+        System.out.println("Authors:");
+        List<Author> authors = libraryService.getAllAuthors();
+        for (Author author : authors) {
+            System.out.println("ID: " + author.getID() + ", Name: " + author.getName()
+                    + ", Email: " + author.getEmail() + ", Phone: " + author.getPhoneNumber());
+        }
+    }
+
+    public void viewBooksByPublisher(int publisherID) {
+        List<Book> books = libraryService.getBooksByPublisher(publisherID);
+        books.forEach(System.out::println);
+    }
+
+    public void viewBooksByAuthor(int authorID) {
+        List<Book> books = libraryService.getBooksByAuthor(authorID);
+        books.forEach(System.out::println);
+    }
+
 }
