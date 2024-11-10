@@ -106,4 +106,39 @@ public class LibraryController {
         books.forEach(System.out::println);
     }
 
+    public void viewActiveReservations(int memberID) {
+        List<Reservation> reservations = libraryService.getActiveReservationsForMember(memberID);
+        System.out.println("Active reservations for member ID: " + memberID);
+        for(Reservation reservation : reservations) {
+            System.out.println("ID: " + reservation.getID() + ", Date: " + reservation.getReservationDate()
+                    + ", Book: " + reservation.getBook().getBookName() + ", Author: " + reservation.getBook().getAuthor().getName());
+        }
+    }
+
+    public void viewLoanHistoryForMember(int memberID) {
+        List<Loan> loans = libraryService.getLoanHistoryForMember(memberID);
+        System.out.println("Loan History for member ID: " + memberID);
+        for(Loan loan : loans) {
+            System.out.println("ID: " + loan.getID() + ", Loan date: " + loan.getLoanDate() + ", Due date: "
+                    + loan.getDueDate() + ", Return date: " + loan.getReturnDate() + ", Status: " + loan.getStatus()
+                    + ", Book: " + loan.getBook().getBookName() + ", Book author: " + loan.getBook().getAuthor().getName());
+        }
+    }
+
+    public void addBook(String title, int authorID, int categoryID, int publisherID) {
+        libraryService.addBook(title, authorID, categoryID, publisherID);
+        System.out.println("Book added successfully: " + title);
+    }
+
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
+        libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID);
+        System.out.println("Book updated successfully: " + newBookName);
+    }
+
+    public void deleteBook(int bookID) {
+        libraryService.deleteBook(bookID);
+        System.out.println("Book deleted successfully: " + bookID);
+    }
+
+
 }
