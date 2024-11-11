@@ -39,20 +39,22 @@ public class LibraryService {
     private final InMemoryRepository<Review> reviewRepo;
     private final InMemoryRepository<Author> authorRepo;
     private final InMemoryRepository<Publisher> publisherRepo;
+    private final InMemoryRepository<Staff> staffRepo;
 
-    private int newBookID = 0;
-    private int newMemberID = 0;
-    private int newLoanID = 0;
-    private int newReviewID = 0;
-    private int newAuthorID = 0;
-    private int newCategoryID = 0;
-    private int newPublisherID = 0;
-    private int newReservationID = 0;
+    private int newBookID = 9;
+    private int newMemberID = 9;
+    private int newLoanID = 9;
+    private int newReviewID = 9;
+    private int newAuthorID = 9;
+    private int newCategoryID = 9;
+    private int newPublisherID = 9;
+    private int newReservationID = 9;
+    private int newStaffID = 9;
 
     public LibraryService(InMemoryRepository<Book> bookRepo, InMemoryRepository<Loan> loanRepo,
                           InMemoryRepository<Reservation> reservationRepo, InMemoryRepository<Category>
                                   categoryRepo, InMemoryRepository<Member> memberRepo, InMemoryRepository<Review> reviewRepo,
-                          InMemoryRepository<Author> authorRepo, InMemoryRepository<Publisher> publisherRepo) {
+                          InMemoryRepository<Author> authorRepo, InMemoryRepository<Publisher> publisherRepo, InMemoryRepository<Staff> staffRepo) {
         this.bookRepo = bookRepo;
         this.loanRepo = loanRepo;
         this.reservationRepo = reservationRepo;
@@ -61,6 +63,7 @@ public class LibraryService {
         this.reviewRepo = reviewRepo;
         this.authorRepo = authorRepo;
         this.publisherRepo = publisherRepo;
+        this.staffRepo = staffRepo;
     }
 
     public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) {
@@ -186,6 +189,21 @@ public class LibraryService {
         bookRepo.add(book);
     }
 
+    public void addStaff(String name, String email, String phoneNumber, String position) {
+        Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
+        staffRepo.add(staff);
+    }
+
+    public boolean isStaff(String email) {
+        List<Staff> staffs = staffRepo.getAll();
+        for(Staff staff : staffs ) {
+            if(staff.getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
         Book book = bookRepo.get(bookID);
         Author author = authorRepo.get(newAuthorID);
@@ -216,15 +234,6 @@ public class LibraryService {
         }
     }
 
-//    public List<Book> getBooksByPublisher(Publisher publisher) {
-//        List<Book> booksByPublisher = new ArrayList<>();
-//        for (Book book : bookRepo.getAll()) {
-//            if (book.getPublisher().equals(publisher)) {
-//                booksByPublisher.add(book);
-//            }
-//        }
-//        return booksByPublisher;
-//    }
     public List<Book> getBooksByPublisher(int publisherID) {
         return bookRepo.getAll().stream()
             .filter(book -> book.getPublisher().getID() == publisherID)
