@@ -6,7 +6,7 @@ package LibraryModel;
  */
 public class Staff extends Person {
 
-    public String position;
+    private String position;
 
     /**
      * Constructs a new Staff instance with the specified parameters.

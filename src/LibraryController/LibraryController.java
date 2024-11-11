@@ -17,8 +17,8 @@ public class LibraryController {
         System.out.println("Review added successfully!");
     }
 
-    public void deleteReviewFromBook(int bookID) {
-        libraryService.deleteReviewFromBook(bookID);
+    public void deleteReviewFromBook(int reviewID) {
+        libraryService.deleteReviewFromBook(reviewID);
         System.out.println("Review deleted successfully!");
     }
 
@@ -79,8 +79,9 @@ public class LibraryController {
         for (Book book : libraryService.getAllBooks()) {
             String status = book.isAvailable() ? "Available" : "Borrowed";
             String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
+            String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
             System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
+                    + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
         }
     }
 
@@ -156,5 +157,18 @@ public class LibraryController {
     public void deleteBook(int bookID) {
         libraryService.deleteBook(bookID);
         System.out.println("Book deleted successfully: " + bookID);
+    }
+
+    public void addStaff(String name, String email, String phoneNumber, String position) {
+        libraryService.addStaff(name, email, phoneNumber, position);
+        System.out.println("Staff added successfully: " + name);
+    }
+
+    public void isStaff(String email) {
+        if(libraryService.isStaff(email)) {
+            System.out.println("You are a staff!");
+        } else {
+            System.out.println("You are not a staff!");
+        }
     }
 }
