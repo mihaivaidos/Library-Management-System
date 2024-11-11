@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
                 View active reservation
                 View loan history for a member
 Calculate due date for new loan
-Add book to a category
-View all books in a category
+                            Add book to a category
+                            View all books in a category
 Delete review
  */
 
@@ -80,16 +80,12 @@ public class LibraryService {
         }
     }
 
-    public void deleteReviewFromBook(int memberID, int bookID) {
-        Member member = memberRepo.get(memberID);
-        Book book = bookRepo.get(bookID);
-        if(book != null && member != null) {
-            for(Review review : book.getReviews()) {
-                if(review.getMember().getID() == memberID) {
-                    book.getReviews().remove(review);
-                    reviewRepo.delete(review.getID());
-                }
-            }
+    public void deleteReviewFromBook(int reviewID) {
+        Review reviewToDelete = reviewRepo.get(reviewID);
+        if (reviewToDelete != null) {
+            Book book = reviewToDelete.getBook();
+            book.getReviews().remove(reviewToDelete);
+            reviewRepo.delete(reviewID);
         }
     }
 
@@ -308,5 +304,4 @@ public class LibraryService {
     public List<Book> getAllBooks() {
         return bookRepo.getAll();
     }
-
 }
