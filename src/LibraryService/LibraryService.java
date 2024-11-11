@@ -304,4 +304,19 @@ public class LibraryService {
     public List<Book> getAllBooks() {
         return bookRepo.getAll();
     }
+
+    public void addMember(String name, String email, String phoneNumber) {
+        Member member = new Member(++newMemberID, name, email, phoneNumber);
+        memberRepo.add(member);
+    }
+
+    public void addAuthor(String name, String email, String phoneNumber) {
+        Author author = new Author(++newAuthorID, name, email, phoneNumber);
+        authorRepo.add(author);
+    }
+
+    public void addPublisher(String name, String email, String phoneNumber) {
+        Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
+        publisherRepo.add(publisher);
+    }
 }

@@ -76,6 +76,9 @@ public class LibraryUI {
             System.out.println("10. Add Book to Category");
             System.out.println("11. View All Books in Category");
             System.out.println("12. View All Categories");
+            System.out.println("13. Add member");
+            System.out.println("14. Add Author");
+            System.out.println("15. Add Publisher");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -93,6 +96,9 @@ public class LibraryUI {
                 case 10 -> addBookToCategory();
                 case 11 -> viewAllBooksInCategory();
                 case 12 -> viewAllCategories();
+                case 13 -> addMember();
+                case 14 -> addAuthor();
+                case 15 -> addPublisher();
                 case 0 -> {
                     System.out.println("Exiting...");
                     return;
@@ -245,5 +251,38 @@ public class LibraryUI {
         System.out.println("Enter your email: ");
         String email = scanner.nextLine();
         controller.isStaff(email);
+    }
+
+    private void addMember() {
+        System.out.print("Enter member name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter member email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter member phone number: ");
+        String phoneNumber = scanner.nextLine();
+        controller.addMember(name, email, phoneNumber);
+        System.out.println("Member added successfully.");
+    }
+
+    private void addAuthor() {
+        System.out.print("Enter author name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter author email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter author phone number: ");
+        String phoneNumber = scanner.nextLine();
+        controller.addAuthor(name, email, phoneNumber);
+        System.out.println("Author added successfully.");
+    }
+
+    private void addPublisher() {
+        System.out.print("Enter publisher name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter publisher email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter member phone number: ");
+        String phoneNumber = scanner.nextLine();
+        controller.addPublisher(name, email, phoneNumber);
+        System.out.println("Publisher added successfully.");
     }
 }

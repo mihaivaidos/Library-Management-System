@@ -172,4 +172,19 @@ public class LibraryController {
         }
         return false;
     }
+
+    public void addMember(String name, String email, String phoneNumber) {
+        libraryService.addMember(name, email, phoneNumber);
+        System.out.println("Member added successfully: " + name);
+    }
+
+    public void addAuthor(String name, String email, String phoneNumber) {
+        libraryService.addAuthor(name, email, phoneNumber);
+        System.out.println("Author added successfully: " + name);
+    }
+
+    public void addPublisher(String name, String email, String phoneNumber) {
+        libraryService.addPublisher(name, email, phoneNumber);
+        System.out.println("Publisher added successfully: " + name);
+    }
 }
