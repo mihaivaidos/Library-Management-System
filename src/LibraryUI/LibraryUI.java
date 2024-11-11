@@ -1,255 +1,249 @@
 package LibraryUI;
+
 import LibraryController.LibraryController;
-import LibraryService.LibraryService;
-import LibraryRepository.InMemoryRepository;
-import LibraryModel.*;
+
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 public class LibraryUI {
-    private final LibraryController libraryController;
+    private final LibraryController controller;
+    private final Scanner scanner;
 
-    public LibraryUI(LibraryController libraryController) {
-        this.libraryController = libraryController;
+    public LibraryUI(LibraryController controller) {
+        this.controller = controller;
+        this.scanner = new Scanner(System.in);
     }
 
     public void start() {
-        Scanner scanner = new Scanner(System.in);
-        boolean continueLoop = true;
-        while (continueLoop) {
-            System.out.print("""
-                    Select an option:
-                    
-                    1. Add Book
-                    2. Borrow Book
-                    3. Return Book
-                    4. View All Books
-                    5. View All Authors
-                    6. View All Publishers
-                    7. Add Review to Book
-                    8. View All Reviews of Book
-                    9. Delete Review from Book
-                    10. View Active Loans
-                    11. Add Book to Category
-                    12. View All Books in Category
-                    13. View All Categories
-                    14. View Books by Publisher
-                    15. View Books by Author
-                    16. View Active Reservations
-                    17. View Loan History for Member
-                    18. Update Book
-                    19. Delete Book
-                    0. Exit
-                    """);
+        while (true) {
+            System.out.println("\nLibrary Management System:");
+            System.out.print("Enter your email: ");
+            String email = scanner.nextLine();
 
-            String option = scanner.nextLine();
-            switch (option) {
-                case "0":
-                    continueLoop = false;
-                    break;
-                case "1":
-                    private void addBook() {
-                    System.out.print("Enter book title: ");
-                    String title = scanner.nextLine();
-                    System.out.print("Enter author ID: ");
-                    int authorID = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Enter category ID: ");
-                    int categoryID = Integer.parseInt(scanner.nextLine());
-                    System.out.print("Enter publisher ID: ");
-                    int publisherID = Integer.parseInt(scanner.nextLine());
-                    libraryController.addBook(title, authorID, categoryID, publisherID);
-                }
-                    break;
-                case "2":
-                    private void borrowBook()
-                    break;
-                case "3":
-                    private void returnBook()
-                    break;
-                case "4":
-                    public void viewAllBooks();
-                    break;
-                case "5":
-                    libraryController.viewAllAuthors();
-                    break;
-                case "6":
-                    libraryController.viewAllPublishers();
-                    break;
-                case "7":
-                    libraryController.addReviewToBook(scanner);
-                    break;
-                case "8":
-                    libraryController.viewAllReviewsOfBook(scanner);
-                    break;
-                case "9":
-                    libraryController.deleteReviewFromBook(scanner);
-                    break;
-                case "10":
-                    libraryController.viewActiveLoans(scanner);
-                    break;
-                case "11":
-                    libraryController.addBookToCategory(scanner);
-                    break;
-                case "12":
-                    libraryController.viewAllBooksInCategory(scanner);
-                    break;
-                case "13":
-                    libraryController.viewAllCategories();
-                    break;
-                case "14":
-                    libraryController.viewBooksByPublisher(scanner);
-                    break;
-                case "15":
-                    libraryController.viewBooksByAuthor(scanner);
-                    break;
-                case "16":
-                    libraryController.viewActiveReservations(scanner);
-                    break;
-                case "17":
-                    libraryController.viewLoanHistoryForMember(scanner);
-                    break;
-                case "18":
-                    libraryController.updateBook(scanner);
-                case "19":
-                    libraryController.deleteBook(scanner);
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.");
+            // Check if the user is staff
+            boolean isStaff = controller.isStaff(email);
+
+            if (isStaff) {
+                staffMenu();
+            } else {
+                memberMenu();
             }
-            scanner.close();
         }
     }
 
-    private void addBook(Scanner scanner) {
+    private void memberMenu() {
+        while (true) {
+            System.out.println("\nMember Menu:");
+            System.out.println("1. View All Books");
+            System.out.println("2. View Books by Publisher");
+            System.out.println("3. View Books by Author");
+            System.out.println("4. Borrow Book");
+            System.out.println("5. Return Book");
+            System.out.println("6. View All Books in Category");
+            System.out.println("7. View All Categories");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1 -> viewAllBooks();
+                case 2 -> viewBooksByPublisher();
+                case 3 -> viewBooksByAuthor();
+                case 4 -> borrowBook();
+                case 5 -> returnBook();
+                case 6 -> viewAllBooksInCategory();
+                case 7 -> viewAllCategories();
+                case 0 -> {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+
+    private void staffMenu() {
+        while (true) {
+            System.out.println("\nStaff Menu:");
+            System.out.println("1. Add Book");
+            System.out.println("2. Update Book");
+            System.out.println("3. Delete Book");
+            System.out.println("4. View Active Loans");
+            System.out.println("5. View Loan History for Member");
+            System.out.println("6. View Active Reservations");
+            System.out.println("7. View All Books");
+            System.out.println("8. View Books by Publisher");
+            System.out.println("9. View Books by Author");
+            System.out.println("10. Add Book to Category");
+            System.out.println("11. View All Books in Category");
+            System.out.println("12. View All Categories");
+            System.out.println("0. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1 -> addBook();
+                case 2 -> updateBook();
+                case 3 -> deleteBook();
+                case 4 -> viewActiveLoans();
+                case 5 -> viewLoanHistoryForMember();
+                case 6 -> viewActiveReservations();
+                case 7 -> viewAllBooks();
+                case 8 -> viewBooksByPublisher();
+                case 9 -> viewBooksByAuthor();
+                case 10 -> addBookToCategory();
+                case 11 -> viewAllBooksInCategory();
+                case 12 -> viewAllCategories();
+                case 0 -> {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+
+    private void addBook() {
         System.out.print("Enter book title: ");
         String title = scanner.nextLine();
-        System.out.print("Enter author ID: ");
+        viewAllAuthors();
+        System.out.println("Enter author ID: ");
         int authorID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter category ID: ");
-        int categoryID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter publisher ID: ");
+        viewAllPublishers();
+        System.out.println("Enter publisher ID: ");
         int publisherID = Integer.parseInt(scanner.nextLine());
-        libraryController.addBook(title, authorID, categoryID, publisherID);
-    }
-
-    private void borrowBook(Scanner scanner) {
-        System.out.print("Enter member ID: ");
-        int memberID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter book ID: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        libraryController.borrowBook(memberID, bookID);
-    }
-
-    private void returnBook(Scanner scanner) {
-        System.out.print("Enter loan ID: ");
-        int loanID = Integer.parseInt(scanner.nextLine());
-        libraryController.returnBook(loanID);
-    }
-
-    private void addReviewToBook(Scanner scanner) {
-        System.out.print("Enter member ID: ");
-        int memberID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter book ID: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter rating (1-5): ");
-        int rating = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter review text: ");
-        String reviewText = scanner.nextLine();
-        libraryController.addReviewToBook(memberID, bookID, rating, reviewText);
-    }
-
-    private void viewAllReviewsOfBook(Scanner scanner) {
-        System.out.print("Enter book ID to view reviews: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewAllReviewsOfBook(bookID);
-    }
-
-    private void deleteReview(Scanner scanner) {
-        System.out.print("Enter review ID to delete: ");
-        int reviewID = Integer.parseInt(scanner.nextLine());
-        libraryController.deleteReviewFromBook(reviewID);
-    }
-
-    private void viewActiveLoans(Scanner scanner) {
-        System.out.print("Enter member ID to view active loans: ");
-        int memberID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewActiveLoans(memberID);
-    }
-
-    private void addBookToCategory(Scanner scanner) {
-        System.out.print("Enter book ID: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter category ID: ");
+        viewAllCategories();
+        System.out.println("Enter category ID: ");
         int categoryID = Integer.parseInt(scanner.nextLine());
-        libraryController.addBookToCategory(bookID, categoryID);
+        controller.addBook(title, authorID, publisherID, categoryID);
     }
 
-    private void viewAllBooksInCategory(Scanner scanner) {
-        System.out.print("Enter category ID: ");
-        int categoryID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewAllBooksInCategory(categoryID);
-    }
-
-    private void viewBooksByPublisher(Scanner scanner) {
-        System.out.print("Enter publisher ID: ");
-        int publisherID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewBooksByPublisher(publisherID);
-    }
-    private void viewBooksByAuthor(Scanner scanner) {
-        System.out.print("Enter author ID: ");
+    private void updateBook() {
+        viewAllBooks();
+        System.out.print("Enter book ID: ");
+        int bookID = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter new book title: ");
+        String title = scanner.nextLine();
+        System.out.println("Enter new author ID: ");
         int authorID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewBooksByAuthor(authorID);
+        System.out.println("Enter new availability status: ");
+        boolean newIsAvailable = Boolean.parseBoolean(scanner.nextLine());
+        System.out.print("Enter new category ID: ");
+        int categoryID = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter new publisher ID: ");
+        int publisherID = Integer.parseInt(scanner.nextLine());
+        controller.updateBook(bookID, title, authorID, newIsAvailable,categoryID, publisherID);
     }
 
-    private void viewActiveReservations(Scanner scanner) {
-        System.out.print("Enter member ID to view active reservations: ");
-        int memberID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewActiveReservations(memberID);
-    }
-
-    private void viewLoanHistoryForMember(Scanner scanner) {
-        System.out.print("Enter member ID to view loan history: ");
-        int memberID = Integer.parseInt(scanner.nextLine());
-        libraryController.viewLoanHistoryForMember(memberID);
-    }
-
-    private void updateBook(Scanner scanner) {
-        System.out.print("Enter book ID to update: ");
+    private void deleteBook() {
+        viewAllBooks();
+        System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
-        System.out.print("Enter new title (leave blank to keep current): ");
-        String newTitle = scanner.nextLine();
-        System.out.print("Enter new author ID (leave blank to keep current): ");
-        String authorInput = scanner.nextLine();
-        Integer newAuthorID = authorInput.isEmpty() ? null : Integer.parseInt(authorInput);
-        System.out.print("Enter new category ID (leave blank to keep current): ");
-        String categoryInput = scanner.nextLine();
-        Integer newCategoryID = categoryInput.isEmpty() ? null : Integer.parseInt(categoryInput);
-        System.out.print("Enter new publisher ID (leave blank to keep current): ");
-        String publisherInput = scanner.nextLine();
-        Integer newPublisherID = publisherInput.isEmpty() ? null : Integer.parseInt(publisherInput);
-        libraryController.updateBook(bookID, newTitle, newAuthorID, newCategoryID, newPublisherID);
+        controller.deleteBook(bookID);
     }
 
-    private void deleteBook(Scanner scanner) {
-        System.out.print("Enter book ID to delete: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        libraryController.deleteBook(bookID);
+    private void viewBooksByPublisher() {
+        viewAllPublishers();
+        System.out.println("Enter publisher ID: ");
+        int publisherID = Integer.parseInt(scanner.nextLine());
+        controller.viewBooksByPublisher(publisherID);
     }
 
-    private void viewAllBooks() {
-        libraryController.viewAllBooks();
-    }
-
-    private void viewAllAuthors() {
-        libraryController.viewAllAuthors();
+    private void viewBooksByAuthor() {
+        viewAllAuthors();
+        System.out.println("Enter author ID: ");
+        int authorID = Integer.parseInt(scanner.nextLine());
+        controller.viewBooksByAuthor(authorID);
     }
 
     private void viewAllPublishers() {
-        libraryController.viewAllPublishers();
+        controller.viewAllPublishers();
+    }
+
+    private void viewAllAuthors() {
+        controller.viewAllAuthors();
+    }
+
+    private void addReviewToBook() {
+        System.out.println("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter book ID: ");
+        int bookID = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter rating: ");
+        int rating = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter comments: ");
+        String comments = scanner.nextLine();
+        controller.addReviewToBook(memberID, bookID, rating, comments);
+    }
+
+    private void viewAllReviewsOfBook() {
+        System.out.print("Enter book ID: ");
+        int bookID = Integer.parseInt(scanner.nextLine());
+        controller.viewAllReviewsOfBook(bookID);
+    }
+
+    private void borrowBook() {
+        System.out.print("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter book ID: ");
+        int bookID = Integer.parseInt(scanner.nextLine());
+        controller.borrowBook(memberID, bookID);
+    }
+
+    private void returnBook() {
+        System.out.print("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        controller.viewActiveLoans(memberID);
+        System.out.print("Enter loan ID: ");
+        int loanID = Integer.parseInt(scanner.nextLine());
+        controller.returnBook(loanID);
+    }
+
+    private void viewLoanHistoryForMember() {
+        System.out.print("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        controller.viewLoanHistoryForMember(memberID);
+    }
+
+    private void addBookToCategory() {
+        viewAllBooks();
+        System.out.print("Enter book ID: ");
+        int bookID = Integer.parseInt(scanner.nextLine());
+        viewAllCategories();
+        System.out.print("Enter category ID: ");
+        int categoryID = Integer.parseInt(scanner.nextLine());
+        controller.addBookToCategory(bookID, categoryID);
+    }
+
+    private void viewAllBooksInCategory() {
+        viewAllCategories();
+        System.out.print("Enter category ID: ");
+        int categoryID = Integer.parseInt(scanner.nextLine());
+        controller.viewAllBooksInCategory(categoryID);
     }
 
     private void viewAllCategories() {
-        libraryController.viewAllCategories();
+        controller.viewAllCategories();
+    }
+
+    private void viewActiveLoans() {
+        System.out.print("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        controller.viewActiveLoans(memberID);
+    }
+
+    private void viewActiveReservations() {
+        System.out.print("Enter member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        controller.viewActiveReservations(memberID);
+    }
+
+    private void viewAllBooks() {
+        controller.viewAllBooks();
+    }
+
+    private void isStaff() {
+        System.out.println("Enter your email: ");
+        String email = scanner.nextLine();
+        controller.isStaff(email);
     }
 }
-

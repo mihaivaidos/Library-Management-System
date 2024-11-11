@@ -164,11 +164,12 @@ public class LibraryController {
         System.out.println("Staff added successfully: " + name);
     }
 
-    public void isStaff(String email) {
+    public boolean isStaff(String email) {
         if(libraryService.isStaff(email)) {
             System.out.println("You are a staff!");
         } else {
             System.out.println("You are not a staff!");
         }
+        return false;
     }
 }
