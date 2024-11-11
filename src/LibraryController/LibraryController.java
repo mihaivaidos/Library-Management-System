@@ -17,8 +17,8 @@ public class LibraryController {
         System.out.println("Review added successfully!");
     }
 
-    public void deleteReviewFromBook(int memberID, int bookID) {
-        libraryService.deleteReviewFromBook(memberID, bookID);
+    public void deleteReviewFromBook(int bookID) {
+        libraryService.deleteReviewFromBook(bookID);
         System.out.println("Review deleted successfully!");
     }
 
@@ -157,6 +157,4 @@ public class LibraryController {
         libraryService.deleteBook(bookID);
         System.out.println("Book deleted successfully: " + bookID);
     }
-
-
 }

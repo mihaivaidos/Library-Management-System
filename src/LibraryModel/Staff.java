@@ -2,7 +2,7 @@ package LibraryModel;
 
 public class Staff extends Person {
 
-    private String position;
+    public String position;
 
     public Staff(int ID, String name, String email, String phoneNumber, String position) {
         super(ID, name, email, phoneNumber);
