@@ -27,13 +27,18 @@ public class LibraryUI {
     }
 
     /**
-     * Starts the library management system, telling the user to enter their email
-     * and displaying the appropriate menu based on whether the user is staff or a member
+     * Starts the library management system.
+     *
+     * This method continuously prompts the user for their email address and displays
+     * the appropriate menu (staff or member) based on the user's role. It allows
+     * the user to continue using the system or exit as desired.
      */
 
     public void start() {
-        while (true) {
-            System.out.println("\nLibrary Management System:");
+        boolean continueLoop = true;
+
+        while (continueLoop) {
+            System.out.println("\nLibrary Management System");
             System.out.print("Enter your email: ");
             String email = scanner.nextLine();
 
@@ -41,11 +46,16 @@ public class LibraryUI {
 
             if (isStaff) {
                 staffMenu();
-            }
-            else {
+            } else {
                 memberMenu();
             }
+
+            System.out.print("Do you want to continue? (yes/no): ");
+            String choice = scanner.nextLine().toLowerCase();
+            continueLoop = choice.equals("yes");
         }
+
+        System.out.println("Thank you for using the Library Management System!");
     }
 
     /**
@@ -75,7 +85,7 @@ public class LibraryUI {
                 case 6 -> viewAllBooksInCategory();
                 case 7 -> viewAllCategories();
                 case 0 -> {
-                    System.out.println("Exiting...");
+                    System.out.println("Thank you!");
                     return;
                 }
                 default -> System.out.println("Invalid choice! Please try again.");
@@ -126,7 +136,7 @@ public class LibraryUI {
                 case 14 -> addAuthor();
                 case 15 -> addPublisher();
                 case 0 -> {
-                    System.out.println("Exiting...");
+                    System.out.println("Thank you!");
                     return;
                 }
                 default -> System.out.println("Invalid choice! Please try again.");
