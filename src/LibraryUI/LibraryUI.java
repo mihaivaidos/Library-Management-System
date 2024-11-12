@@ -4,14 +4,32 @@ import LibraryController.LibraryController;
 
 import java.util.Scanner;
 
+/**
+ * LibraryUI is a user interface class for managing a library system.
+ * It interacts with the LibraryController to perform various operations
+ * based on user input, allowing both staff and members to manage library resources
+ */
+
 public class LibraryUI {
     private final LibraryController controller;
     private final Scanner scanner;
+
+    /**
+     * Constructs a LibraryUI instance with the specified LibraryController.
+     *
+     * @param controller the LibraryController used to perform library operations
+     */
+
 
     public LibraryUI(LibraryController controller) {
         this.controller = controller;
         this.scanner = new Scanner(System.in);
     }
+
+    /**
+     * Starts the library management system, telling the user to enter their email
+     * and displaying the appropriate menu based on whether the user is staff or a member
+     */
 
     public void start() {
         while (true) {
@@ -24,11 +42,16 @@ public class LibraryUI {
 
             if (isStaff) {
                 staffMenu();
-            } else {
+            }
+            else {
                 memberMenu();
             }
         }
     }
+
+    /**
+     * Displays the member menu and handles member-specific operations.
+     */
 
     private void memberMenu() {
         while (true) {
@@ -60,6 +83,10 @@ public class LibraryUI {
             }
         }
     }
+
+    /**
+     * Displays the staff menu and handles staff-specific operations.
+     */
 
     private void staffMenu() {
         while (true) {
@@ -108,6 +135,11 @@ public class LibraryUI {
         }
     }
 
+    /**
+     * Adds a new book to the library.
+     * Prompts the user for the book's title, author ID, publisher ID, and category ID.
+     */
+
     private void addBook() {
         System.out.print("Enter book title: ");
         String title = scanner.nextLine();
@@ -122,6 +154,12 @@ public class LibraryUI {
         int categoryID = Integer.parseInt(scanner.nextLine());
         controller.addBook(title, authorID, publisherID, categoryID);
     }
+
+    /**
+     * Updates an existing book in the library.
+     * Prompts the user for the book ID, new title, new author ID, new availability status,
+     * new category ID, and new publisher ID.
+     */
 
     private void updateBook() {
         viewAllBooks();
@@ -140,12 +178,23 @@ public class LibraryUI {
         controller.updateBook(bookID, title, authorID, newIsAvailable,categoryID, publisherID);
     }
 
+    /**
+     * Deletes a book from the library.
+     * Prompts the user for the book ID to be deleted.
+     */
+
+
     private void deleteBook() {
         viewAllBooks();
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         controller.deleteBook(bookID);
     }
+
+    /**
+     * Views books by a specific publisher.
+     * Prompts the user for the publisher ID and retrieves the corresponding books.
+     */
 
     private void viewBooksByPublisher() {
         viewAllPublishers();
@@ -154,6 +203,11 @@ public class LibraryUI {
         controller.viewBooksByPublisher(publisherID);
     }
 
+    /**
+     * Views books by a specific author.
+     * Prompts the user for the author ID and retrieves the corresponding books.
+     */
+
     private void viewBooksByAuthor() {
         viewAllAuthors();
         System.out.println("Enter author ID: ");
@@ -161,13 +215,26 @@ public class LibraryUI {
         controller.viewBooksByAuthor(authorID);
     }
 
+    /**
+     * Displays all publishers available in the library.
+     */
+
     private void viewAllPublishers() {
         controller.viewAllPublishers();
     }
 
+    /**
+     * Displays all authors available in the library.
+     */
+
     private void viewAllAuthors() {
         controller.viewAllAuthors();
     }
+
+    /**
+     * Adds a review to a specific book.
+     * Prompts the user for member ID, book ID, rating, and comments.
+     */
 
     private void addReviewToBook() {
         System.out.println("Enter member ID: ");
@@ -181,11 +248,21 @@ public class LibraryUI {
         controller.addReviewToBook(memberID, bookID, rating, comments);
     }
 
+    /**
+     * Views all reviews for a specific book.
+     * Prompts the user for the book ID to retrieve its reviews.
+     */
+
     private void viewAllReviewsOfBook() {
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         controller.viewAllReviewsOfBook(bookID);
     }
+
+    /**
+     * Borrows a book for a member.
+     * Prompts the user for member ID and book ID to process the borrowing.
+     */
 
     private void borrowBook() {
         System.out.print("Enter member ID: ");
@@ -194,6 +271,11 @@ public class LibraryUI {
         int bookID = Integer.parseInt(scanner.nextLine());
         controller.borrowBook(memberID, bookID);
     }
+
+    /**
+     * Returns a borrowed book for a member.
+     * Prompts the user for member ID and loan ID to process the return.
+     */
 
     private void returnBook() {
         System.out.print("Enter member ID: ");
@@ -204,11 +286,21 @@ public class LibraryUI {
         controller.returnBook(loanID);
     }
 
+    /**
+     * Views the loan history for a specific member.
+     * Prompts the user for the member ID to retrieve their loan history.
+     */
+
     private void viewLoanHistoryForMember() {
         System.out.print("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
         controller.viewLoanHistoryForMember(memberID);
     }
+
+    /**
+     * Adds a book to a specific category.
+     * Prompts the user for the book ID and category ID to associate the book with the category.
+     */
 
     private void addBookToCategory() {
         viewAllBooks();
@@ -220,6 +312,11 @@ public class LibraryUI {
         controller.addBookToCategory(bookID, categoryID);
     }
 
+    /**
+     * Views all books within a specific category.
+     * Prompts the user for the category ID to retrieve the books in that category.
+     */
+
     private void viewAllBooksInCategory() {
         viewAllCategories();
         System.out.print("Enter category ID: ");
@@ -227,9 +324,18 @@ public class LibraryUI {
         controller.viewAllBooksInCategory(categoryID);
     }
 
+    /**
+     * Displays all categories available in the library.
+     */
+
     private void viewAllCategories() {
         controller.viewAllCategories();
     }
+
+    /**
+     * Views active loans for a specific member.
+     * Prompts the user for the member ID to retrieve their active loans.
+     */
 
     private void viewActiveLoans() {
         System.out.print("Enter member ID: ");
@@ -237,21 +343,40 @@ public class LibraryUI {
         controller.viewActiveLoans(memberID);
     }
 
+    /**
+     * Views active reservations for a specific member.
+     * Prompts the user for the member ID to retrieve their active reservations.
+     */
+
     private void viewActiveReservations() {
         System.out.print("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
         controller.viewActiveReservations(memberID);
     }
 
+    /**
+     * Views all books available in the library.
+     */
+
     private void viewAllBooks() {
         controller.viewAllBooks();
     }
+
+    /**
+     * Checks if a user is staff based on their email.
+     * Prompts the user for their email and checks their staff status.
+     */
 
     private void isStaff() {
         System.out.println("Enter your email: ");
         String email = scanner.nextLine();
         controller.isStaff(email);
     }
+
+    /**
+     * Adds a new member to the library system.
+     * Prompts the user for the member's name, email, and phone number.
+     */
 
     private void addMember() {
         System.out.print("Enter member name: ");
@@ -264,6 +389,11 @@ public class LibraryUI {
         System.out.println("Member added successfully.");
     }
 
+    /**
+     * Adds a new author to the library system.
+     * Prompts the user for the author's name, email, and phone number.
+     */
+
     private void addAuthor() {
         System.out.print("Enter author name: ");
         String name = scanner.nextLine();
@@ -274,6 +404,11 @@ public class LibraryUI {
         controller.addAuthor(name, email, phoneNumber);
         System.out.println("Author added successfully.");
     }
+
+    /**
+     * Adds a new publisher to the library system.
+     * Prompts the user for the publisher's name, email, and phone number.
+     */
 
     private void addPublisher() {
         System.out.print("Enter publisher name: ");
