@@ -1,6 +1,7 @@
 package LibraryService;
 
 import LibraryModel.*;
+import LibraryRepository.IRepository;
 import LibraryRepository.InMemoryRepository;
 
 import java.util.ArrayList;
@@ -54,19 +55,19 @@ public class LibraryService {
      * @param staffRepo the repository for managing staff
      */
 
-    public LibraryService(InMemoryRepository<Book> bookRepo, InMemoryRepository<Loan> loanRepo,
-                          InMemoryRepository<Reservation> reservationRepo, InMemoryRepository<Category>
-                                  categoryRepo, InMemoryRepository<Member> memberRepo, InMemoryRepository<Review> reviewRepo,
-                          InMemoryRepository<Author> authorRepo, InMemoryRepository<Publisher> publisherRepo, InMemoryRepository<Staff> staffRepo) {
-        this.bookRepo = bookRepo;
-        this.loanRepo = loanRepo;
-        this.reservationRepo = reservationRepo;
-        this.categoryRepo = categoryRepo;
-        this.memberRepo = memberRepo;
-        this.reviewRepo = reviewRepo;
-        this.authorRepo = authorRepo;
-        this.publisherRepo = publisherRepo;
-        this.staffRepo = staffRepo;
+    public LibraryService(IRepository<Book> bookRepo, IRepository<Loan> loanRepo,
+                          IRepository<Reservation> reservationRepo, IRepository<Category>
+                                  categoryRepo, IRepository<Member> memberRepo, IRepository<Review> reviewRepo,
+                          IRepository<Author> authorRepo, IRepository<Publisher> publisherRepo, IRepository<Staff> staffRepo) {
+        this.bookRepo = (InMemoryRepository<Book>) bookRepo;
+        this.loanRepo = (InMemoryRepository<Loan>) loanRepo;
+        this.reservationRepo = (InMemoryRepository<Reservation>) reservationRepo;
+        this.categoryRepo = (InMemoryRepository<Category>) categoryRepo;
+        this.memberRepo = (InMemoryRepository<Member>) memberRepo;
+        this.reviewRepo = (InMemoryRepository<Review>) reviewRepo;
+        this.authorRepo = (InMemoryRepository<Author>) authorRepo;
+        this.publisherRepo = (InMemoryRepository<Publisher>) publisherRepo;
+        this.staffRepo = (InMemoryRepository<Staff>) staffRepo;
     }
 
     /**

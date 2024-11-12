@@ -37,7 +37,6 @@ public class LibraryUI {
             System.out.print("Enter your email: ");
             String email = scanner.nextLine();
 
-            // Check if the user is staff
             boolean isStaff = controller.isStaff(email);
 
             if (isStaff) {
