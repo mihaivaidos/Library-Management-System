@@ -58,8 +58,8 @@ public class LibraryController {
         List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
         System.out.println("Reviews for book: " + bookID);
         for (Review review : reviews) {
-            System.out.println("Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
-                    + ", Rating: " + review.getRating() + ", Comments: " + review.getComments());
+            System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
+                    + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
         }
     }
 
@@ -122,11 +122,8 @@ public class LibraryController {
 
     public void viewAllBooksInCategory(int categoryID) {
         System.out.println("Available Books in category: " + categoryID);
-        for (Book book : libraryService.getAllBooksInCategory(categoryID)) {
-            String status = book.isAvailable() ? "Available" : "Borrowed";
-            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Status: " + status + ", Publisher: " + book.getPublisher().getName() + ", Category: " + book.getCategory().getCategoryName());
-        }
+        List<Book> books = libraryService.getAllBooksInCategory(categoryID);
+        printBooks(books);
     }
 
     /**
@@ -148,13 +145,14 @@ public class LibraryController {
 
     public void viewAllBooks() {
         System.out.println("Available Books:");
-        for (Book book : libraryService.getAllBooks()) {
-            String status = book.isAvailable() ? "Available" : "Borrowed";
-            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
-            String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
-            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
-        }
+        List<Book> books = libraryService.getAllBooks();
+        printBooks(books);
+    }
+
+    public void viewMemberBorrowedBooks(int memberID) {
+        System.out.println("Member borrowed books: " + memberID);
+        List<Book> books = libraryService.getMemberBorrowedBooks(memberID);
+        printBooks(books);
     }
 
     /**
@@ -192,11 +190,16 @@ public class LibraryController {
     public void viewBooksByPublisher(int publisherID) {
         System.out.println("Books by publisher: " + publisherID);
         List<Book> publisherBooks = libraryService.getBooksByPublisher(publisherID);
-        for (Book book : publisherBooks) {
+        printBooks(publisherBooks);
+    }
+
+    public void printBooks(List<Book> books) {
+        for (Book book : books) {
             String status = book.isAvailable() ? "Available" : "Borrowed";
             String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
+            String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
             System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
+                    + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
         }
     }
 
@@ -209,12 +212,7 @@ public class LibraryController {
     public void viewBooksByAuthor(int authorID) {
         System.out.println("Books by author: " + authorID);
         List<Book> books = libraryService.getBooksByAuthor(authorID);
-        for (Book book : books) {
-            String status = book.isAvailable() ? "Available" : "Borrowed";
-            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
-            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + book.getPublisher().getName() + ", Category: " + categoryName + ", Status: " + status);
-        }
+        printBooks(books);
     }
 
     /**
@@ -313,10 +311,11 @@ public class LibraryController {
     public boolean isStaff(String email) {
         if(libraryService.isStaff(email)) {
             System.out.println("You are a staff!");
+            return true;
         } else {
             System.out.println("You are not a staff!");
+            return false;
         }
-        return false;
     }
 
     /**
