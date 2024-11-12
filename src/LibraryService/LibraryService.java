@@ -9,24 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/*
-    Add book
-    Update book
-    Delete book
-            Get all books
-            View books by a publisher
-            View books by an author
-        Add review to a book
-        View all reviews to a book
-        Borrow a book (reserve one if not available)
-        Return a book
-        View active loans
-                View active reservation
-                View loan history for a member
-Calculate due date for new loan
-                            Add book to a category
-                            View all books in a category
-Delete review
+/**
+ * LibraryService provides various operations for managing the library system,
+ * including handling books, members, loans, reservations, reviews, authors,
+ * publishers, and staff. It interacts with in-memory repositories to perform
+ * CRUD operations.
  */
 
 public class LibraryService {
@@ -51,6 +38,22 @@ public class LibraryService {
     private int newReservationID = 9;
     private int newStaffID = 9;
 
+    /**
+     * Constructs a LibraryService with the specified repositories for managing
+     * books, loans, reservations, categories, members, reviews, authors,
+     * publishers, and staff.
+     *
+     * @param bookRepo the repository for managing books
+     * @param loanRepo the repository for managing loans
+     * @param reservationRepo the repository for managing reservations
+     * @param categoryRepo the repository for managing categories
+     * @param memberRepo the repository for managing members
+     * @param reviewRepo the repository for managing reviews
+     * @param authorRepo the repository for managing authors
+     * @param publisherRepo the repository for managing publishers
+     * @param staffRepo the repository for managing staff
+     */
+
     public LibraryService(InMemoryRepository<Book> bookRepo, InMemoryRepository<Loan> loanRepo,
                           InMemoryRepository<Reservation> reservationRepo, InMemoryRepository<Category>
                                   categoryRepo, InMemoryRepository<Member> memberRepo, InMemoryRepository<Review> reviewRepo,
@@ -66,6 +69,15 @@ public class LibraryService {
         this.staffRepo = staffRepo;
     }
 
+    /**
+     * Adds a review to a specific book if the member has borrowed it.
+     *
+     * @param memberID the ID of the member adding the review
+     * @param bookID the ID of the book being reviewed
+     * @param rating the rating given to the book
+     * @param reviewText the text of the review
+     */
+
     public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) {
         Member member = memberRepo.get(memberID);
         Book book = bookRepo.get(bookID);
@@ -80,6 +92,12 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Deletes a review from a book.
+     *
+     * @param reviewID the ID of the review to be deleted
+     */
+
     public void deleteReviewFromBook(int reviewID) {
         Review reviewToDelete = reviewRepo.get(reviewID);
         if (reviewToDelete != null) {
@@ -89,12 +107,25 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Retrieves all reviews for a specific book.
+     *
+     * @param bookID the ID of the book
+     * @return a list of reviews for the specified book
+     */
+
     public List<Review> getAllReviewsOfBook(int bookID) {
         Book book = bookRepo.get(bookID);
         return book != null ? book.getReviews() : new ArrayList<>();
     }
 
-    // Loan and Reservation Management
+    /**
+     * Borrows a book for a specific member. If the book is not available,
+     * it creates a reservation instead.
+     *
+     * @param memberID the ID of the member borrowing the book
+     * @param bookID the ID of the book to be borrowed
+     */
 
     public void borrowBook(int memberID, int bookID) {
         Book book = bookRepo.get(bookID);
@@ -123,6 +154,13 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Checks if a member has any overdue loans.
+     *
+     * @param memberID the ID of the member to check
+     * @return true if the member has overdue loans, false otherwise
+     */
+
     public boolean checkMemberHasOverdueLoans(int memberID) {
         Member member = memberRepo.get(memberID);
         List<Loan> memberLoans = member.getLoans();
@@ -135,6 +173,13 @@ public class LibraryService {
         }
         return false;
     }
+
+    /**
+     * Returns a borrowed book for a member and checks if there are any reservations
+     * for that book. If there are, it fulfills the reservation.
+     *
+     * @param loanID the ID of the loan to be returned
+     */
 
     public void returnBook(int loanID) {
         Loan loan = loanRepo.get(loanID);
@@ -166,16 +211,38 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Retrieves active loans for a specific member.
+     *
+     * @param memberID the ID of the member
+     * @return a list of active loans for the specified member
+     */
+
     public List<Loan> getActiveLoansForMember(int memberID) {
         Member member = memberRepo.get(memberID);
         return member != null ? member.getLoans() : new ArrayList<>();
     }
+
+    /**
+     * Calculates the due date for a new loan, which is 14 days from the current date.
+     *
+     * @return the calculated due date
+     */
 
     public Date calculateDueDate() {
         // Default loan period is 14 days
         long loanPeriod = 14L * 24 * 60 * 60 * 1000;  // 14 days in milliseconds
         return new Date(System.currentTimeMillis() + loanPeriod);
     }
+
+    /**
+     * Adds a new book to the library.
+     *
+     * @param bookName the name of the book
+     * @param authorID the ID of the author of the book
+     * @param categoryID the ID of the category of the book
+     * @param publisherID the ID of the publisher of the book
+     */
 
     public void addBook(String bookName, int authorID, int categoryID, int publisherID) {
         Author author = authorRepo.get(authorID);
@@ -185,10 +252,26 @@ public class LibraryService {
         bookRepo.add(book);
     }
 
+    /**
+     * Adds a new staff member to the library.
+     *
+     * @param name the name of the staff member
+     * @param email the email of the staff member
+     * @param phoneNumber the phone number of the staff member
+     * @param position the position of the staff member
+     */
+
     public void addStaff(String name, String email, String phoneNumber, String position) {
         Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
         staffRepo.add(staff);
     }
+
+    /**
+     * Checks if a user with the given email is a staff member.
+     *
+     * @param email the email of the user
+     * @return true if the user is a staff member, false otherwise
+     */
 
     public boolean isStaff(String email) {
         List<Staff> staffs = staffRepo.getAll();
@@ -199,6 +282,17 @@ public class LibraryService {
         }
         return false;
     }
+
+    /**
+     * Updates the details of an existing book.
+     *
+     * @param bookID the ID of the book to be updated
+     * @param newBookName the new name of the book
+     * @param newAuthorID the new author ID
+     * @param newIsAvailable the new availability status of the book
+     * @param newCategoryID the new category ID
+     * @param newPublisherID the new publisher ID
+     */
 
     public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
         Book book = bookRepo.get(bookID);
@@ -223,6 +317,12 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Deletes a book from the library.
+     *
+     * @param bookID the ID of the book to be deleted
+     */
+
     public void deleteBook(int bookID) {
         Book book = bookRepo.get(bookID);
         if (book != null) {
@@ -230,11 +330,25 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Retrieves all books published by a specific publisher.
+     *
+     * @param publisherID the ID of the publisher
+     * @return a list of books published by the specified publisher
+     */
+
     public List<Book> getBooksByPublisher(int publisherID) {
         return bookRepo.getAll().stream()
             .filter(book -> book.getPublisher().getID() == publisherID)
             .collect(Collectors.toList());
     }
+
+    /**
+     * Retrieves all books written by a specific author.
+     *
+     * @param authorID the ID of the author
+     * @return a list of books written by the specified author
+     */
 
     public List<Book> getBooksByAuthor(int authorID) {
         return bookRepo.getAll().stream()
@@ -242,10 +356,24 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all active reservations for a specific member.
+     *
+     * @param memberID the ID of the member
+     * @return a list of active reservations for the specified member
+     */
+
     public List<Reservation> getActiveReservationsForMember(int memberID) {
         Member member = memberRepo.get(memberID);
         return member.getReservations();
     }
+
+    /**
+     * Retrieves the loan history for a specific member.
+     *
+     * @param memberID the ID of the member
+     * @return a list of loans that the specified member has previously borrowed
+     */
 
     public List<Loan> getLoanHistoryForMember(int memberID) {
         Member member = memberRepo.get(memberID);
@@ -257,6 +385,13 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Adds a book to a specific category.
+     *
+     * @param bookID the ID of the book to be added to the category
+     * @param categoryID the ID of the category to which the book will be added
+     */
+
     public void addBookToCategory(int bookID, int categoryID) {
         Book book = bookRepo.get(bookID);
         Category category = categoryRepo.get(categoryID);
@@ -267,56 +402,143 @@ public class LibraryService {
         }
     }
 
+    /**
+     * Retrieves all books that belong to a specific category.
+     *
+     * @param categoryID the ID of the category
+     * @return a list of books in the specified category
+     */
+
     public List<Book> getAllBooksInCategory(int categoryID) {
         return bookRepo.getAll().stream()
                 .filter(book -> book.getCategory().getID() == categoryID)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all publishers in the library.
+     *
+     * @return a list of all publishers
+     */
+
     public List<Publisher> getAllPublishers() {
         return publisherRepo.getAll();
     }
+
+    /**
+     * Retrieves all authors in the library.
+     *
+     * @return a list of all authors
+     */
 
     public List<Author> getAllAuthors() {
         return authorRepo.getAll();
     }
 
+    /**
+     * Retrieves all categories in the library.
+     *
+     * @return a list of all categories
+     */
+
     public List<Category> getAllCategories() {
         return categoryRepo.getAll();
     }
+
+    /**
+     * Retrieves all reservations in the library.
+     *
+     * @return a list of all reservations
+     */
 
     public List<Reservation> getAllReservations() {
         return reservationRepo.getAll();
     }
 
+    /**
+     * Retrieves all loans in the library.
+     *
+     * @return a list of all loans
+     */
+
     public List<Loan> getAllLoans() {
         return loanRepo.getAll();
     }
+
+    /**
+     * Retrieves all members in the library.
+     *
+     * @return a list of all members
+     */
 
     public List<Member> getAllMembers() {
         return memberRepo.getAll();
     }
 
+    /**
+     * Retrieves all reviews in the library.
+     *
+     * @return a list of all reviews
+     */
+
     public List<Review> getAllReviews() {
         return reviewRepo.getAll();
     }
 
+    /**
+     * Retrieves all books in the library.
+     *
+     * @return a list of all books
+     */
+
     public List<Book> getAllBooks() {
         return bookRepo.getAll();
     }
+
+    /**
+     * Adds a new member to the library.
+     *
+     * @param name the name of the member
+     * @param email the email of the member
+     * @param phoneNumber the phone number of the member
+     */
 
     public void addMember(String name, String email, String phoneNumber) {
         Member member = new Member(++newMemberID, name, email, phoneNumber);
         memberRepo.add(member);
     }
 
+    /**
+     * Adds a new author to the library.
+     *
+     * This method creates a new Author instance with the provided name, email, and phone number.
+     * It initializes an empty list of books associated with the author.
+     *
+     * @param name the name of the author
+     * @param email the email of the author
+     * @param phoneNumber the phone number of the author
+     */
+
     public void addAuthor(String name, String email, String phoneNumber) {
         Author author = new Author(++newAuthorID, name, email, phoneNumber);
+        List<Book> books = new ArrayList<>();
         authorRepo.add(author);
     }
 
+    /**
+     * Adds a new publisher to the library.
+     *
+     * This method creates a new Publisher instance with the provided name, email, and phone number.
+     * It initializes an empty list of published books associated with the publisher.
+     *
+     * @param name the name of the publisher
+     * @param email the email of the publisher
+     * @param phoneNumber the phone number of the publisher
+     */
+
     public void addPublisher(String name, String email, String phoneNumber) {
         Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
+        List<Book> publishedBooks = new ArrayList<>();
         publisherRepo.add(publisher);
     }
 }
