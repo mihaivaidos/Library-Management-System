@@ -149,6 +149,11 @@ public class LibraryController {
         printBooks(books);
     }
 
+    /**
+     * Prints the books borrowed by a member
+     *
+     * @param memberID the ID of the member
+     */
     public void viewMemberBorrowedBooks(int memberID) {
         System.out.println("Member borrowed books: " + memberID);
         List<Book> books = libraryService.getMemberBorrowedBooks(memberID);
@@ -193,6 +198,11 @@ public class LibraryController {
         printBooks(publisherBooks);
     }
 
+    /**
+     * Prints the books in a list.
+     *
+     * @param books the list of books that needs to be printed
+     */
     public void printBooks(List<Book> books) {
         for (Book book : books) {
             String status = book.isAvailable() ? "Available" : "Borrowed";
@@ -355,5 +365,15 @@ public class LibraryController {
     public void addPublisher(String name, String email, String phoneNumber) {
         libraryService.addPublisher(name, email, phoneNumber);
         System.out.println("Publisher added successfully: " + name);
+    }
+
+    /**
+     * Gets the ID of a person (member or staff)
+     *
+     * @param email the email of the staff or member
+     * @return the ID or -1
+     */
+    public int getIDbyEmail(String email) {
+        return libraryService.getIDbyEmail(email);
     }
 }

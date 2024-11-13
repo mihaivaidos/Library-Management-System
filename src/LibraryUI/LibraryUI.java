@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class LibraryUI {
     private final LibraryController controller;
     private final Scanner scanner;
+    boolean continueLoop = true;
 
     /**
      * Constructs a LibraryUI instance with the specified LibraryController.
@@ -35,7 +36,6 @@ public class LibraryUI {
      */
 
     public void start() {
-        boolean continueLoop = true;
 
         while (continueLoop) {
             System.out.println("\nLibrary Management System");
@@ -43,16 +43,29 @@ public class LibraryUI {
             String email = scanner.nextLine();
 
             boolean isStaff = controller.isStaff(email);
+            int getID = controller.getIDbyEmail(email);
 
             if (isStaff) {
+                viewID(email);
                 staffMenu();
             } else {
-                memberMenu();
+                if(getID == -1) {
+                    System.out.println("You are not registered!");
+                    register();
+                    if(continueLoop) {
+                        memberMenu();
+                    }
+                } else {
+                    viewID(email);
+                    memberMenu();
+                }
             }
 
-            System.out.print("Do you want to continue? (yes/no): ");
-            String choice = scanner.nextLine().toLowerCase();
-            continueLoop = choice.equals("yes");
+            if(continueLoop) {
+                System.out.print("Do you want to continue? (yes/no): ");
+                String choice = scanner.nextLine().toLowerCase();
+                continueLoop = choice.equals("yes");
+            }
         }
 
         System.out.println("Thank you for using the Library Management System!");
@@ -395,7 +408,6 @@ public class LibraryUI {
         System.out.print("Enter member phone number: ");
         String phoneNumber = scanner.nextLine();
         controller.addMember(name, email, phoneNumber);
-        System.out.println("Member added successfully.");
     }
 
     /**
@@ -411,7 +423,6 @@ public class LibraryUI {
         System.out.print("Enter author phone number: ");
         String phoneNumber = scanner.nextLine();
         controller.addAuthor(name, email, phoneNumber);
-        System.out.println("Author added successfully.");
     }
 
     /**
@@ -427,6 +438,32 @@ public class LibraryUI {
         System.out.print("Enter member phone number: ");
         String phoneNumber = scanner.nextLine();
         controller.addPublisher(name, email, phoneNumber);
-        System.out.println("Publisher added successfully.");
     }
+
+    /**
+     * Shows the ID with the help of the email
+     *
+     * @param email the email provided by the user
+     */
+    private void viewID(String email) {
+        System.out.println("Your ID is: " + controller.getIDbyEmail(email));
+    }
+
+    /**
+     * Prompts the user for the registration option and if the choice is 'yes' it adds a new member
+     * If the choice is 'no', the loop will stop
+     */
+    private void register() {
+        System.out.println("Do you want to register? (yes/no): ");
+        String choice = scanner.nextLine().toLowerCase();
+        if(choice.equals("yes")) {
+            addMember();
+            System.out.println("Enter your email for confirmation: ");
+            String email = scanner.nextLine();
+            viewID(email);
+        } else {
+            continueLoop = false;
+        }
+    }
+
 }
