@@ -565,4 +565,26 @@ public class LibraryService {
         List<Book> publishedBooks = new ArrayList<>();
         publisherRepo.add(publisher);
     }
+
+    /**
+     * Gets the ID of a member or a staff by the email that is provided.
+     *
+     * @param email the email of the person
+     * @return the ID of the person or -1 if they don't exist
+     */
+    public int getIDbyEmail(String email) {
+        List<Member> members = memberRepo.getAll();
+        List<Staff> staffs = staffRepo.getAll();
+        for(Member member : members) {
+            if(member.getEmail().equals(email)) {
+                return member.getID();
+            }
+        }
+        for(Staff staff : staffs) {
+            if(staff.getEmail().equals(email)) {
+                return staff.getID();
+            }
+        }
+        return -1;
+    }
 }
