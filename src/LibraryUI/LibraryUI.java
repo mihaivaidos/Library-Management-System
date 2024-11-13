@@ -277,7 +277,7 @@ public class LibraryUI {
     private void addReviewToBook() {
         System.out.println("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
-        viewAllBooks();
+        controller.viewMemberBorrowedBooks(memberID);
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         System.out.print("Enter rating: ");
