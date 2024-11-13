@@ -119,15 +119,13 @@ public class LibraryService {
         Review reviewToDelete = reviewRepo.get(reviewID);
         if (reviewToDelete != null) {
             Book book = reviewToDelete.getBook();
-            Member member = reviewToDelete.getMember();
-            List<Loan> memberLoans = member.getLoanHistory();
-
-            boolean memberHasBorrowedBook = memberLoans.stream()
-                    .anyMatch(loan -> loan.getBook().getID() == book.getID());
-            if (memberHasBorrowedBook) {
-                book.getReviews().remove(reviewToDelete);
-                reviewRepo.delete(reviewID);
-            }
+            //Member member = reviewToDelete.getMember();
+//            List<Loan> memberLoans = member.getLoanHistory();
+//
+//            boolean memberHasBorrowedBook = memberLoans.stream()
+//                    .anyMatch(loan -> loan.getBook().getID() == book.getID());
+            book.getReviews().remove(reviewToDelete);
+            reviewRepo.delete(reviewID);
         }
     }
 

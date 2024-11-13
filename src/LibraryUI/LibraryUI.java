@@ -89,6 +89,9 @@ public class LibraryUI {
             System.out.println("7. View All Categories");
             System.out.println("8. Add Review to Book");
             System.out.println("9. View Reviews of Book");
+            System.out.println("10. View Active Loans");
+            System.out.println("11. View Active Reservations");
+            System.out.println("12. View Loan History");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -102,6 +105,10 @@ public class LibraryUI {
                 case 6 -> viewAllBooksInCategory();
                 case 7 -> viewAllCategories();
                 case 8 -> addReviewToBook();
+                case 9 -> viewAllReviewsOfBook();
+                case 10 -> viewActiveLoans();
+                case 11 -> viewActiveReservations();
+                case 12 -> viewLoanHistoryForMember();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
@@ -109,9 +116,6 @@ public class LibraryUI {
                 default -> System.out.println("Invalid choice! Please try again.");
             }
         }
-    }
-
-    private void deleteReview() {
     }
 
     /**
@@ -159,7 +163,7 @@ public class LibraryUI {
                 case 14 -> addAuthor();
                 case 15 -> addPublisher();
                 case 16 -> viewAllReviewsOfBook();
-                case 17 -> deleteReview();
+                case 17 -> deleteReviewFromBook();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
@@ -273,6 +277,7 @@ public class LibraryUI {
     private void addReviewToBook() {
         System.out.println("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
+        viewAllBooks();
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         System.out.print("Enter rating: ");
@@ -283,14 +288,29 @@ public class LibraryUI {
     }
 
     /**
+     * Shows all reviews first and then prompts the user for a reviewID
+     */
+    private void deleteReviewFromBook() {
+        viewAllReviews();
+        System.out.println("Enter review ID: ");
+        int reviewID = Integer.parseInt(scanner.nextLine());
+        controller.deleteReviewFromBook(reviewID);
+    }
+
+    /**
      * Views all reviews for a specific book.
      * Prompts the user for the book ID to retrieve its reviews.
      */
 
     private void viewAllReviewsOfBook() {
+        viewAllBooks();
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         controller.viewAllReviewsOfBook(bookID);
+    }
+
+    private void viewAllReviews() {
+        controller.viewAllReviews();
     }
 
     /**
@@ -301,6 +321,7 @@ public class LibraryUI {
     private void borrowBook() {
         System.out.print("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
+        viewAllBooks();
         System.out.print("Enter book ID: ");
         int bookID = Integer.parseInt(scanner.nextLine());
         controller.borrowBook(memberID, bookID);
