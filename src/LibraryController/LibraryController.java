@@ -52,15 +52,17 @@ public class LibraryController {
      * Displays all reviews for a specified book.
      *
      * @param bookID the ID of the book for which reviews are to be displayed
+     * @return
      */
 
-    public void viewAllReviewsOfBook(int bookID) {
+    public List<Review> viewAllReviewsOfBook(int bookID) {
         List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
         System.out.println("Reviews for book: " + bookID);
         for (Review review : reviews) {
             System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
                     + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
         }
+        return reviews;
     }
 
     /**

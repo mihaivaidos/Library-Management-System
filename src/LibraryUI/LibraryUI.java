@@ -1,7 +1,9 @@
 package LibraryUI;
 
 import LibraryController.LibraryController;
+import LibraryModel.Review;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -72,6 +74,8 @@ public class LibraryUI {
             System.out.println("5. Return Book");
             System.out.println("6. View All Books in Category");
             System.out.println("7. View All Categories");
+            System.out.println("8. Add Review to Book");
+            System.out.println("9. View Reviews of Book");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -84,6 +88,7 @@ public class LibraryUI {
                 case 5 -> returnBook();
                 case 6 -> viewAllBooksInCategory();
                 case 7 -> viewAllCategories();
+                case 8 -> addReviewToBook();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
@@ -91,6 +96,9 @@ public class LibraryUI {
                 default -> System.out.println("Invalid choice! Please try again.");
             }
         }
+    }
+
+    private void deleteReview() {
     }
 
     /**
@@ -115,6 +123,8 @@ public class LibraryUI {
             System.out.println("13. Add member");
             System.out.println("14. Add Author");
             System.out.println("15. Add Publisher");
+            System.out.println("16. View Reviews of Book");
+            System.out.println("17. Delete Review");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -135,6 +145,8 @@ public class LibraryUI {
                 case 13 -> addMember();
                 case 14 -> addAuthor();
                 case 15 -> addPublisher();
+                case 16 -> viewAllReviewsOfBook();
+                case 17 -> deleteReview();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
