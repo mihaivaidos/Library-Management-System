@@ -104,50 +104,50 @@ public class DataInitializer {
         memberRepo.add(member5);
 
         // Initialize Loans and associate with Members
-        Loan loan1 = new Loan(1, new Date(), new Date(), null, "ACTIVE", book1, member1);
-        Loan loan2 = new Loan(2, new Date(), new Date(), null, "ACTIVE", book2, member2);
-        Loan loan3 = new Loan(3, new Date(), new Date(), null, "RETURNED", book3, member3);
-        Loan loan4 = new Loan(4, new Date(), new Date(), null, "ACTIVE", book4, member4);
-        Loan loan5 = new Loan(5, new Date(), new Date(), null, "RETURNED", book5, member5);
-
-        loanRepo.add(loan1);
-        loanRepo.add(loan2);
-        loanRepo.add(loan3);
-        loanRepo.add(loan4);
-        loanRepo.add(loan5);
-
-        // Associate loans with members
-        member1.getLoans().add(loan1);
-        member2.getLoans().add(loan2);
-        member3.getLoans().add(loan3);
-        member4.getLoans().add(loan4);
-        member5.getLoans().add(loan5);
-
-        member1.getLoanHistory().add(loan1);
-        member2.getLoanHistory().add(loan2);
-        member3.getLoanHistory().add(loan3);
-        member4.getLoanHistory().add(loan4);
-        member5.getLoanHistory().add(loan5);
-
-        // Initialize Reservations and associate with Members
-        Reservation reservation1 = new Reservation(1, new Date(), book3, member1);
-        Reservation reservation2 = new Reservation(2, new Date(), book1, member2);
-        Reservation reservation3 = new Reservation(3, new Date(), book5, member3);
-        Reservation reservation4 = new Reservation(4, new Date(), book2, member4);
-        Reservation reservation5 = new Reservation(5, new Date(), book4, member5);
-
-        reservationRepo.add(reservation1);
-        reservationRepo.add(reservation2);
-        reservationRepo.add(reservation3);
-        reservationRepo.add(reservation4);
-        reservationRepo.add(reservation5);
-
-        // Associate reservations with members
-        member1.getReservations().add(reservation1);
-        member2.getReservations().add(reservation2);
-        member3.getReservations().add(reservation3);
-        member4.getReservations().add(reservation4);
-        member5.getReservations().add(reservation5);
+//        Loan loan1 = new Loan(1, new Date(), new Date(), null, "ACTIVE", book1, member1);
+//        Loan loan2 = new Loan(2, new Date(), new Date(), null, "ACTIVE", book2, member2);
+//        Loan loan3 = new Loan(3, new Date(), new Date(), null, "ACTIVE", book3, member3);
+//        Loan loan4 = new Loan(4, new Date(), new Date(), null, "ACTIVE", book4, member4);
+//        Loan loan5 = new Loan(5, new Date(), new Date(), null, "ACTIVE", book5, member5);
+//
+//        loanRepo.add(loan1);
+//        loanRepo.add(loan2);
+//        loanRepo.add(loan3);
+//        loanRepo.add(loan4);
+//        loanRepo.add(loan5);
+//
+//        // Associate loans with members
+//        member1.getLoans().add(loan1);
+//        member2.getLoans().add(loan2);
+//        member3.getLoans().add(loan3);
+//        member4.getLoans().add(loan4);
+//        member5.getLoans().add(loan5);
+//
+//        member1.getLoanHistory().add(loan1);
+//        member2.getLoanHistory().add(loan2);
+//        member3.getLoanHistory().add(loan3);
+//        member4.getLoanHistory().add(loan4);
+//        member5.getLoanHistory().add(loan5);
+//
+//        // Initialize Reservations and associate with Members
+//        Reservation reservation1 = new Reservation(1, new Date(), book3, member1);
+//        Reservation reservation2 = new Reservation(2, new Date(), book1, member2);
+//        Reservation reservation3 = new Reservation(3, new Date(), book5, member3);
+//        Reservation reservation4 = new Reservation(4, new Date(), book2, member4);
+//        Reservation reservation5 = new Reservation(5, new Date(), book4, member5);
+//
+//        reservationRepo.add(reservation1);
+//        reservationRepo.add(reservation2);
+//        reservationRepo.add(reservation3);
+//        reservationRepo.add(reservation4);
+//        reservationRepo.add(reservation5);
+//
+//        // Associate reservations with members
+//        member1.getReservations().add(reservation1);
+//        member2.getReservations().add(reservation2);
+//        member3.getReservations().add(reservation3);
+//        member4.getReservations().add(reservation4);
+//        member5.getReservations().add(reservation5);
 
         // Initialize Staff
         Staff staff1 = new Staff(1, "Charlie", "charlieLIB@yahoo.com", "1111111111", "Librarian");
@@ -163,23 +163,23 @@ public class DataInitializer {
         staffRepo.add(staff5);
 
         // Initialize Reviews and associate with Books
-        Review review1 = new Review(1, 5, "Amazing book!", book1, member1);
-        Review review2 = new Review(2, 4, "Really good, but a bit long.", book2, member2);
-        Review review3 = new Review(3, 3, "Interesting ideas, but hard to follow.", book3, member3);
-        Review review4 = new Review(4, 5, "A classic mystery novel!", book4, member4);
-        Review review5 = new Review(5, 5, "Absolutely loved it!", book5, member5);
-
-        reviewRepo.add(review1);
-        reviewRepo.add(review2);
-        reviewRepo.add(review3);
-        reviewRepo.add(review4);
-        reviewRepo.add(review5);
-
-        // Associate reviews with books
-        book1.getReviews().add(review1);
-        book2.getReviews().add(review2);
-        book3.getReviews().add(review3);
-        book4.getReviews().add(review4);
-        book5.getReviews().add(review5);
+//        Review review1 = new Review(1, 5, "Amazing book!", book1, member1);
+//        Review review2 = new Review(2, 4, "Really good, but a bit long.", book2, member2);
+//        Review review3 = new Review(3, 3, "Interesting ideas, but hard to follow.", book3, member3);
+//        Review review4 = new Review(4, 5, "A classic mystery novel!", book4, member4);
+//        Review review5 = new Review(5, 5, "Absolutely loved it!", book5, member5);
+//
+//        reviewRepo.add(review1);
+//        reviewRepo.add(review2);
+//        reviewRepo.add(review3);
+//        reviewRepo.add(review4);
+//        reviewRepo.add(review5);
+//
+//        // Associate reviews with books
+//        book1.getReviews().add(review1);
+//        book2.getReviews().add(review2);
+//        book3.getReviews().add(review3);
+//        book4.getReviews().add(review4);
+//        book5.getReviews().add(review5);
     }
 }
