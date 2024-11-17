@@ -315,8 +315,12 @@ public class LibraryUI {
     }
 
     /**
-     * Borrows a book for a member.
-     * Prompts the user for member ID and book ID to process the borrowing.
+     * Allows a member to borrow a book from the library.
+     *
+     * This method prompts the user for their member ID and a book title to search for.
+     * If the title is left blank, it displays all available books. The user can then
+     * select a book by its ID to borrow or cancel the operation by entering '0'.
+     * Appropriate messages are displayed if no books are found or if an invalid ID is selected.
      */
 
     private void borrowBook() {

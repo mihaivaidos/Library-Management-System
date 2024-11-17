@@ -570,6 +570,7 @@ public class LibraryService {
      * @param email the email of the person
      * @return the ID of the person or -1 if they don't exist
      */
+
     public int getIDbyEmail(String email) {
         List<Member> members = memberRepo.getAll();
         List<Staff> staffs = staffRepo.getAll();
@@ -585,6 +586,13 @@ public class LibraryService {
         }
         return -1;
     }
+
+    /**
+     * Searches for books in the library by their title.
+     *
+     * @param title the title or part of the title of the book to search for
+     * @return a list of books whose titles contain the specified search term;
+     */
 
     public List<Book> searchBook(String title) {
         return bookRepo.getAll().stream()

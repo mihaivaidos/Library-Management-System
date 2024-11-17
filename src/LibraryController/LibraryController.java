@@ -391,6 +391,14 @@ public class LibraryController {
         return libraryService.getIDbyEmail(email);
     }
 
+    /**
+     * Searches for books in the library by their title.
+     *
+     * @param title the title or part of the title of the book to search for
+     * @return a list of Book objects whose titles contain the specified search term;
+     *         returns an empty list if no books match the search criteria
+     */
+
     public List<Book> searchBook(String title) {
         return libraryService.searchBook(title);
     }
