@@ -585,4 +585,10 @@ public class LibraryService {
         }
         return -1;
     }
+
+    public List<Book> searchBook(String title) {
+        return bookRepo.getAll().stream()
+                .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
+                .collect(Collectors.toList());
+    }
 }

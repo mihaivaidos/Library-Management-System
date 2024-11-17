@@ -170,15 +170,19 @@ public class Book implements HasID {
      * @return a string with the book's ID, name, author, availability, category, publisher and reviews
      */
     @Override
+
     public String toString() {
-        return "Book{" +
-                "bookID=" + bookID +
-                ", bookName='" + bookName + '\'' +
-                ", author=" + author +
-                ", isAvailable=" + isAvailable +
-                ", category=" + category +
-                ", publisher=" + publisher +
-                ", reviews=" + reviews +
-                '}';
+        return "Book ID: " + this.bookID + ", Title: " + this.bookName; // Avoid referencing Category directly
     }
+//    public String toString() {
+//        return "Book{" +
+//                "bookID=" + bookID +
+//                ", bookName='" + bookName + '\'' +
+//                ", authorName='" + author.getName() + '\'' + // Use author's name instead of the whole object
+//                ", isAvailable=" + isAvailable +
+//                ", category=" + category +
+//                ", publisher=" + publisher +
+//                '}';
+//    }
+
 }

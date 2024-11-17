@@ -150,12 +150,15 @@ public class LibraryController {
 
     /**
      * Displays all books available in the library.
+     *
+     * @return
      */
 
-    public void viewAllBooks() {
+    public List<Book> viewAllBooks() {
         System.out.println("Available Books:");
         List<Book> books = libraryService.getAllBooks();
         printBooks(books);
+        return books;
     }
 
     /**
@@ -279,6 +282,8 @@ public class LibraryController {
         System.out.println("Book added successfully: " + title);
     }
 
+
+
     /**
      * Updates the details of an existing book.
      *
@@ -384,5 +389,9 @@ public class LibraryController {
      */
     public int getIDbyEmail(String email) {
         return libraryService.getIDbyEmail(email);
+    }
+
+    public List<Book> searchBook(String title) {
+        return libraryService.searchBook(title);
     }
 }

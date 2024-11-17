@@ -1,6 +1,7 @@
 package LibraryUI;
 
 import LibraryController.LibraryController;
+import LibraryModel.Book;
 import LibraryModel.Review;
 
 import java.util.List;
@@ -321,11 +322,56 @@ public class LibraryUI {
     private void borrowBook() {
         System.out.print("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
-        viewAllBooks();
-        System.out.print("Enter book ID: ");
-        int bookID = Integer.parseInt(scanner.nextLine());
-        controller.borrowBook(memberID, bookID);
+
+        System.out.print("Enter book title to search (or leave blank to view all): ");
+        String searchTerm = scanner.nextLine();
+
+        List<Book> books;
+        if (searchTerm.isEmpty()) {
+            books = controller.viewAllBooks();
+        } else {
+            books = controller.searchBook(searchTerm);
+        }
+
+        if (books.isEmpty()) {
+            System.out.println("No books found matching your search criteria.");
+            return;
+        }
+
+        System.out.println("\nAvailable Books:");
+        for (Book book : books) {
+            System.out.println("Book ID: " + book.getID() + ", Title: " + book.getBookName());
+        }
+
+        System.out.print("Enter book ID to borrow (or 0 to cancel): ");
+        int choice = Integer.parseInt(scanner.nextLine());
+
+        if (choice == 0) {
+            System.out.println("Borrowing cancelled.");
+            return;
+        }
+
+        boolean bookFound = false;
+        for (Book book : books) {
+            if (book.getID() == choice) {
+                controller.borrowBook(memberID, choice);
+                bookFound = true;
+                break;
+            }
+        }
+
+        if (!bookFound) {
+            System.out.println("Invalid selection. Borrowing cancelled.");
+        }
     }
+//    private void borrowBook() {
+//        System.out.print("Enter member ID: ");
+//        int memberID = Integer.parseInt(scanner.nextLine());
+//        viewAllBooks();
+//        System.out.print("Enter book ID: ");
+//        int bookID = Integer.parseInt(scanner.nextLine());
+//        controller.borrowBook(memberID, bookID);
+//    }
 
     /**
      * Returns a borrowed book for a member.
