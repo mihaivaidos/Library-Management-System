@@ -331,6 +331,12 @@ public class LibraryUI {
     private void borrowBook() {
         System.out.print("Enter member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
+        System.out.println("Do you want to see the recommended books for you? (yes/no): ");
+        String rec = scanner.nextLine().toLowerCase();
+        if(rec.equals("yes")) {
+            controller.recommendBooksForMember(memberID);
+        }
+
 
         System.out.print("Enter book title to search (or leave blank to view all): ");
         String searchTerm = scanner.nextLine();
