@@ -96,7 +96,7 @@ public class LibraryController {
     }
 
     /**
-     * Displays all active loans for a specified member.
+     * Displays all active loans for a specified member, sorted from oldest to newest.
      *
      * @param memberID the ID of the member whose active loans are to be displayed
      */
@@ -104,10 +104,20 @@ public class LibraryController {
     public void viewActiveLoans(int memberID) {
         List<Loan> loans = libraryService.getActiveLoansForMember(memberID);
         System.out.println("Active loans for member ID: " + memberID);
-        for(Loan loan : loans) {
-            System.out.println("ID: " + loan.getID() + ", Loan date: " + loan.getLoanDate() + ", Due date: "
-                    + loan.getDueDate() + ", Return date: " + loan.getReturnDate() + ", Status: " + loan.getStatus()
-                    + ", Book: " + loan.getBook().getBookName() + ", Book author: " + loan.getBook().getAuthor().getName());
+
+        if (loans.isEmpty()) {
+            System.out.println("No active loans found for this member.");
+        }
+        else {
+            for (Loan loan : loans) {
+                System.out.println("ID: " + loan.getID() +
+                        ", Loan date: " + loan.getLoanDate() +
+                        ", Due date: " + loan.getDueDate() +
+                        ", Return date: " + loan.getReturnDate() +
+                        ", Status: " + loan.getStatus() +
+                        ", Book: " + loan.getBook().getBookName() +
+                        ", Book author: " + loan.getBook().getAuthor().getName());
+            }
         }
     }
 
@@ -266,8 +276,6 @@ public class LibraryController {
         libraryService.addBook(title, authorID, categoryID, publisherID);
         System.out.println("Book added successfully: " + title);
     }
-
-
 
     /**
      * Updates the details of an existing book.

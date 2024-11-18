@@ -90,7 +90,7 @@ public class LibraryUI {
             System.out.println("7. View All Categories");
             System.out.println("8. Add Review to Book");
             System.out.println("9. View Reviews of Book");
-            System.out.println("10. View Active Loans");
+            System.out.println("10. View Active Loans for a Member");
             System.out.println("11. View Active Reservations");
             System.out.println("12. View Loan History");
             System.out.println("0. Exit");

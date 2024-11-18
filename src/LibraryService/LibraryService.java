@@ -231,15 +231,20 @@ public class LibraryService {
     }
 
     /**
-     * Retrieves active loans for a specific member.
+     * Retrieves active loans for a specific member, sorted from oldest to newest.
      *
      * @param memberID the ID of the member
-     * @return a list of active loans for the specified member
+     * @return a list of active loans for the specified member, sorted by loan date
      */
 
     public List<Loan> getActiveLoansForMember(int memberID) {
         Member member = memberRepo.get(memberID);
-        return member != null ? member.getLoans() : new ArrayList<>();
+        if (member != null) {
+            return member.getLoans().stream()
+                    .sorted(Comparator.comparing(Loan::getLoanDate))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 
     /**
