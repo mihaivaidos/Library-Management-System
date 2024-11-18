@@ -58,11 +58,11 @@ public class DataInitializer {
         publisherRepo.add(publisher5);
 
         // Initialize Books
-        Book book1 = new Book(1, "Harry Potter and the Philosopher's Stone", author1, true, fiction, publisher1);
-        Book book2 = new Book(2, "A Game of Thrones", author2, true, fantasy, publisher2);
-        Book book3 = new Book(3, "Foundation", author3, true, science, publisher3);
-        Book book4 = new Book(4, "Murder on the Orient Express", author4, true, mystery, publisher4);
-        Book book5 = new Book(5, "The Hobbit", author5, true, fantasy, publisher5);
+        Book book1 = new Book(1, "Harry Potter and the Philosopher's Stone", author1, true, fiction, publisher1, 5);
+        Book book2 = new Book(2, "A Game of Thrones", author2, true, fantasy, publisher2, 3);
+        Book book3 = new Book(3, "Foundation", author3, true, science, publisher3, 2);
+        Book book4 = new Book(4, "Murder on the Orient Express", author4, true, mystery, publisher4, 1);
+        Book book5 = new Book(5, "The Hobbit", author5, true, fantasy, publisher5, 3);
 
         bookRepo.add(book1);
         bookRepo.add(book2);

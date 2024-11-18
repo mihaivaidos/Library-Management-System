@@ -2,7 +2,6 @@ package LibraryUI;
 
 import LibraryController.LibraryController;
 import LibraryModel.Book;
-import LibraryModel.Review;
 
 import java.util.List;
 import java.util.Scanner;
@@ -191,7 +190,9 @@ public class LibraryUI {
         viewAllCategories();
         System.out.println("Enter category ID: ");
         int categoryID = Integer.parseInt(scanner.nextLine());
-        controller.addBook(title, authorID, publisherID, categoryID);
+        System.out.println("Enter the number of copies of the book: ");
+        int copies = Integer.parseInt(scanner.nextLine());
+        controller.addBook(title, authorID, publisherID, categoryID, copies);
     }
 
     /**
@@ -214,7 +215,9 @@ public class LibraryUI {
         int categoryID = Integer.parseInt(scanner.nextLine());
         System.out.print("Enter new publisher ID: ");
         int publisherID = Integer.parseInt(scanner.nextLine());
-        controller.updateBook(bookID, title, authorID, newIsAvailable,categoryID, publisherID);
+        System.out.println("Enter new number of copies available: ");
+        int copiesAvailable = Integer.parseInt(scanner.nextLine());
+        controller.updateBook(bookID, title, authorID, newIsAvailable,categoryID, publisherID, copiesAvailable);
     }
 
     /**

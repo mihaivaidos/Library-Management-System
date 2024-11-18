@@ -160,15 +160,12 @@ public class LibraryController {
 
     /**
      * Displays all books available in the library.
-     *
-     * @return
      */
 
-    public List<Book> viewAllBooks() {
+    public void viewAllBooks() {
         System.out.println("Available Books:");
         List<Book> books = libraryService.getAllBooks();
         printBooks(books);
-        return books;
     }
 
     /**
@@ -270,10 +267,11 @@ public class LibraryController {
      * @param authorID the ID of the author of the book
      * @param categoryID the ID of the category to which the book belongs
      * @param publisherID the ID of the publisher of the book
+     * @param copies the number of copies of the book
      */
 
-    public void addBook(String title, int authorID, int categoryID, int publisherID) {
-        libraryService.addBook(title, authorID, categoryID, publisherID);
+    public void addBook(String title, int authorID, int categoryID, int publisherID, int copies) {
+        libraryService.addBook(title, authorID, categoryID, publisherID, copies);
         System.out.println("Book added successfully: " + title);
     }
 
@@ -286,10 +284,11 @@ public class LibraryController {
      * @param newIsAvailable the new availability status of the book
      * @param newCategoryID the new ID of the category to which the book belongs
      * @param newPublisherID the new ID of the publisher of the book
+     * @param newCopies the new number of copies of the book
      */
 
-    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
-        libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID);
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) {
+        libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID, newCopies);
         System.out.println("Book updated successfully: " + newBookName);
     }
 
@@ -390,7 +389,7 @@ public class LibraryController {
      *
      * @param title the title or part of the title of the book to search for;
      *              if null or empty, all books sorted by title will be displayed
-     * @return
+     * @return list of the books found
      */
 
     public List<Book> searchBook(String title) {
@@ -426,7 +425,7 @@ public class LibraryController {
                 String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
                 String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
                 System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                        + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
+                        + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status + ", Copies available: " + book.getCopiesAvailable());
             }
         }
     }

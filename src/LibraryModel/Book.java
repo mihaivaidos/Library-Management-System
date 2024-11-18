@@ -15,6 +15,7 @@ public class Book implements HasID {
     private boolean isAvailable;
     private Category category;
     private Publisher publisher;
+    private int copiesAvailable;
     private List<Review> reviews;
 
     /**
@@ -26,14 +27,16 @@ public class Book implements HasID {
      * @param isAvailable the availability status of the book
      * @param category    the category of the book
      * @param publisher   the publisher of the book
+     * @param copiesAvailable number of copies of the book
      */
-    public Book(int bookID, String bookName, Author author, boolean isAvailable, Category category, Publisher publisher) {
+    public Book(int bookID, String bookName, Author author, boolean isAvailable, Category category, Publisher publisher, int copiesAvailable) {
         this.bookID = bookID;
         this.bookName = bookName;
         this.author = author;
         this.isAvailable = isAvailable;
         this.category = category;
         this.publisher = publisher;
+        this.copiesAvailable = copiesAvailable;
         this.reviews = new ArrayList<>();
     }
 
@@ -144,6 +147,24 @@ public class Book implements HasID {
      */
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
+    }
+
+    /**
+     * Gets the number of copies of the book
+     *
+     * @return the number of copies
+     */
+    public int getCopiesAvailable() {
+        return copiesAvailable;
+    }
+
+    /**
+     * Sets the number of copies available
+     *
+     * @param copiesAvailable the new number of copies of the book
+     */
+    public void setCopiesAvailable(int copiesAvailable) {
+        this.copiesAvailable = copiesAvailable;
     }
 
     /**

@@ -155,22 +155,43 @@ public class LibraryService {
                 int activeLoans = getActiveLoansForMember(memberID).size();
                 if (activeLoans <= 2) {
                     if (book.isAvailable()) {
-                        // Book is available, proceed to loan
-                        Loan loan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, member);
-                        loanRepo.add(loan);
-                        book.setAvailable(false);  // Mark book as unavailable
-                        member.getLoans().add(loan);
-                        member.getLoanHistory().add(loan);
+                        createLoan(book, member);
                     }
                     else {
-                        // Book is not available, create a reservation
-                        Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
-                        reservationRepo.add(reservation);
-                        member.getReservations().add(reservation);
+                        createReservation(book, member);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Creates a new loan for a book that a member has made
+     *
+     * @param book the book that is borrowed
+     * @param member the member that borrows the book
+     */
+    public void createLoan(Book book, Member member) {
+        Loan loan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, member);
+        loanRepo.add(loan);
+        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+        if(book.getCopiesAvailable() < 1) {
+            book.setAvailable(false);
+        }
+        member.getLoans().add(loan);
+        member.getLoanHistory().add(loan);
+    }
+
+    /**
+     * Creates a new reservation for a book and adds it to the member
+     *
+     * @param book the book that is reserved
+     * @param member the member that makes the reservation
+     */
+    public void createReservation(Book book, Member member) {
+        Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
+        reservationRepo.add(reservation);
+        member.getReservations().add(reservation);
     }
 
     /**
@@ -202,33 +223,50 @@ public class LibraryService {
 
     public void returnBook(int loanID) {
         Loan loan = loanRepo.get(loanID);
+        Book book = loan.getBook();
         if (loan != null && "ACTIVE".equals(loan.getStatus())) {
-            loan.setStatus("RETURNED");
-            loan.setReturnDate(new Date());
-            Book book = loan.getBook();
-            book.setAvailable(true);
-            Member member = loan.getMember();
-            member.getLoans().remove(loan);
+            removeLoan(loan);
 
-            // Check if there are any reservations for this book
-            Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
-                    .filter(reservation -> reservation.getBook().equals(book))
-                    .findFirst();
-
-            if (nextReservation.isPresent()) {
-                Reservation reservation = nextReservation.get();
-                Member memberRes = reservation.getMember();
-                // Create a new loan for the member with reservation
-                Loan newLoan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, memberRes);
-                loanRepo.add(newLoan);
-                memberRes.getLoans().add(newLoan);
-                memberRes.getLoanHistory().add(newLoan);
-                memberRes.getReservations().remove(reservation);
-                reservationRepo.delete(reservation.getID());  // Remove the reservation
-                book.setAvailable(false);
-            }
+            nextReservation(book);
         }
     }
+
+    /**
+     * Removes an active loan for a member and updates the attributes for the book
+     *
+     * @param loan the loan of the book
+     */
+    public void removeLoan(Loan loan) {
+        loan.setStatus("RETURNED");
+        loan.setReturnDate(new Date());
+        Book book = loan.getBook();
+        book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+        if(book.getCopiesAvailable() > 0) {
+            book.setAvailable(true);
+        }
+        Member member = loan.getMember();
+        member.getLoans().remove(loan);
+    }
+
+    /**
+     * Retrieves the next reservation for a specific book and makes it a new loan if a reservation exists
+     *
+     * @param book the book in the reservation
+     */
+    public void nextReservation(Book book) {
+        Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
+                .filter(reservation -> reservation.getBook().equals(book))
+                .findFirst();
+
+        if (nextReservation.isPresent()) {
+            Reservation reservation = nextReservation.get();
+            Member memberRes = reservation.getMember();
+            createLoan(book, memberRes);
+            memberRes.getReservations().remove(reservation);
+            reservationRepo.delete(reservation.getID());  // Remove the reservation
+        }
+    }
+
 
     /**
      * Retrieves active loans for a specific member, sorted from oldest to newest.
@@ -266,13 +304,14 @@ public class LibraryService {
      * @param authorID the ID of the author of the book
      * @param categoryID the ID of the category of the book
      * @param publisherID the ID of the publisher of the book
+     * @param copiesAvailable the number of copies of the book
      */
 
-    public void addBook(String bookName, int authorID, int categoryID, int publisherID) {
+    public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) {
         Author author = authorRepo.get(authorID);
         Category category = categoryRepo.get(categoryID);
         Publisher publisher = publisherRepo.get(publisherID);
-        Book book = new Book(++newBookID, bookName, author, true, category, publisher);
+        Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
         bookRepo.add(book);
     }
 
@@ -318,7 +357,7 @@ public class LibraryService {
      * @param newPublisherID the new publisher ID
      */
 
-    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID) {
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) {
         Book book = bookRepo.get(bookID);
         Author author = authorRepo.get(newAuthorID);
         Category category = categoryRepo.get(newCategoryID);
@@ -336,6 +375,9 @@ public class LibraryService {
             }
             if (publisher != null) {
                 book.setPublisher(publisher);
+            }
+            if (newCopies != -1) {
+                book.setCopiesAvailable(newCopies);
             }
             bookRepo.update(book);
         }
@@ -534,7 +576,7 @@ public class LibraryService {
 
     /**
      * Adds a new author to the library.
-     *
+     * <p>
      * This method creates a new Author instance with the provided name, email, and phone number.
      * It initializes an empty list of books associated with the author.
      *
@@ -551,7 +593,7 @@ public class LibraryService {
 
     /**
      * Adds a new publisher to the library.
-     *
+     * <p>
      * This method creates a new Publisher instance with the provided name, email, and phone number.
      * It initializes an empty list of published books associated with the publisher.
      *
