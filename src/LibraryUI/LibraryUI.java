@@ -92,6 +92,7 @@ public class LibraryUI {
             System.out.println("10. View Active Loans for a Member");
             System.out.println("11. View Active Reservations");
             System.out.println("12. View Loan History");
+            System.out.println("13. View recommendations");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -109,6 +110,7 @@ public class LibraryUI {
                 case 10 -> viewActiveLoans();
                 case 11 -> viewActiveReservations();
                 case 12 -> viewLoanHistoryForMember();
+                case 13 -> recommendBooks();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
@@ -547,5 +549,15 @@ public class LibraryUI {
             continueLoop = false;
         }
     }
+
+    /**
+     * Prompts the user for a member ID and prints the recommended books
+     */
+    public void recommendBooks() {
+        System.out.print("Enter Member ID: ");
+        int memberID = Integer.parseInt(scanner.nextLine());
+        controller.recommendBooksForMember(memberID);
+    }
+
 
 }

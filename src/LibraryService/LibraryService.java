@@ -278,9 +278,10 @@ public class LibraryService {
     public List<Loan> getActiveLoansForMember(int memberID) {
         Member member = memberRepo.get(memberID);
         if (member != null) {
-            return member.getLoans().stream()
-                    .sorted(Comparator.comparing(Loan::getLoanDate))
-                    .collect(Collectors.toList());
+//            return member.getLoans().stream()
+//                    .sorted(Comparator.comparing(Loan::getLoanDate))
+//                    .collect(Collectors.toList());
+            return member.getLoans();
         }
         return new ArrayList<>();
     }
@@ -660,6 +661,36 @@ public class LibraryService {
     public List<Book> getAllBooksSortedByTitle() {
         return bookRepo.getAll().stream()
                 .sorted(Comparator.comparing(Book::getBookName))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Recommends books for a member based on the categories of the books he has previously borrowed
+     *
+     * @param memberID the ID of the member
+     * @return a list of all recommended books for that member
+     */
+    public List<Book> recommendBooksForMember(int memberID) {
+        Member member = memberRepo.get(memberID);
+
+        if (member == null) {
+            throw new IllegalArgumentException("Member not found.");
+        }
+
+        Set<Category> borrowedCategories = member.getLoanHistory().stream()
+                .map(Loan::getBook)
+                .map(Book::getCategory)
+                .collect(Collectors.toSet());
+
+        if (borrowedCategories.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return bookRepo.getAll().stream()
+                .filter(book -> borrowedCategories.contains(book.getCategory()))
+                .filter(book -> book.getCopiesAvailable() > 0)
+                .filter(book -> member.getLoanHistory().stream()
+                        .noneMatch(loan -> loan.getBook().getID() == book.getID()))
                 .collect(Collectors.toList());
     }
 }

@@ -429,4 +429,22 @@ public class LibraryController {
             }
         }
     }
+
+    /**
+     * Prints the recommended books for a member
+     *
+     * @param memberID the ID of the member that wants to see the recommendations
+     */
+    public void recommendBooksForMember(int memberID) {
+        List<Book> recommendedBooks = libraryService.recommendBooksForMember(memberID);
+        if (recommendedBooks.isEmpty()) {
+            System.out.println("No recommendations available. The member has not borrowed any books yet.");
+        }
+        else {
+            System.out.println("Recommended books for " + memberID + ":");
+            printBooks(recommendedBooks);
+        }
+    }
+
+
 }
