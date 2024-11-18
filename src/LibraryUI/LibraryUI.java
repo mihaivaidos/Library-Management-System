@@ -316,11 +316,11 @@ public class LibraryUI {
 
     /**
      * Allows a member to borrow a book from the library.
-     *
      * This method prompts the user for their member ID and a book title to search for.
-     * If the title is left blank, it displays all available books. The user can then
-     * select a book by its ID to borrow or cancel the operation by entering '0'.
-     * Appropriate messages are displayed if no books are found or if an invalid ID is selected.
+     * If the title is left blank, it retrieves and displays all available books.
+     * The user can then select a book by its ID to borrow or cancel the operation
+     * by entering '0'. Appropriate messages are displayed if no books are found
+     * or if an invalid ID is selected.
      */
 
     private void borrowBook() {
@@ -330,12 +330,7 @@ public class LibraryUI {
         System.out.print("Enter book title to search (or leave blank to view all): ");
         String searchTerm = scanner.nextLine();
 
-        List<Book> books;
-        if (searchTerm.isEmpty()) {
-            books = controller.viewAllBooks();
-        } else {
-            books = controller.searchBook(searchTerm);
-        }
+        List<Book> books = controller.searchBook(searchTerm);
 
         if (books.isEmpty()) {
             System.out.println("No books found matching your search criteria.");
@@ -360,6 +355,7 @@ public class LibraryUI {
             if (book.getID() == choice) {
                 controller.borrowBook(memberID, choice);
                 bookFound = true;
+                System.out.println("You have successfully borrowed: " + book.getBookName());
                 break;
             }
         }

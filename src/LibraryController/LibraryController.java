@@ -211,21 +211,6 @@ public class LibraryController {
     }
 
     /**
-     * Prints the books in a list.
-     *
-     * @param books the list of books that needs to be printed
-     */
-    public void printBooks(List<Book> books) {
-        for (Book book : books) {
-            String status = book.isAvailable() ? "Available" : "Borrowed";
-            String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
-            String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
-            System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                    + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
-        }
-    }
-
-    /**
      * Displays all books written by a specified author.
      *
      * @param authorID the ID of the author whose books are to be displayed
@@ -393,13 +378,48 @@ public class LibraryController {
 
     /**
      * Searches for books in the library by their title.
+     * If the search term is empty, retrieves all books sorted by title.
      *
-     * @param title the title or part of the title of the book to search for
-     * @return a list of Book objects whose titles contain the specified search term;
-     *         returns an empty list if no books match the search criteria
+     * @param title the title or part of the title of the book to search for;
+     *              if null or empty, all books sorted by title will be displayed
+     * @return
      */
 
     public List<Book> searchBook(String title) {
-        return libraryService.searchBook(title);
+        System.out.println("Searching for books with title containing: " + (title != null ? title : "No search term provided"));
+        List<Book> books = libraryService.searchBook(title);
+        printBooks(books);
+        return books;
+    }
+
+    /**
+     * Displays all books available in the library sorted by title.
+     */
+
+    public void viewAllBooksSortedByTitle() {
+        System.out.println("Available Books (Sorted by Title):");
+        List<Book> books = libraryService.getAllBooksSortedByTitle();
+        printBooks(books);
+    }
+
+    /**
+     * Prints the books in a list.
+     *
+     * @param books the list of books that needs to be printed
+     */
+
+    public void printBooks(List<Book> books) {
+        if (books.isEmpty()) {
+            System.out.println("No books found.");
+        }
+        else {
+            for (Book book : books) {
+                String status = book.isAvailable() ? "Available" : "Borrowed";
+                String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
+                String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
+                System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
+                        + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status);
+            }
+        }
     }
 }

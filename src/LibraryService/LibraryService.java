@@ -4,10 +4,7 @@ import LibraryModel.*;
 import LibraryRepository.IRepository;
 import LibraryRepository.InMemoryRepository;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -93,13 +90,13 @@ public class LibraryService {
         }
     }
 
-
     /**
      * Gets all the books a member has borrowed.
      *
      * @param memberID the ID of the member
      * @return a list of borrowed books by the member
      */
+
     public List<Book> getMemberBorrowedBooks(int memberID) {
         List<Book> books = new ArrayList<>();
         Member member = memberRepo.get(memberID);
@@ -589,14 +586,33 @@ public class LibraryService {
 
     /**
      * Searches for books in the library by their title.
+     * If the search term is empty, retrieves all books sorted by their title.
      *
      * @param title the title or part of the title of the book to search for
-     * @return a list of books whose titles contain the specified search term;
+     * @return a list of Book objects whose titles contain the specified search term;
+     *         returns a sorted list of all books if the search term is empty
      */
 
     public List<Book> searchBook(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return getAllBooksSortedByTitle();
+        }
+        else {
+            return bookRepo.getAll().stream()
+                    .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Retrieves all books in the library sorted by their title.
+     *
+     * @return a list of all books sorted by title
+     */
+
+    public List<Book> getAllBooksSortedByTitle() {
         return bookRepo.getAll().stream()
-                .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
+                .sorted(Comparator.comparing(Book::getBookName))
                 .collect(Collectors.toList());
     }
 }
