@@ -16,15 +16,15 @@ import java.util.stream.Collectors;
 
 public class LibraryService {
 
-    private final InMemoryRepository<Book> bookRepo;
-    private final InMemoryRepository<Loan> loanRepo;
-    private final InMemoryRepository<Reservation> reservationRepo;
-    private final InMemoryRepository<Category> categoryRepo;
-    private final InMemoryRepository<Member> memberRepo;
-    private final InMemoryRepository<Review> reviewRepo;
-    private final InMemoryRepository<Author> authorRepo;
-    private final InMemoryRepository<Publisher> publisherRepo;
-    private final InMemoryRepository<Staff> staffRepo;
+    private final IRepository<Book> bookRepo;
+    private final IRepository<Loan> loanRepo;
+    private final IRepository<Reservation> reservationRepo;
+    private final IRepository<Category> categoryRepo;
+    private final IRepository<Member> memberRepo;
+    private final IRepository<Review> reviewRepo;
+    private final IRepository<Author> authorRepo;
+    private final IRepository<Publisher> publisherRepo;
+    private final IRepository<Staff> staffRepo;
 
     private int newBookID = 9;
     private int newMemberID = 9;
@@ -56,15 +56,15 @@ public class LibraryService {
                           IRepository<Reservation> reservationRepo, IRepository<Category>
                                   categoryRepo, IRepository<Member> memberRepo, IRepository<Review> reviewRepo,
                           IRepository<Author> authorRepo, IRepository<Publisher> publisherRepo, IRepository<Staff> staffRepo) {
-        this.bookRepo = (InMemoryRepository<Book>) bookRepo;
-        this.loanRepo = (InMemoryRepository<Loan>) loanRepo;
-        this.reservationRepo = (InMemoryRepository<Reservation>) reservationRepo;
-        this.categoryRepo = (InMemoryRepository<Category>) categoryRepo;
-        this.memberRepo = (InMemoryRepository<Member>) memberRepo;
-        this.reviewRepo = (InMemoryRepository<Review>) reviewRepo;
-        this.authorRepo = (InMemoryRepository<Author>) authorRepo;
-        this.publisherRepo = (InMemoryRepository<Publisher>) publisherRepo;
-        this.staffRepo = (InMemoryRepository<Staff>) staffRepo;
+        this.bookRepo = bookRepo;
+        this.loanRepo = loanRepo;
+        this.reservationRepo = reservationRepo;
+        this.categoryRepo = categoryRepo;
+        this.memberRepo = memberRepo;
+        this.reviewRepo = reviewRepo;
+        this.authorRepo = authorRepo;
+        this.publisherRepo = publisherRepo;
+        this.staffRepo = staffRepo;
     }
 
     /**
@@ -693,4 +693,30 @@ public class LibraryService {
                         .noneMatch(loan -> loan.getBook().getID() == book.getID()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Sorts the books by their average rating
+     *
+     * @return list of sorted books
+     */
+    public List<Book> sortBooksByAvgRating() {
+        List<Book> books = new ArrayList<>(bookRepo.getAll());
+        books.sort((b1, b2) -> Double.compare(calculateAverageRating(b1), calculateAverageRating(b2)));
+        return books;
+    }
+
+    /**
+     * Calculates the average rating for a specific book
+     * @param book the book
+     * @return the average rating of the book
+     */
+    public double calculateAverageRating(Book book) {
+        List<Review> reviews = book.getReviews();
+        if(reviews.isEmpty()) {
+            return 0.0;
+        }
+        double totalRating = reviews.stream().mapToDouble(Review::getRating).sum();
+        return totalRating / reviews.size();
+    }
+
 }

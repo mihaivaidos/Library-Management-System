@@ -424,8 +424,10 @@ public class LibraryController {
                 String status = book.isAvailable() ? "Available" : "Borrowed";
                 String categoryName = (book.getCategory() != null) ? book.getCategory().getCategoryName() : "No Category";
                 String publisherName = (book.getPublisher() != null) ? book.getPublisher().getName() : "No Publisher";
+                double averageRating = libraryService.calculateAverageRating(book);
                 System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
-                        + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status + ", Copies available: " + book.getCopiesAvailable());
+                        + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status + ", Copies available: " + book.getCopiesAvailable()
+                        + (averageRating > 0 ? averageRating : ", No reviews yet"));
             }
         }
     }
@@ -446,5 +448,13 @@ public class LibraryController {
         }
     }
 
+    /**
+     * Prints the books sorted by their rating
+     */
+    public void sortBooksByAvgRating() {
+        List<Book> sortedBooks = libraryService.sortBooksByAvgRating();
+        System.out.println("Books sorted by average rating:");
+        printBooks(sortedBooks);
+    }
 
 }

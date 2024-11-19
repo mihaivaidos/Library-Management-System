@@ -31,7 +31,7 @@ public class LibraryUI {
 
     /**
      * Starts the library management system.
-     *
+     * <p>
      * This method continuously prompts the user for their email address and displays
      * the appropriate menu (staff or member) based on the user's role. It allows
      * the user to continue using the system or exit as desired.
@@ -79,38 +79,19 @@ public class LibraryUI {
 
     private void memberMenu() {
         while (true) {
-            System.out.println("\nMember Menu:");
-            System.out.println("1. View All Books");
-            System.out.println("2. View Books by Publisher");
-            System.out.println("3. View Books by Author");
-            System.out.println("4. Borrow Book");
-            System.out.println("5. Return Book");
-            System.out.println("6. View All Books in Category");
-            System.out.println("7. View All Categories");
-            System.out.println("8. Add Review to Book");
-            System.out.println("9. View Reviews of Book");
-            System.out.println("10. View Active Loans for a Member");
-            System.out.println("11. View Active Reservations");
-            System.out.println("12. View Loan History");
-            System.out.println("13. View recommendations");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
+            printMemberMenu();
 
             int choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
-                case 1 -> viewAllBooks();
-                case 2 -> viewBooksByPublisher();
-                case 3 -> viewBooksByAuthor();
-                case 4 -> borrowBook();
-                case 5 -> returnBook();
-                case 6 -> viewAllBooksInCategory();
-                case 7 -> viewAllCategories();
-                case 8 -> addReviewToBook();
-                case 9 -> viewAllReviewsOfBook();
-                case 10 -> viewActiveLoans();
-                case 11 -> viewActiveReservations();
-                case 12 -> viewLoanHistoryForMember();
-                case 13 -> recommendBooks();
+                case 1 -> bookMenu();
+                case 2 -> borrowBook();
+                case 3 -> returnBook();
+                case 4 -> viewAllCategories();
+                case 5 -> addReviewToBook();
+                case 6 -> viewAllReviewsOfBook();
+                case 7 -> viewActiveLoans();
+                case 8 -> viewActiveReservations();
+                case 9 -> viewLoanHistoryForMember();
                 case 0 -> {
                     System.out.println("Thank you!");
                     return;
@@ -121,31 +102,30 @@ public class LibraryUI {
     }
 
     /**
+     * Displays the member menu
+     */
+    private void printMemberMenu() {
+        System.out.println("\nMember Menu:");
+        System.out.println("1. Book Menu");
+        System.out.println("2. Borrow Book");
+        System.out.println("3. Return Book");
+        System.out.println("4. View All Categories");
+        System.out.println("5. Add Review to Book");
+        System.out.println("6. View Reviews of Book");
+        System.out.println("7. View Active Loans for a Member");
+        System.out.println("8. View Active Reservations");
+        System.out.println("9. View Loan History");
+        System.out.println("0. Exit");
+        System.out.print("Choose an option: ");
+    }
+
+    /**
      * Displays the staff menu and handles staff-specific operations.
      */
 
     private void staffMenu() {
         while (true) {
-            System.out.println("\nStaff Menu:");
-            System.out.println("1. Add Book");
-            System.out.println("2. Update Book");
-            System.out.println("3. Delete Book");
-            System.out.println("4. View Active Loans");
-            System.out.println("5. View Loan History for Member");
-            System.out.println("6. View Active Reservations");
-            System.out.println("7. View All Books");
-            System.out.println("8. View Books by Publisher");
-            System.out.println("9. View Books by Author");
-            System.out.println("10. Add Book to Category");
-            System.out.println("11. View All Books in Category");
-            System.out.println("12. View All Categories");
-            System.out.println("13. Add member");
-            System.out.println("14. Add Author");
-            System.out.println("15. Add Publisher");
-            System.out.println("16. View Reviews of Book");
-            System.out.println("17. Delete Review");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
+            printStaffMenu();
 
             int choice = Integer.parseInt(scanner.nextLine());
             switch (choice) {
@@ -173,6 +153,71 @@ public class LibraryUI {
                 default -> System.out.println("Invalid choice! Please try again.");
             }
         }
+    }
+
+    /**
+     * Displays the staff menu
+     */
+    private void printStaffMenu() {
+        System.out.println("\nStaff Menu:");
+        System.out.println("1. Add Book");
+        System.out.println("2. Update Book");
+        System.out.println("3. Delete Book");
+        System.out.println("4. View Active Loans");
+        System.out.println("5. View Loan History for Member");
+        System.out.println("6. View Active Reservations");
+        System.out.println("7. View All Books");
+        System.out.println("8. View Books by Publisher");
+        System.out.println("9. View Books by Author");
+        System.out.println("10. Add Book to Category");
+        System.out.println("11. View All Books in Category");
+        System.out.println("12. View All Categories");
+        System.out.println("13. Add member");
+        System.out.println("14. Add Author");
+        System.out.println("15. Add Publisher");
+        System.out.println("16. View Reviews of Book");
+        System.out.println("17. Delete Review");
+        System.out.println("0. Exit");
+        System.out.print("Choose an option: ");
+    }
+
+    /**
+     * Displays the book menu and handles book-specific operations
+     */
+    private void bookMenu() {
+        while(true) {
+            printBookMenu();
+
+            int choice = Integer.parseInt(scanner.nextLine());
+            switch (choice) {
+                case 1 -> viewAllBooks();
+                case 2 -> viewBooksByPublisher();
+                case 3 -> viewAllBooksInCategory();
+                case 4 -> viewBooksByAuthor();
+                case 5 -> viewSortedBooksByAvgRating();
+                case 6 -> recommendBooks();
+                case 0 -> {
+                    System.out.println("Thank you!");
+                    return;
+                }
+                default -> System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+
+    /**
+     * Displays the book menu
+     */
+    private void printBookMenu() {
+        System.out.println("\nBook Menu:");
+        System.out.println("1. All books by default");
+        System.out.println("2. All books by a publisher");
+        System.out.println("3. All books by a category");
+        System.out.println("4. All books by an author");
+        System.out.println("5. All books sorted by rating");
+        System.out.println("6. View book recommendations");
+        System.out.println("0. Exit");
+        System.out.print("Choose an option: ");
     }
 
     /**
@@ -563,6 +608,13 @@ public class LibraryUI {
         System.out.print("Enter Member ID: ");
         int memberID = Integer.parseInt(scanner.nextLine());
         controller.recommendBooksForMember(memberID);
+    }
+
+    /**
+     * Shows the books sorted by the average rating
+     */
+    public void viewSortedBooksByAvgRating() {
+        controller.sortBooksByAvgRating();
     }
 
 
