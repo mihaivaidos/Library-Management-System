@@ -1,6 +1,5 @@
 package LibraryRepository;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,27 +33,27 @@ public class FileRepository<T extends HasID> implements IRepository<T> {
 
     @Override
     public void add(T obj) {
-
+        doInFile(data -> data.putIfAbsent(obj.getID(), obj));
     }
 
     @Override
     public T get(int id) {
-        return null;
+        return readDataFromFile().get(id);
     }
 
     @Override
     public void update(T obj) {
-
+        doInFile(data -> data.replace(obj.getID(), obj));
     }
 
     @Override
     public void delete(int id) {
-
+        doInFile(data -> data.remove(id));
     }
 
     @Override
     public List<T> getAll() {
-        return List.of();
+        return readDataFromFile().values().stream().toList();
     }
 
     /**
