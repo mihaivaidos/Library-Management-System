@@ -1,9 +1,12 @@
 package LibraryModel;
 
+import java.io.Serializable;
+
 /**
  * Represents a review for a book in the library system, including a rating, comments, and associations with a specific book and member.
  */
-public class Review implements HasID {
+public class Review implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int reviewID;
     private int rating;

@@ -1,5 +1,6 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import java.util.List;
  * Represents an author in the library system, extending the Person class.
  * Includes the author's details and a list of books written by the author.
  */
-public class Author extends Person {
+public class Author extends Person implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private List<Book> books;
 

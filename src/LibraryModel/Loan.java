@@ -1,12 +1,14 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Represents a loan transaction in the library system, including details about
  * the loan date, due date, return date, status, the book loaned, and the member who borrowed it.
  */
-public class Loan implements HasID {
+public class Loan implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int loanID;
     private Date loanDate;

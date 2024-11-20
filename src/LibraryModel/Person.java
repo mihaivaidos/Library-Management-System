@@ -1,10 +1,14 @@
 package LibraryModel;
 
+import java.io.Serializable;
+
 /**
  * Represents a person in the library system with basic contact information.
  * This abstract class provides common properties for specific types of persons, such as members or authors.
  */
-public abstract class Person implements HasID {
+public abstract class Person implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private int ID;
     public String name;
     private String email;

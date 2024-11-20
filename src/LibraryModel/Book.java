@@ -1,5 +1,6 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import java.util.List;
  * Represents a book in a library with attributes such as ID, name, author, availability status,
  * category, publisher, and reviews.
  */
-public class Book implements HasID {
+public class Book implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int bookID;
     private String bookName;

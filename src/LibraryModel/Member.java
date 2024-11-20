@@ -1,5 +1,6 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import java.util.List;
  * Represents a library member, including the member's active loans, reservations, and loan history.
  * Extends the Person class.
  */
-public class Member extends Person {
+public class Member extends Person implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private List<Loan> loans;
     private List<Reservation> reservations;

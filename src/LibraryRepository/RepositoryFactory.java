@@ -2,6 +2,8 @@ package LibraryRepository;
 
 import LibraryModel.HasID;
 
+import java.nio.file.Paths;
+
 /**
  * A class that represents dynamic repository selection.
  * It creates and initializes repositories of the selected type.
@@ -20,7 +22,8 @@ public class RepositoryFactory {
             case "inmemory" -> new InMemoryRepository<>();
             case "file" -> {
                 String fileName = cls.getSimpleName().toLowerCase() + ".txt";
-                String filePath = "C:\\Users\\Mihai\\IdeaProjects\\Library-Management-System\\src\\LibraryRepository\\FileRepositories\\" + fileName;
+                String filePath = Paths.get("src", "LibraryRepository", "FileRepositories", fileName).toString();
+                System.out.println("Creating FileRepository at: " + filePath); // Debugging output
                 yield new FileRepository<>(filePath);
             }
             case "database" -> throw new IllegalArgumentException("Database Repository in progress...");

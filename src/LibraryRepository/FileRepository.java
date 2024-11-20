@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.function.Consumer;
 import LibraryModel.HasID;
+import java.io.File;
 
 /**
  * A repository implementation that stores data in a file.
@@ -29,6 +30,8 @@ public class FileRepository<T extends HasID> implements IRepository<T> {
 
     public FileRepository(String filePath) {
         this.filePath = filePath;
+        System.out.println("File path: " + filePath);
+        createDirectories();
     }
 
     @Override
@@ -89,10 +92,30 @@ public class FileRepository<T extends HasID> implements IRepository<T> {
      */
 
     private void writeDataToFile(Map<Integer, T> data) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath))) {
-            oos.writeObject(data);
-        } catch (IOException e) {
-            e.printStackTrace();
+        try {
+            // Check if the file exists, and if not, create it
+            File file = new File(filePath);
+            if (!file.exists()) {
+                file.createNewFile(); // Create a new file if it doesn't exist
+            }
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+                oos.writeObject(data);
+            }
+        }
+        catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+        }
+    }
+
+    private void createDirectories() {
+        File file = new File(filePath);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            boolean created = file.getParentFile().mkdirs();
+            if (!created) {
+                System.err.println("Failed to create directories: " + file.getParentFile().getAbsolutePath());
+            } else {
+                System.out.println("Directories created: " + file.getParentFile().getAbsolutePath());
+            }
         }
     }
 }

@@ -1,10 +1,13 @@
 package LibraryModel;
 
+import java.io.Serializable;
+
 /**
  * Represents a staff member in the library system, with a specific position in the organization.
  * Extends the Person class.
  */
-public class Staff extends Person {
+public class Staff extends Person implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String position;
 

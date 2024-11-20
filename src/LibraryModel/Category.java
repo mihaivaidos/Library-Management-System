@@ -1,5 +1,6 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import java.util.List;
  * Represents a category in the library system with a unique ID, name, description,
  * and a list of books associated with the category.
  */
-public class Category implements HasID {
+public class Category implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int categoryID;
     private String categoryName;

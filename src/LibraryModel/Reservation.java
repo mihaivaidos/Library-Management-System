@@ -1,11 +1,13 @@
 package LibraryModel;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Represents a reservation in the library system, associating a member with a reserved book and a reservation date.
  */
-public class Reservation implements HasID {
+public class Reservation implements HasID, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private int reservationID;
     private Date reservationDate;
