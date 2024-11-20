@@ -427,7 +427,7 @@ public class LibraryController {
                 double averageRating = libraryService.calculateAverageRating(book);
                 System.out.println("ID: " + book.getID() + ", Title: " + book.getBookName() + ", Author: " + book.getAuthor().getName()
                         + ", Publisher: " + publisherName + ", Category: " + categoryName + ", Status: " + status + ", Copies available: " + book.getCopiesAvailable()
-                        + (averageRating > 0 ? averageRating : ", No reviews yet"));
+                        +  ", Rating: " + averageRating);
             }
         }
     }

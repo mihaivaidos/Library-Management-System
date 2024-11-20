@@ -2,7 +2,6 @@ package LibraryService;
 
 import LibraryModel.*;
 import LibraryRepository.IRepository;
-import LibraryRepository.InMemoryRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,6 +84,8 @@ public class LibraryService {
                     Review review = new Review(++newReviewID, rating, reviewText, book, member);
                     book.getReviews().add(review);
                     reviewRepo.add(review);
+                    bookRepo.update(book);
+                    reviewRepo.update(review);
                 }
             }
         }
@@ -122,7 +123,9 @@ public class LibraryService {
 //            boolean memberHasBorrowedBook = memberLoans.stream()
 //                    .anyMatch(loan -> loan.getBook().getID() == book.getID());
             book.getReviews().remove(reviewToDelete);
+            bookRepo.update(book);
             reviewRepo.delete(reviewID);
+            //bookRepo.update(book);
         }
     }
 
@@ -180,6 +183,12 @@ public class LibraryService {
         }
         member.getLoans().add(loan);
         member.getLoanHistory().add(loan);
+        //System.out.println(member.getLoanHistory().size());
+        member = loan.getMember();
+        bookRepo.update(book);
+        memberRepo.update(member);
+        loanRepo.update(loan);
+        //System.out.println(member.getLoanHistory().size());
     }
 
     /**
@@ -192,6 +201,8 @@ public class LibraryService {
         Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
         reservationRepo.add(reservation);
         member.getReservations().add(reservation);
+        memberRepo.update(member);
+        reservationRepo.update(reservation);
     }
 
     /**
@@ -224,7 +235,7 @@ public class LibraryService {
     public void returnBook(int loanID) {
         Loan loan = loanRepo.get(loanID);
         Book book = loan.getBook();
-        if (loan != null && "ACTIVE".equals(loan.getStatus())) {
+        if ("ACTIVE".equals(loan.getStatus())) {
             removeLoan(loan);
 
             nextReservation(book);
@@ -245,7 +256,12 @@ public class LibraryService {
             book.setAvailable(true);
         }
         Member member = loan.getMember();
+        //System.out.println(member.getLoanHistory().size());
         member.getLoans().remove(loan);
+        //System.out.println(member.getLoanHistory().size());
+        memberRepo.update(member);
+        bookRepo.update(book);
+        loanRepo.update(loan);
     }
 
     /**
@@ -263,7 +279,8 @@ public class LibraryService {
             Member memberRes = reservation.getMember();
             createLoan(book, memberRes);
             memberRes.getReservations().remove(reservation);
-            reservationRepo.delete(reservation.getID());  // Remove the reservation
+            reservationRepo.delete(reservation.getID()); // Remove the reservation
+            memberRepo.update(memberRes);
         }
     }
 
@@ -466,6 +483,8 @@ public class LibraryService {
         if (book != null && category != null) {
             book.setCategory(category);
             category.getBooks().add(book);
+            bookRepo.update(book);
+            categoryRepo.update(category);
         }
     }
 
@@ -588,7 +607,6 @@ public class LibraryService {
 
     public void addAuthor(String name, String email, String phoneNumber) {
         Author author = new Author(++newAuthorID, name, email, phoneNumber);
-        List<Book> books = new ArrayList<>();
         authorRepo.add(author);
     }
 
@@ -605,7 +623,6 @@ public class LibraryService {
 
     public void addPublisher(String name, String email, String phoneNumber) {
         Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
-        List<Book> publishedBooks = new ArrayList<>();
         publisherRepo.add(publisher);
     }
 
@@ -701,7 +718,7 @@ public class LibraryService {
      */
     public List<Book> sortBooksByAvgRating() {
         List<Book> books = new ArrayList<>(bookRepo.getAll());
-        books.sort((b1, b2) -> Double.compare(calculateAverageRating(b1), calculateAverageRating(b2)));
+        books.sort((b1, b2) -> Double.compare(calculateAverageRating(b2), calculateAverageRating(b1)));
         return books;
     }
 
