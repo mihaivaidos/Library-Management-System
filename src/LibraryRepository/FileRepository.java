@@ -36,6 +36,7 @@ public class FileRepository<T extends HasID> implements IRepository<T> {
 
     @Override
     public void add(T obj) {
+        System.out.println("Adding object with ID: " + obj.getID());
         doInFile(data -> data.putIfAbsent(obj.getID(), obj));
     }
 
@@ -46,11 +47,13 @@ public class FileRepository<T extends HasID> implements IRepository<T> {
 
     @Override
     public void update(T obj) {
+        System.out.println("Updating object with ID: " + obj.getID());
         doInFile(data -> data.replace(obj.getID(), obj));
     }
 
     @Override
     public void delete(int id) {
+        System.out.println("Deleting object with ID: " + id);
         doInFile(data -> data.remove(id));
     }
 
