@@ -1,5 +1,8 @@
 package LibraryController;
 
+import Exceptions.BusinessLogicException;
+import Exceptions.DatabaseException;
+import Exceptions.EntityNotFoundException;
 import LibraryModel.*;
 import LibraryService.LibraryService;
 
@@ -33,8 +36,16 @@ public class LibraryController {
      */
 
     public void addReviewToBook(int memberID, int bookID, int rating, String comments) {
-        libraryService.addReviewToBook(memberID, bookID, rating, comments);
-        System.out.println("Review added successfully!");
+        try {
+            libraryService.addReviewToBook(memberID, bookID, rating, comments);
+            System.out.println("Review added successfully!");
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (BusinessLogicException e) {
+            System.err.println("Business logic error: " + e.getMessage());
+        }
     }
 
     /**
@@ -44,8 +55,14 @@ public class LibraryController {
      */
 
     public void deleteReviewFromBook(int reviewID) {
-        libraryService.deleteReviewFromBook(reviewID);
-        System.out.println("Review deleted successfully!");
+        try {
+            libraryService.deleteReviewFromBook(reviewID);
+            System.out.println("Review deleted successfully!");
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -55,20 +72,30 @@ public class LibraryController {
      */
 
     public void viewAllReviewsOfBook(int bookID) {
-        List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
-        System.out.println("Reviews for book: " + bookID);
-        for (Review review : reviews) {
-            System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
-                    + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
+        try {
+            List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
+            System.out.println("Reviews for book: " + bookID);
+            for (Review review : reviews) {
+                System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
+                        + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
         }
     }
 
     public void viewAllReviews() {
-        System.out.println("Reviews: ");
-        List<Review> reviews = libraryService.getAllReviews();
-        for (Review review : reviews) {
-            System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
-                    + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
+        try {
+            System.out.println("Reviews: ");
+            List<Review> reviews = libraryService.getAllReviews();
+            for (Review review : reviews) {
+                System.out.println("ID: " + review.getID() + ", Book: " + review.getBook().getBookName() + ", Book author: " + review.getBook().getAuthor().getName()
+                        + ", Rating: " + review.getRating() + ", Comments: " + review.getComments() + ", Member name: " + review.getMember().getName());
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -80,8 +107,16 @@ public class LibraryController {
      */
 
     public void borrowBook(int memberID, int bookID) {
-        libraryService.borrowBook(memberID, bookID);
-        System.out.println("Book borrowed or reserved successfully for member ID: " + memberID);
+        try {
+            libraryService.borrowBook(memberID, bookID);
+            System.out.println("Book borrowed or reserved successfully for member ID: " + memberID);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (BusinessLogicException e) {
+            System.err.println("Business logical error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -91,8 +126,16 @@ public class LibraryController {
      */
 
     public void returnBook(int loanID) {
-        libraryService.returnBook(loanID);
-        System.out.println("Book returned successfully with Loan ID: " + loanID);
+        try {
+            libraryService.returnBook(loanID);
+            System.out.println("Book returned successfully with Loan ID: " + loanID);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (BusinessLogicException e) {
+            System.err.println("Business logical error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -102,22 +145,27 @@ public class LibraryController {
      */
 
     public void viewActiveLoans(int memberID) {
-        List<Loan> loans = libraryService.getActiveLoansForMember(memberID);
-        System.out.println("Active loans for member ID: " + memberID);
+        try {
+            List<Loan> loans = libraryService.getActiveLoansForMember(memberID);
+            System.out.println("Active loans for member ID: " + memberID);
 
-        if (loans.isEmpty()) {
-            System.out.println("No active loans found for this member.");
-        }
-        else {
-            for (Loan loan : loans) {
-                System.out.println("ID: " + loan.getID() +
-                        ", Loan date: " + loan.getLoanDate() +
-                        ", Due date: " + loan.getDueDate() +
-                        ", Return date: " + loan.getReturnDate() +
-                        ", Status: " + loan.getStatus() +
-                        ", Book: " + loan.getBook().getBookName() +
-                        ", Book author: " + loan.getBook().getAuthor().getName());
+            if (loans.isEmpty()) {
+                System.out.println("No active loans found for this member.");
+            } else {
+                for (Loan loan : loans) {
+                    System.out.println("ID: " + loan.getID() +
+                            ", Loan date: " + loan.getLoanDate() +
+                            ", Due date: " + loan.getDueDate() +
+                            ", Return date: " + loan.getReturnDate() +
+                            ", Status: " + loan.getStatus() +
+                            ", Book: " + loan.getBook().getBookName() +
+                            ", Book author: " + loan.getBook().getAuthor().getName());
+                }
             }
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -129,8 +177,14 @@ public class LibraryController {
      */
 
     public void addBookToCategory(int bookID, int categoryID) {
-        libraryService.addBookToCategory(bookID, categoryID);
-        System.out.println("Book added to category successfully.");
+        try {
+            libraryService.addBookToCategory(bookID, categoryID);
+            System.out.println("Book added to category successfully.");
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -140,9 +194,15 @@ public class LibraryController {
      */
 
     public void viewAllBooksInCategory(int categoryID) {
-        System.out.println("Available Books in category: " + categoryID);
-        List<Book> books = libraryService.getAllBooksInCategory(categoryID);
-        printBooks(books);
+        try {
+            System.out.println("Available Books in category: " + categoryID);
+            List<Book> books = libraryService.getAllBooksInCategory(categoryID);
+            printBooks(books);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -150,11 +210,15 @@ public class LibraryController {
      */
 
     public void viewAllCategories() {
-        System.out.println("Categories:");
-        List<Category> categories = libraryService.getAllCategories();
-        for (Category category : categories) {
-            System.out.println("ID: " + category.getID() + ", Name: " + category.getCategoryName()
-                    + ", Description: " + category.getDescription());
+        try {
+            System.out.println("Categories:");
+            List<Category> categories = libraryService.getAllCategories();
+            for (Category category : categories) {
+                System.out.println("ID: " + category.getID() + ", Name: " + category.getCategoryName()
+                        + ", Description: " + category.getDescription());
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -163,9 +227,13 @@ public class LibraryController {
      */
 
     public void viewAllBooks() {
-        System.out.println("Available Books:");
-        List<Book> books = libraryService.getAllBooks();
-        printBooks(books);
+        try {
+            System.out.println("Available Books:");
+            List<Book> books = libraryService.getAllBooks();
+            printBooks(books);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -174,9 +242,15 @@ public class LibraryController {
      * @param memberID the ID of the member
      */
     public void viewMemberBorrowedBooks(int memberID) {
-        System.out.println("Member borrowed books: " + memberID);
-        List<Book> books = libraryService.getMemberBorrowedBooks(memberID);
-        printBooks(books);
+        try {
+            System.out.println("Member borrowed books: " + memberID);
+            List<Book> books = libraryService.getMemberBorrowedBooks(memberID);
+            printBooks(books);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -184,11 +258,15 @@ public class LibraryController {
      */
 
     public void viewAllPublishers() {
-        System.out.println("Publishers:");
-        List<Publisher> publishers = libraryService.getAllPublishers();
-        for (Publisher publisher : publishers) {
-            System.out.println("ID: " + publisher.getID() + ", Name: " + publisher.getName()
-                    + ", Email: " + publisher.getEmail() + ", Phone: " + publisher.getPhoneNumber());
+        try {
+            System.out.println("Publishers:");
+            List<Publisher> publishers = libraryService.getAllPublishers();
+            for (Publisher publisher : publishers) {
+                System.out.println("ID: " + publisher.getID() + ", Name: " + publisher.getName()
+                        + ", Email: " + publisher.getEmail() + ", Phone: " + publisher.getPhoneNumber());
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -197,11 +275,15 @@ public class LibraryController {
      */
 
     public void viewAllAuthors() {
-        System.out.println("Authors:");
-        List<Author> authors = libraryService.getAllAuthors();
-        for (Author author : authors) {
-            System.out.println("ID: " + author.getID() + ", Name: " + author.getName()
-                    + ", Email: " + author.getEmail() + ", Phone: " + author.getPhoneNumber());
+        try {
+            System.out.println("Authors:");
+            List<Author> authors = libraryService.getAllAuthors();
+            for (Author author : authors) {
+                System.out.println("ID: " + author.getID() + ", Name: " + author.getName()
+                        + ", Email: " + author.getEmail() + ", Phone: " + author.getPhoneNumber());
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -212,9 +294,15 @@ public class LibraryController {
      */
 
     public void viewBooksByPublisher(int publisherID) {
-        System.out.println("Books by publisher: " + publisherID);
-        List<Book> publisherBooks = libraryService.getBooksByPublisher(publisherID);
-        printBooks(publisherBooks);
+        try {
+            System.out.println("Books by publisher: " + publisherID);
+            List<Book> publisherBooks = libraryService.getBooksByPublisher(publisherID);
+            printBooks(publisherBooks);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -224,9 +312,15 @@ public class LibraryController {
      */
 
     public void viewBooksByAuthor(int authorID) {
-        System.out.println("Books by author: " + authorID);
-        List<Book> books = libraryService.getBooksByAuthor(authorID);
-        printBooks(books);
+        try {
+            System.out.println("Books by author: " + authorID);
+            List<Book> books = libraryService.getBooksByAuthor(authorID);
+            printBooks(books);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -236,11 +330,17 @@ public class LibraryController {
      */
 
     public void viewActiveReservations(int memberID) {
-        List<Reservation> reservations = libraryService.getActiveReservationsForMember(memberID);
-        System.out.println("Active reservations for member ID: " + memberID);
-        for(Reservation reservation : reservations) {
-            System.out.println("ID: " + reservation.getID() + ", Date: " + reservation.getReservationDate()
-                    + ", Book: " + reservation.getBook().getBookName() + ", Author: " + reservation.getBook().getAuthor().getName());
+        try {
+            List<Reservation> reservations = libraryService.getActiveReservationsForMember(memberID);
+            System.out.println("Active reservations for member ID: " + memberID);
+            for (Reservation reservation : reservations) {
+                System.out.println("ID: " + reservation.getID() + ", Date: " + reservation.getReservationDate()
+                        + ", Book: " + reservation.getBook().getBookName() + ", Author: " + reservation.getBook().getAuthor().getName());
+            }
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -251,12 +351,18 @@ public class LibraryController {
      */
 
     public void viewLoanHistoryForMember(int memberID) {
-        List<Loan> loans = libraryService.getLoanHistoryForMember(memberID);
-        System.out.println("Loan History for member ID: " + memberID);
-        for(Loan loan : loans) {
-            System.out.println("ID: " + loan.getID() + ", Loan date: " + loan.getLoanDate() + ", Due date: "
-                    + loan.getDueDate() + ", Return date: " + loan.getReturnDate() + ", Status: " + loan.getStatus()
-                    + ", Book: " + loan.getBook().getBookName() + ", Book author: " + loan.getBook().getAuthor().getName());
+        try {
+            List<Loan> loans = libraryService.getLoanHistoryForMember(memberID);
+            System.out.println("Loan History for member ID: " + memberID);
+            for (Loan loan : loans) {
+                System.out.println("ID: " + loan.getID() + ", Loan date: " + loan.getLoanDate() + ", Due date: "
+                        + loan.getDueDate() + ", Return date: " + loan.getReturnDate() + ", Status: " + loan.getStatus()
+                        + ", Book: " + loan.getBook().getBookName() + ", Book author: " + loan.getBook().getAuthor().getName());
+            }
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -271,8 +377,15 @@ public class LibraryController {
      */
 
     public void addBook(String title, int authorID, int categoryID, int publisherID, int copies) {
-        libraryService.addBook(title, authorID, categoryID, publisherID, copies);
-        System.out.println("Book added successfully: " + title);
+        try {
+            libraryService.addBook(title, authorID, categoryID, publisherID, copies);
+            System.out.println("Book added successfully: " + title);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
+
     }
 
     /**
@@ -288,8 +401,14 @@ public class LibraryController {
      */
 
     public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) {
-        libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID, newCopies);
-        System.out.println("Book updated successfully: " + newBookName);
+        try {
+            libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID, newCopies);
+            System.out.println("Book updated successfully: " + newBookName);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -299,8 +418,14 @@ public class LibraryController {
      */
 
     public void deleteBook(int bookID) {
-        libraryService.deleteBook(bookID);
-        System.out.println("Book deleted successfully: " + bookID);
+        try {
+            libraryService.deleteBook(bookID);
+            System.out.println("Book deleted successfully: " + bookID);
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -313,8 +438,12 @@ public class LibraryController {
      */
 
     public void addStaff(String name, String email, String phoneNumber, String position) {
-        libraryService.addStaff(name, email, phoneNumber, position);
-        System.out.println("Staff added successfully: " + name);
+        try {
+            libraryService.addStaff(name, email, phoneNumber, position);
+            System.out.println("Staff added successfully: " + name);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -325,13 +454,18 @@ public class LibraryController {
      */
 
     public boolean isStaff(String email) {
-        if(libraryService.isStaff(email)) {
-            System.out.println("You are a staff!");
-            return true;
-        } else {
-            System.out.println("You are not a staff!");
-            return false;
+        try {
+            if (libraryService.isStaff(email)) {
+                System.out.println("You are a staff!");
+                return true;
+            } else {
+                System.out.println("You are not a staff!");
+                return false;
+            }
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
+        return false;
     }
 
     /**
@@ -343,8 +477,12 @@ public class LibraryController {
      */
 
     public void addMember(String name, String email, String phoneNumber) {
-        libraryService.addMember(name, email, phoneNumber);
-        System.out.println("Member added successfully: " + name);
+        try {
+            libraryService.addMember(name, email, phoneNumber);
+            System.out.println("Member added successfully: " + name);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -356,8 +494,12 @@ public class LibraryController {
      */
 
     public void addAuthor(String name, String email, String phoneNumber) {
-        libraryService.addAuthor(name, email, phoneNumber);
-        System.out.println("Author added successfully: " + name);
+        try {
+            libraryService.addAuthor(name, email, phoneNumber);
+            System.out.println("Author added successfully: " + name);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -369,8 +511,12 @@ public class LibraryController {
      */
 
     public void addPublisher(String name, String email, String phoneNumber) {
-        libraryService.addPublisher(name, email, phoneNumber);
-        System.out.println("Publisher added successfully: " + name);
+        try {
+            libraryService.addPublisher(name, email, phoneNumber);
+            System.out.println("Publisher added successfully: " + name);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -379,8 +525,15 @@ public class LibraryController {
      * @param email the email of the staff or member
      * @return the ID or -1
      */
-    public int getIDbyEmail(String email) {
-        return libraryService.getIDbyEmail(email);
+    public int getIDbyEmail(String email)  {
+        try {
+            return libraryService.getIDbyEmail(email);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        }
+        return -1;
     }
 
     /**
@@ -393,10 +546,15 @@ public class LibraryController {
      */
 
     public List<Book> searchBook(String title) {
-        System.out.println("Searching for books with title containing: " + (title != null ? title : "No search term provided"));
-        List<Book> books = libraryService.searchBook(title);
-        printBooks(books);
-        return books;
+        try {
+            System.out.println("Searching for books with title containing: " + (title != null ? title : "No search term provided"));
+            List<Book> books = libraryService.searchBook(title);
+            printBooks(books);
+            return books;
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
+        return List.of();
     }
 
     /**
@@ -404,9 +562,13 @@ public class LibraryController {
      */
 
     public void viewAllBooksSortedByTitle() {
-        System.out.println("Available Books (Sorted by Title):");
-        List<Book> books = libraryService.getAllBooksSortedByTitle();
-        printBooks(books);
+        try {
+            System.out.println("Available Books (Sorted by Title):");
+            List<Book> books = libraryService.getAllBooksSortedByTitle();
+            printBooks(books);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
     /**
@@ -438,13 +600,18 @@ public class LibraryController {
      * @param memberID the ID of the member that wants to see the recommendations
      */
     public void recommendBooksForMember(int memberID) {
-        List<Book> recommendedBooks = libraryService.recommendBooksForMember(memberID);
-        if (recommendedBooks.isEmpty()) {
-            System.out.println("No recommendations available. The member has not borrowed any books yet.");
-        }
-        else {
-            System.out.println("Recommended books for " + memberID + ":");
-            printBooks(recommendedBooks);
+        try {
+            List<Book> recommendedBooks = libraryService.recommendBooksForMember(memberID);
+            if (recommendedBooks.isEmpty()) {
+                System.out.println("No recommendations available. The member has not borrowed any books yet.");
+            } else {
+                System.out.println("Recommended books for " + memberID + ":");
+                printBooks(recommendedBooks);
+            }
+        } catch (EntityNotFoundException e) {
+            System.err.println("Entity not found error: " + e.getMessage());
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
@@ -452,9 +619,13 @@ public class LibraryController {
      * Prints the books sorted by their rating
      */
     public void sortBooksByAvgRating() {
-        List<Book> sortedBooks = libraryService.sortBooksByAvgRating();
-        System.out.println("Books sorted by average rating:");
-        printBooks(sortedBooks);
+        try {
+            List<Book> sortedBooks = libraryService.sortBooksByAvgRating();
+            System.out.println("Books sorted by average rating:");
+            printBooks(sortedBooks);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
     }
 
 }
