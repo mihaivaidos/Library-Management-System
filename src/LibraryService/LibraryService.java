@@ -1,10 +1,12 @@
 package LibraryService;
 
+import Exceptions.BusinessLogicException;
 import Exceptions.DatabaseException;
+import Exceptions.EntityNotFoundException;
 import LibraryModel.*;
 import LibraryRepository.IRepository;
-import LibraryRepository.InMemoryRepository;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,15 +29,15 @@ public class LibraryService {
     private final IRepository<Publisher> publisherRepo;
     private final IRepository<Staff> staffRepo;
 
-    private int newBookID = 9;
-    private int newMemberID = 9;
-    private int newLoanID = 9;
-    private int newReviewID = 9;
-    private int newAuthorID = 9;
-    private int newCategoryID = 9;
-    private int newPublisherID = 9;
-    private int newReservationID = 9;
-    private int newStaffID = 9;
+    private int newBookID;
+    private int newMemberID;
+    private int newLoanID;
+    private int newReviewID;
+    private int newAuthorID;
+    private int newCategoryID;
+    private int newPublisherID;
+    private int newReservationID;
+    private int newStaffID;
 
     /**
      * Constructs a LibraryService with the specified repositories for managing
@@ -66,6 +68,27 @@ public class LibraryService {
         this.authorRepo = authorRepo;
         this.publisherRepo = publisherRepo;
         this.staffRepo = staffRepo;
+
+        this.newBookID = getMaxId(bookRepo);
+        this.newMemberID = getMaxId(memberRepo);
+        this.newLoanID = getMaxId(loanRepo);
+        this.newReviewID = getMaxId(reviewRepo);
+        this.newAuthorID = getMaxId(authorRepo);
+        this.newCategoryID = getMaxId(categoryRepo);
+        this.newPublisherID = getMaxId(publisherRepo);
+        this.newReservationID = getMaxId(reservationRepo);
+        this.newStaffID = getMaxId(staffRepo);
+    }
+
+    private <T extends HasID> int getMaxId(IRepository<T> repository) {
+        try {
+            return repository.getAll().stream()
+                    .mapToInt(HasID::getID)
+                    .max()
+                    .orElse(1);
+        } catch (DatabaseException e) {
+            throw new RuntimeException("Unable to get ID", e);
+        }
     }
 
     /**
@@ -77,17 +100,29 @@ public class LibraryService {
      * @param reviewText the text of the review
      */
 
-    public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
-        Book book = bookRepo.get(bookID);
-        if (book != null && member != null) {
-            for (Loan loan : member.getLoanHistory()) {
-                if (loan.getBook().getID() == bookID) {
-                    Review review = new Review(++newReviewID, rating, reviewText, book, member);
-                    book.getReviews().add(review);
-                    reviewRepo.add(review);
-                }
+    public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) throws EntityNotFoundException, BusinessLogicException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
+            Book book = bookRepo.get(bookID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
             }
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+            boolean hasBorrowed = member.getLoanHistory().stream()
+                    .anyMatch(loan -> loan.getBook().getID() == bookID);
+            if (!hasBorrowed) {
+                throw new BusinessLogicException("Member must borrow the book before adding a review.");
+            }
+
+            Review review = new Review(++newReviewID, rating, reviewText, book, member);
+            book.getReviews().add(review);
+            reviewRepo.add(review);
+            bookRepo.update(book);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding review to book.");
         }
     }
 
@@ -98,13 +133,22 @@ public class LibraryService {
      * @return a list of borrowed books by the member
      */
 
-    public List<Book> getMemberBorrowedBooks(int memberID) throws DatabaseException {
-        List<Book> books = new ArrayList<>();
-        Member member = memberRepo.get(memberID);
-        for(Loan loan : member.getLoanHistory()) {
-            books.add(loan.getBook());
+    public List<Book> getMemberBorrowedBooks(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            List<Book> books = new ArrayList<>();
+            Member member = memberRepo.get(memberID);
+
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+
+            for (Loan loan : member.getLoanHistory()) {
+                books.add(loan.getBook());
+            }
+            return books;
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting member borrowed books.");
         }
-        return books;
     }
 
     /**
@@ -113,9 +157,12 @@ public class LibraryService {
      * @param reviewID the ID of the review to be deleted
      */
 
-    public void deleteReviewFromBook(int reviewID) throws DatabaseException {
-        Review reviewToDelete = reviewRepo.get(reviewID);
-        if (reviewToDelete != null) {
+    public void deleteReviewFromBook(int reviewID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Review reviewToDelete = reviewRepo.get(reviewID);
+            if (reviewToDelete == null) {
+                throw new EntityNotFoundException("Review not found.");
+            }
             Book book = reviewToDelete.getBook();
             //Member member = reviewToDelete.getMember();
 //            List<Loan> memberLoans = member.getLoanHistory();
@@ -123,7 +170,10 @@ public class LibraryService {
 //            boolean memberHasBorrowedBook = memberLoans.stream()
 //                    .anyMatch(loan -> loan.getBook().getID() == book.getID());
             book.getReviews().remove(reviewToDelete);
+            bookRepo.update(book);
             reviewRepo.delete(reviewID);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error deleting review from book.");
         }
     }
 
@@ -134,9 +184,18 @@ public class LibraryService {
      * @return a list of reviews for the specified book
      */
 
-    public List<Review> getAllReviewsOfBook(int bookID) throws DatabaseException {
-        Book book = bookRepo.get(bookID);
-        return book != null ? book.getReviews() : new ArrayList<>();
+    public List<Review> getAllReviewsOfBook(int bookID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+
+            return book.getReviews();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting reviews from book.");
+        }
     }
 
     /**
@@ -147,22 +206,33 @@ public class LibraryService {
      * @param bookID the ID of the book to be borrowed
      */
 
-    public void borrowBook(int memberID, int bookID) throws DatabaseException {
-        Book book = bookRepo.get(bookID);
-        Member member = memberRepo.get(memberID);
+    public void borrowBook(int memberID, int bookID) throws EntityNotFoundException, BusinessLogicException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+            Member member = memberRepo.get(memberID);
 
-        if (book != null && member != null) {
-            if (!checkMemberHasOverdueLoans(memberID)) {
-                int activeLoans = getActiveLoansForMember(memberID).size();
-                if (activeLoans <= 2) {
-                    if (book.isAvailable()) {
-                        createLoan(book, member);
-                    }
-                    else {
-                        createReservation(book, member);
-                    }
-                }
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
             }
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+            if (checkMemberHasOverdueLoans(memberID)) {
+                throw new BusinessLogicException("Cannot borrow books with overdue loans.");
+            }
+
+            int activeLoans = getActiveLoansForMember(memberID).size();
+            if (activeLoans >= 3) {
+                throw new BusinessLogicException("Loan limit reached. Return books before borrowing more.");
+            }
+
+            if (book.isAvailable()) {
+                createLoan(book, member);
+            } else {
+                createReservation(book, member);
+            }
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error borrowing book.");
         }
     }
 
@@ -173,14 +243,22 @@ public class LibraryService {
      * @param member the member that borrows the book
      */
     public void createLoan(Book book, Member member) throws DatabaseException {
-        Loan loan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, member);
-        loanRepo.add(loan);
-        book.setCopiesAvailable(book.getCopiesAvailable() - 1);
-        if(book.getCopiesAvailable() < 1) {
-            book.setAvailable(false);
+        try {
+            Loan loan = new Loan(++newLoanID, LocalDate.now(), calculateDueDate(), null, "ACTIVE", book, member);
+            loanRepo.add(loan);
+            book.setCopiesAvailable(book.getCopiesAvailable() - 1);
+            if (book.getCopiesAvailable() < 1) {
+                book.setAvailable(false);
+            }
+            member.getLoans().add(loan);
+            member.getLoanHistory().add(loan);
+            member = loan.getMember();
+            bookRepo.update(book);
+            memberRepo.update(member);
+            loanRepo.update(loan);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error creating loan.");
         }
-        member.getLoans().add(loan);
-        member.getLoanHistory().add(loan);
     }
 
     /**
@@ -190,9 +268,15 @@ public class LibraryService {
      * @param member the member that makes the reservation
      */
     public void createReservation(Book book, Member member) throws DatabaseException {
-        Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
-        reservationRepo.add(reservation);
-        member.getReservations().add(reservation);
+        try {
+            Reservation reservation = new Reservation(++newReservationID, LocalDate.now(), book, member);
+            reservationRepo.add(reservation);
+            member.getReservations().add(reservation);
+            memberRepo.update(member);
+            reservationRepo.update(reservation);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error creating reservation.");
+        }
     }
 
     /**
@@ -202,17 +286,26 @@ public class LibraryService {
      * @return true if the member has overdue loans, false otherwise
      */
 
-    public boolean checkMemberHasOverdueLoans(int memberID) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
-        List<Loan> memberLoans = member.getLoans();
+    public boolean checkMemberHasOverdueLoans(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
 
-        Date today = new Date();
-        for (Loan loan : memberLoans) {
-            if (loan.getDueDate().before(today)) {
-                return true;
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
             }
+
+            List<Loan> memberLoans = member.getLoans();
+
+            LocalDate today = LocalDate.now();
+            for (Loan loan : memberLoans) {
+                if (loan.getDueDate().isBefore(today)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error checking member has overdue loans.");
         }
-        return false;
     }
 
     /**
@@ -222,13 +315,22 @@ public class LibraryService {
      * @param loanID the ID of the loan to be returned
      */
 
-    public void returnBook(int loanID) throws DatabaseException {
-        Loan loan = loanRepo.get(loanID);
-        Book book = loan.getBook();
-        if (loan != null && "ACTIVE".equals(loan.getStatus())) {
-            removeLoan(loan);
+    public void returnBook(int loanID) throws EntityNotFoundException, BusinessLogicException, DatabaseException {
+        try {
+            Loan loan = loanRepo.get(loanID);
 
+            if (loan == null) {
+                throw new EntityNotFoundException("Loan not found.");
+            }
+
+            Book book = loan.getBook();
+            if (!"ACTIVE".equals(loan.getStatus()))
+                throw new BusinessLogicException("Loan is not active and cannot be returned.");
+
+            removeLoan(loan);
             nextReservation(book);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error returning book.");
         }
     }
 
@@ -237,16 +339,26 @@ public class LibraryService {
      *
      * @param loan the loan of the book
      */
-    public void removeLoan(Loan loan) {
-        loan.setStatus("RETURNED");
-        loan.setReturnDate(new Date());
-        Book book = loan.getBook();
-        book.setCopiesAvailable(book.getCopiesAvailable() + 1);
-        if(book.getCopiesAvailable() > 0) {
-            book.setAvailable(true);
+    public void removeLoan(Loan loan) throws DatabaseException {
+        try {
+            loan.setStatus("RETURNED");
+            loan.setReturnDate(LocalDate.now());
+            Book book = loan.getBook();
+
+            book.setCopiesAvailable(book.getCopiesAvailable() + 1);
+            if (book.getCopiesAvailable() > 0) {
+                book.setAvailable(true);
+            }
+
+            Member member = loan.getMember();
+            member.getLoans().remove(loan);
+
+            memberRepo.update(member);
+            bookRepo.update(book);
+            loanRepo.update(loan);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error removing loan.");
         }
-        Member member = loan.getMember();
-        member.getLoans().remove(loan);
     }
 
     /**
@@ -255,16 +367,22 @@ public class LibraryService {
      * @param book the book in the reservation
      */
     public void nextReservation(Book book) throws DatabaseException {
-        Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
-                .filter(reservation -> reservation.getBook().equals(book))
-                .findFirst();
+        try {
+            Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
+                    .filter(reservation -> reservation.getBook().equals(book))
+                    .findFirst();
 
-        if (nextReservation.isPresent()) {
-            Reservation reservation = nextReservation.get();
-            Member memberRes = reservation.getMember();
-            createLoan(book, memberRes);
-            memberRes.getReservations().remove(reservation);
-            reservationRepo.delete(reservation.getID());  // Remove the reservation
+            if (nextReservation.isPresent()) {
+                Reservation reservation = nextReservation.get();
+                Member memberRes = reservation.getMember();
+
+                createLoan(book, memberRes);
+                memberRes.getReservations().remove(reservation);
+                reservationRepo.delete(reservation.getID()); // Remove the reservation
+                memberRepo.update(memberRes);
+            }
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error making next reservation.");
         }
     }
 
@@ -276,15 +394,18 @@ public class LibraryService {
      * @return a list of active loans for the specified member, sorted by loan date
      */
 
-    public List<Loan> getActiveLoansForMember(int memberID) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
-        if (member != null) {
-//            return member.getLoans().stream()
-//                    .sorted(Comparator.comparing(Loan::getLoanDate))
-//                    .collect(Collectors.toList());
+    public List<Loan> getActiveLoansForMember(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
+
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+
             return member.getLoans();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting active loans.");
         }
-        return new ArrayList<>();
     }
 
     /**
@@ -293,10 +414,10 @@ public class LibraryService {
      * @return the calculated due date
      */
 
-    public Date calculateDueDate() {
+    public LocalDate calculateDueDate() {
         // Default loan period is 14 days
-        long loanPeriod = 14L * 24 * 60 * 60 * 1000;  // 14 days in milliseconds
-        return new Date(System.currentTimeMillis() + loanPeriod);
+        int loanPeriod = 14;
+        return LocalDate.now().plusDays(loanPeriod);
     }
 
     /**
@@ -309,12 +430,19 @@ public class LibraryService {
      * @param copiesAvailable the number of copies of the book
      */
 
-    public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) throws DatabaseException {
-        Author author = authorRepo.get(authorID);
-        Category category = categoryRepo.get(categoryID);
-        Publisher publisher = publisherRepo.get(publisherID);
-        Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
-        bookRepo.add(book);
+    public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) throws EntityNotFoundException, DatabaseException {
+        try {
+            Author author = authorRepo.get(authorID);
+            Category category = categoryRepo.get(categoryID);
+            Publisher publisher = publisherRepo.get(publisherID);
+            Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
+            addBookToAuthor(book.getID(), authorID);
+            addBookToCategory(book.getID(), categoryID);
+            addBookToPublisher(book.getID(), publisherID);
+            bookRepo.add(book);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error creating book.");
+        }
     }
 
     /**
@@ -327,8 +455,12 @@ public class LibraryService {
      */
 
     public void addStaff(String name, String email, String phoneNumber, String position) throws DatabaseException {
-        Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
-        staffRepo.add(staff);
+        try {
+            Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
+            staffRepo.add(staff);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error creating staff.");
+        }
     }
 
     /**
@@ -339,13 +471,17 @@ public class LibraryService {
      */
 
     public boolean isStaff(String email) throws DatabaseException {
-        List<Staff> staffs = staffRepo.getAll();
-        for(Staff staff : staffs ) {
-            if(staff.getEmail().equals(email)) {
-                return true;
+        try {
+            List<Staff> staffs = staffRepo.getAll();
+            for (Staff staff : staffs) {
+                if (staff.getEmail().equals(email)) {
+                    return true;
+                }
             }
+            return false;
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error verifying staff.");
         }
-        return false;
     }
 
     /**
@@ -359,29 +495,45 @@ public class LibraryService {
      * @param newPublisherID the new publisher ID
      */
 
-    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) throws DatabaseException {
-        Book book = bookRepo.get(bookID);
-        Author author = authorRepo.get(newAuthorID);
-        Category category = categoryRepo.get(newCategoryID);
-        Publisher publisher = publisherRepo.get(newPublisherID);
-        if (book != null) {
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+
+            Author author = authorRepo.get(newAuthorID);
+
+            if (author == null) {
+                throw new EntityNotFoundException("Author not found.");
+            }
+
+            Category category = categoryRepo.get(newCategoryID);
+
+            if (category == null) {
+                throw new EntityNotFoundException("Category not found.");
+            }
+
+            Publisher publisher = publisherRepo.get(newPublisherID);
+
+            if (publisher == null) {
+                throw new EntityNotFoundException("Publisher not found.");
+            }
+
             if (newBookName != null) {
                 book.setBookName(newBookName);
             }
-            if (author != null) {
-                book.setAuthor(author);
-            }
+            book.setAuthor(author);
             book.setAvailable(newIsAvailable);
-            if (category != null) {
-                book.setCategory(category);
-            }
-            if (publisher != null) {
-                book.setPublisher(publisher);
-            }
+            book.setCategory(category);
+            book.setPublisher(publisher);
             if (newCopies != -1) {
                 book.setCopiesAvailable(newCopies);
             }
             bookRepo.update(book);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error updating book.");
         }
     }
 
@@ -391,10 +543,17 @@ public class LibraryService {
      * @param bookID the ID of the book to be deleted
      */
 
-    public void deleteBook(int bookID) throws DatabaseException {
-        Book book = bookRepo.get(bookID);
-        if (book != null) {
+    public void deleteBook(int bookID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+
             bookRepo.delete(bookID);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error deleting book.");
         }
     }
 
@@ -405,10 +564,18 @@ public class LibraryService {
      * @return a list of books published by the specified publisher
      */
 
-    public List<Book> getBooksByPublisher(int publisherID) throws DatabaseException {
-        return bookRepo.getAll().stream()
-            .filter(book -> book.getPublisher().getID() == publisherID)
-            .collect(Collectors.toList());
+    public List<Book> getBooksByPublisher(int publisherID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Publisher publisher = publisherRepo.get(publisherID);
+            if (publisher == null) {
+                throw new EntityNotFoundException("Publisher not found.");
+            }
+            return bookRepo.getAll().stream()
+                    .filter(book -> book.getPublisher().getID() == publisherID)
+                    .collect(Collectors.toList());
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting books by publisher.");
+        }
     }
 
     /**
@@ -418,10 +585,18 @@ public class LibraryService {
      * @return a list of books written by the specified author
      */
 
-    public List<Book> getBooksByAuthor(int authorID) throws DatabaseException {
-        return bookRepo.getAll().stream()
-                .filter(book -> book.getAuthor().getID() == authorID)
-                .collect(Collectors.toList());
+    public List<Book> getBooksByAuthor(int authorID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Author author = authorRepo.get(authorID);
+            if (author == null) {
+                throw new EntityNotFoundException("Author not found.");
+            }
+            return bookRepo.getAll().stream()
+                    .filter(book -> book.getAuthor().getID() == authorID)
+                    .collect(Collectors.toList());
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting books by author.");
+        }
     }
 
     /**
@@ -431,9 +606,18 @@ public class LibraryService {
      * @return a list of active reservations for the specified member
      */
 
-    public List<Reservation> getActiveReservationsForMember(int memberID) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
-        return member.getReservations();
+    public List<Reservation> getActiveReservationsForMember(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
+
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+
+            return member.getReservations();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting active reservations.");
+        }
     }
 
     /**
@@ -443,13 +627,17 @@ public class LibraryService {
      * @return a list of loans that the specified member has previously borrowed
      */
 
-    public List<Loan> getLoanHistoryForMember(int memberID) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
-        if (member != null) {
+    public List<Loan> getLoanHistoryForMember(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
+
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+
             return member.getLoanHistory();
-        }
-        else {
-            return new ArrayList<>();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting loan history.");
         }
     }
 
@@ -460,15 +648,71 @@ public class LibraryService {
      * @param categoryID the ID of the category to which the book will be added
      */
 
-    public void addBookToCategory(int bookID, int categoryID) throws DatabaseException {
-        Book book = bookRepo.get(bookID);
-        Category category = categoryRepo.get(categoryID);
+    public void addBookToCategory(int bookID, int categoryID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+            Category category = categoryRepo.get(categoryID);
 
-        if (book != null && category != null) {
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+            if (category == null) {
+                throw new EntityNotFoundException("Category not found.");
+            }
+
             book.setCategory(category);
             category.getBooks().add(book);
+            bookRepo.update(book);
+            categoryRepo.update(category);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding book to category.");
         }
     }
+
+    public void addBookToAuthor(int bookID, int authorID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+            Author author = authorRepo.get(authorID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+            if (author == null) {
+                throw new EntityNotFoundException("Author not found.");
+            }
+
+            book.setAuthor(author);
+            author.getBooks().add(book);
+
+            bookRepo.update(book);
+            authorRepo.update(author);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding book to author.");
+        }
+    }
+
+    public void addBookToPublisher(int bookID, int publisherID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Book book = bookRepo.get(bookID);
+            Publisher publisher = publisherRepo.get(publisherID);
+
+            if (book == null) {
+                throw new EntityNotFoundException("Book not found.");
+            }
+            if (publisher == null) {
+                throw new EntityNotFoundException("Publisher not found.");
+            }
+
+            book.setPublisher(publisher);
+            publisher.getPublishedBooks().add(book);
+
+            bookRepo.update(book);
+            publisherRepo.update(publisher);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding book to publisher.");
+        }
+    }
+
 
     /**
      * Retrieves all books that belong to a specific category.
@@ -477,10 +721,20 @@ public class LibraryService {
      * @return a list of books in the specified category
      */
 
-    public List<Book> getAllBooksInCategory(int categoryID) throws DatabaseException {
-        return bookRepo.getAll().stream()
-                .filter(book -> book.getCategory().getID() == categoryID)
-                .collect(Collectors.toList());
+    public List<Book> getAllBooksInCategory(int categoryID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Category category = categoryRepo.get(categoryID);
+
+            if (category == null) {
+                throw new EntityNotFoundException("Category not found.");
+            }
+
+            return bookRepo.getAll().stream()
+                    .filter(book -> book.getCategory().getID() == categoryID)
+                    .collect(Collectors.toList());
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all books in category.");
+        }
     }
 
     /**
@@ -490,7 +744,11 @@ public class LibraryService {
      */
 
     public List<Publisher> getAllPublishers() throws DatabaseException {
-        return publisherRepo.getAll();
+        try {
+            return publisherRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all publishers.");
+        }
     }
 
     /**
@@ -500,7 +758,11 @@ public class LibraryService {
      */
 
     public List<Author> getAllAuthors() throws DatabaseException {
-        return authorRepo.getAll();
+        try {
+            return authorRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all authors.");
+        }
     }
 
     /**
@@ -510,7 +772,11 @@ public class LibraryService {
      */
 
     public List<Category> getAllCategories() throws DatabaseException {
-        return categoryRepo.getAll();
+        try {
+            return categoryRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all categories.");
+        }
     }
 
     /**
@@ -520,7 +786,11 @@ public class LibraryService {
      */
 
     public List<Reservation> getAllReservations() throws DatabaseException {
-        return reservationRepo.getAll();
+        try {
+            return reservationRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all reservations.");
+        }
     }
 
     /**
@@ -530,7 +800,11 @@ public class LibraryService {
      */
 
     public List<Loan> getAllLoans() throws DatabaseException {
-        return loanRepo.getAll();
+        try {
+            return loanRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all loans.");
+        }
     }
 
     /**
@@ -540,7 +814,11 @@ public class LibraryService {
      */
 
     public List<Member> getAllMembers() throws DatabaseException {
-        return memberRepo.getAll();
+        try {
+            return memberRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all members.");
+        }
     }
 
     /**
@@ -550,7 +828,11 @@ public class LibraryService {
      */
 
     public List<Review> getAllReviews() throws DatabaseException {
-        return reviewRepo.getAll();
+        try {
+            return reviewRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all reviews.");
+        }
     }
 
     /**
@@ -560,7 +842,11 @@ public class LibraryService {
      */
 
     public List<Book> getAllBooks() throws DatabaseException {
-        return bookRepo.getAll();
+        try {
+            return bookRepo.getAll();
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all books.");
+        }
     }
 
     /**
@@ -572,8 +858,12 @@ public class LibraryService {
      */
 
     public void addMember(String name, String email, String phoneNumber) throws DatabaseException {
-        Member member = new Member(++newMemberID, name, email, phoneNumber);
-        memberRepo.add(member);
+        try {
+            Member member = new Member(++newMemberID, name, email, phoneNumber);
+            memberRepo.add(member);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding member.");
+        }
     }
 
     /**
@@ -588,9 +878,12 @@ public class LibraryService {
      */
 
     public void addAuthor(String name, String email, String phoneNumber) throws DatabaseException {
-        Author author = new Author(++newAuthorID, name, email, phoneNumber);
-        List<Book> books = new ArrayList<>();
-        authorRepo.add(author);
+        try {
+            Author author = new Author(++newAuthorID, name, email, phoneNumber);
+            authorRepo.add(author);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding author.");
+        }
     }
 
     /**
@@ -605,9 +898,12 @@ public class LibraryService {
      */
 
     public void addPublisher(String name, String email, String phoneNumber) throws DatabaseException {
-        Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
-        List<Book> publishedBooks = new ArrayList<>();
-        publisherRepo.add(publisher);
+        try {
+            Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
+            publisherRepo.add(publisher);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding publisher.");
+        }
     }
 
     /**
@@ -617,20 +913,26 @@ public class LibraryService {
      * @return the ID of the person or -1 if they don't exist
      */
 
-    public int getIDbyEmail(String email) throws DatabaseException {
-        List<Member> members = memberRepo.getAll();
-        List<Staff> staffs = staffRepo.getAll();
-        for(Member member : members) {
-            if(member.getEmail().equals(email)) {
-                return member.getID();
+    public int getIDbyEmail(String email) throws EntityNotFoundException, DatabaseException {
+        try {
+            List<Member> members = memberRepo.getAll();
+            List<Staff> staffs = staffRepo.getAll();
+
+            for (Member member : members) {
+                if (member.getEmail().equals(email)) {
+                    return member.getID();
+                }
             }
-        }
-        for(Staff staff : staffs) {
-            if(staff.getEmail().equals(email)) {
-                return staff.getID();
+            for (Staff staff : staffs) {
+                if (staff.getEmail().equals(email)) {
+                    return staff.getID();
+                }
             }
+
+            throw new EntityNotFoundException("No entity found with the provided email.");
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting ID by email.");
         }
-        return -1;
     }
 
     /**
@@ -643,13 +945,16 @@ public class LibraryService {
      */
 
     public List<Book> searchBook(String title) throws DatabaseException {
-        if (title == null || title.trim().isEmpty()) {
-            return getAllBooksSortedByTitle();
-        }
-        else {
-            return bookRepo.getAll().stream()
-                    .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
-                    .collect(Collectors.toList());
+        try {
+            if (title == null || title.trim().isEmpty()) {
+                return getAllBooksSortedByTitle();
+            } else {
+                return bookRepo.getAll().stream()
+                        .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error searching book.");
         }
     }
 
@@ -660,9 +965,13 @@ public class LibraryService {
      */
 
     public List<Book> getAllBooksSortedByTitle() throws DatabaseException {
-        return bookRepo.getAll().stream()
-                .sorted(Comparator.comparing(Book::getBookName))
-                .collect(Collectors.toList());
+        try {
+            return bookRepo.getAll().stream()
+                    .sorted(Comparator.comparing(Book::getBookName))
+                    .collect(Collectors.toList());
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error getting all books sorted by title.");
+        }
     }
 
     /**
@@ -671,28 +980,32 @@ public class LibraryService {
      * @param memberID the ID of the member
      * @return a list of all recommended books for that member
      */
-    public List<Book> recommendBooksForMember(int memberID) throws DatabaseException {
-        Member member = memberRepo.get(memberID);
+    public List<Book> recommendBooksForMember(int memberID) throws EntityNotFoundException, DatabaseException {
+        try {
+            Member member = memberRepo.get(memberID);
 
-        if (member == null) {
-            throw new IllegalArgumentException("Member not found.");
+            if (member == null) {
+                throw new EntityNotFoundException("Member not found.");
+            }
+
+            Set<Category> borrowedCategories = member.getLoanHistory().stream()
+                    .map(Loan::getBook)
+                    .map(Book::getCategory)
+                    .collect(Collectors.toSet());
+
+            if (borrowedCategories.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            return bookRepo.getAll().stream()
+                    .filter(book -> borrowedCategories.contains(book.getCategory()))
+                    .filter(book -> book.getCopiesAvailable() > 0)
+                    .filter(book -> member.getLoanHistory().stream()
+                            .noneMatch(loan -> loan.getBook().getID() == book.getID()))
+                    .collect(Collectors.toList());
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error recommending books for member");
         }
-
-        Set<Category> borrowedCategories = member.getLoanHistory().stream()
-                .map(Loan::getBook)
-                .map(Book::getCategory)
-                .collect(Collectors.toSet());
-
-        if (borrowedCategories.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return bookRepo.getAll().stream()
-                .filter(book -> borrowedCategories.contains(book.getCategory()))
-                .filter(book -> book.getCopiesAvailable() > 0)
-                .filter(book -> member.getLoanHistory().stream()
-                        .noneMatch(loan -> loan.getBook().getID() == book.getID()))
-                .collect(Collectors.toList());
     }
 
     /**
@@ -701,9 +1014,13 @@ public class LibraryService {
      * @return list of sorted books
      */
     public List<Book> sortBooksByAvgRating() throws DatabaseException {
-        List<Book> books = new ArrayList<>(bookRepo.getAll());
-        books.sort((b1, b2) -> Double.compare(calculateAverageRating(b1), calculateAverageRating(b2)));
-        return books;
+        try {
+            List<Book> books = new ArrayList<>(bookRepo.getAll());
+            books.sort((b1, b2) -> Double.compare(calculateAverageRating(b2), calculateAverageRating(b1)));
+            return books;
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error sorting books by average rating.");
+        }
     }
 
     /**
@@ -718,6 +1035,22 @@ public class LibraryService {
         }
         double totalRating = reviews.stream().mapToDouble(Review::getRating).sum();
         return totalRating / reviews.size();
+    }
+
+    /**
+     * Adds a category to the repository
+     *
+     * @param name the name of the category
+     * @param description the description of the category
+     * @throws DatabaseException throws DatabaseException
+     */
+    public void addCategory(String name, String description) throws DatabaseException {
+        try {
+            Category category = new Category(++newCategoryID, name, description);
+            categoryRepo.add(category);
+        } catch (DatabaseException e) {
+            throw new DatabaseException("Error adding category.");
+        }
     }
 
 }

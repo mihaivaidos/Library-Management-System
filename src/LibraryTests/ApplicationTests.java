@@ -1,18 +1,21 @@
 package LibraryTests;
+import Exceptions.BusinessLogicException;
 import Exceptions.DatabaseException;
+import Exceptions.EntityNotFoundException;
 import LibraryModel.*;
 import LibraryRepository.IRepository;
 import LibraryRepository.InMemoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import LibraryService.LibraryService;
-import java.util.Date;
+
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class ApplicationTests {
+class ApplicationTests {
     private LibraryService libraryService;
     private IRepository<Book> bookRepo;
     private IRepository<Member> memberRepo;
@@ -40,7 +43,7 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testAddUpdateDeleteBook() throws DatabaseException {
+    public void testAddUpdateDeleteBook() throws DatabaseException, EntityNotFoundException {
         Author author = new Author(15, "Ana Blandiana", "anabl@yahoo.com", "1234567890");
         authorRepo.add(author);
         Category category = new Category(6, "Poetry", "Poems");
@@ -68,7 +71,7 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testAddReviewToBook_Valid() throws DatabaseException {
+    public void testAddReviewToBook_Valid() throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         Member member = new Member(1, "Member Name", "member@example.com", "1234567890");
         memberRepo.add(member);
         Author author = new Author(1, "Author Name", "author@example.com", "1234567890");
@@ -80,7 +83,7 @@ public class ApplicationTests {
         Book book = new Book(1, "Test Book", author, true, category, publisher, 5);
         bookRepo.add(book);
 
-        Loan loan = new Loan(1, new Date(), libraryService.calculateDueDate(), null, "ACTIVE", book, member);
+        Loan loan = new Loan(1, LocalDate.now(), libraryService.calculateDueDate(), null, "ACTIVE", book, member);
         loanRepo.add(loan);
         member.getLoanHistory().add(loan);
 
@@ -92,7 +95,7 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testAddReviewToBook_InvalidBlankReviewText() throws DatabaseException {
+    public void testAddReviewToBook_InvalidBlankReviewText() throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         Member member = new Member(2, "Another Member", "another@example.com", "0987654321");
         memberRepo.add(member);
         Author author = new Author(2, "Another Author", "anotherauthor@example.com", "1234567890");
@@ -104,7 +107,7 @@ public class ApplicationTests {
         Book book = new Book(2, "Another Test Book", author, true, category, publisher, 5);
         bookRepo.add(book);
 
-        Loan loan = new Loan(2, new Date(), libraryService.calculateDueDate(), null, "ACTIVE", book, member);
+        Loan loan = new Loan(2, LocalDate.now(), libraryService.calculateDueDate(), null, "ACTIVE", book, member);
         loanRepo.add(loan);
         member.getLoanHistory().add(loan);
 
@@ -115,7 +118,7 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testGetMemberBorrowedBooks_WithLoans() throws DatabaseException {
+    public void testGetMemberBorrowedBooks_WithLoans() throws DatabaseException, EntityNotFoundException {
         Member member = new Member(1, "John Doe", "john@example.com", "1234567890");
         memberRepo.add(member);
         Author author = new Author(1, "Author Name", "author@example.com", "1234567890");
@@ -129,8 +132,8 @@ public class ApplicationTests {
         bookRepo.add(book1);
         bookRepo.add(book2);
 
-        Loan loan1 = new Loan(1, new Date(), libraryService.calculateDueDate(), null, "ACTIVE", book1, member);
-        Loan loan2 = new Loan(2, new Date(), libraryService.calculateDueDate(), null, "ACTIVE", book2, member);
+        Loan loan1 = new Loan(1, LocalDate.now(), libraryService.calculateDueDate(), null, "ACTIVE", book1, member);
+        Loan loan2 = new Loan(2, LocalDate.now(), libraryService.calculateDueDate(), null, "ACTIVE", book2, member);
         loanRepo.add(loan1);
         loanRepo.add(loan2);
         member.getLoanHistory().add(loan1);
@@ -144,7 +147,7 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testGetMemberBorrowedBooks_WithoutLoans() throws DatabaseException {
+    public void testGetMemberBorrowedBooks_WithoutLoans() throws DatabaseException, EntityNotFoundException {
         Member memberWithoutLoans = new Member(2, "Jane Doe", "jane@example.com", "0987654321");
         memberRepo.add(memberWithoutLoans);
 
