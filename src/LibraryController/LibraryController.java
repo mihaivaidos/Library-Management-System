@@ -387,14 +387,14 @@ public class LibraryController {
      * Searches for books in the library by their title.
      * If the search term is empty, retrieves all books sorted by title.
      *
-     * @param searchTerm the title or part of the title of the book to search for;
+     * @param title the title or part of the title of the book to search for;
      *              if null or empty, all books sorted by title will be displayed
      * @return list of the books found
      */
 
-    public List<Book> searchBook(String searchTerm) {
-        System.out.println("Searching for books with title or author name containing: " + (searchTerm != null ? searchTerm : "No search term provided"));
-        List<Book> books = libraryService.searchBook(searchTerm);
+    public List<Book> searchBook(String title) {
+        System.out.println("Searching for books with title containing: " + (title != null ? title : "No search term provided"));
+        List<Book> books = libraryService.searchBook(title);
         printBooks(books);
         return books;
     }

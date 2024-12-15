@@ -180,9 +180,6 @@ public class LibraryService {
         }
         member.getLoans().add(loan);
         member.getLoanHistory().add(loan);
-        bookRepo.update(book);
-        memberRepo.update(member);
-        loanRepo.update(loan);
     }
 
     /**
@@ -249,9 +246,6 @@ public class LibraryService {
         }
         Member member = loan.getMember();
         member.getLoans().remove(loan);
-        memberRepo.update(member);
-        bookRepo.update(book);
-        loanRepo.update(loan);
     }
 
     /**
@@ -642,35 +636,18 @@ public class LibraryService {
      * Searches for books in the library by their title.
      * If the search term is empty, retrieves all books sorted by their title.
      *
-     * @param searchTerm the title or part of the title of the book to search for
+     * @param title the title or part of the title of the book to search for
      * @return a list of Book objects whose titles contain the specified search term;
      *         returns a sorted list of all books if the search term is empty
      */
 
-//    public List<Book> searchBook(String title) {
-//        if (title == null || title.trim().isEmpty()) {
-//            return getAllBooksSortedByTitle();
-//        }
-//        else {
-//            return bookRepo.getAll().stream()
-//                    .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
-//                    .collect(Collectors.toList());
-//        }
-//    }
-
-    public List<Book> searchBook(String searchTerm) {
-        // If both title and author are null or empty, return all books sorted by title
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+    public List<Book> searchBook(String title) {
+        if (title == null || title.trim().isEmpty()) {
             return getAllBooksSortedByTitle();
-        } else {
+        }
+        else {
             return bookRepo.getAll().stream()
-                    .filter(book -> {
-                        boolean matchesTitle = searchTerm != null && !searchTerm.trim().isEmpty() &&
-                                book.getBookName().toLowerCase().contains(searchTerm.toLowerCase());
-                        boolean matchesAuthor = searchTerm != null && !searchTerm.trim().isEmpty() &&
-                                book.getAuthor().getName().toLowerCase().contains(searchTerm.toLowerCase());
-                        return matchesTitle || matchesAuthor; // Matches either title or author
-                    })
+                    .filter(book -> book.getBookName().toLowerCase().contains(title.toLowerCase()))
                     .collect(Collectors.toList());
         }
     }
