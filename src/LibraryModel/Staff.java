@@ -50,8 +50,13 @@ public class Staff extends Person implements Serializable {
      */
     @Override
     public String toString() {
-        return "Staff{" +
-                "position='" + position + '\'' +
-                '}';
+        return "Staff {\n" +
+                "  ID             : " + ID + "\n" +
+                "  Name           : '" + name + "'\n" +
+                "  Email          : '" + email + "'\n" +
+                "  Phone Number   : '" + phoneNumber + "'\n" +
+                "  Position       : '" + position + "'\n" +
+                "}";
     }
+
 }

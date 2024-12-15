@@ -9,10 +9,10 @@ import java.io.Serializable;
 public abstract class Person implements HasID, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int ID;
-    public String name;
-    private String email;
-    private String phoneNumber;
+    protected int ID;
+    protected String name;
+    protected String email;
+    protected String phoneNumber;
 
     /**
      * Constructs a new Person instance with the specified parameters.

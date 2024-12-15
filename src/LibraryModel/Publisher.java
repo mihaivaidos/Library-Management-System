@@ -51,8 +51,12 @@ public class Publisher extends Person implements Serializable {
      */
     @Override
     public String toString() {
-        return "Publisher{" +
-                "publishedBooks=" + publishedBooks +
-                '}';
+        return "Publisher {\n" +
+                "  ID              : " + ID + "\n" +
+                "  Name            : '" + name + "'\n" +
+                "  Email           : '" + email + "'\n" +
+                "  Phone Number    : '" + phoneNumber + "'\n" +
+                "  Published Books : " + publishedBooks + "\n" +
+                "}";
     }
 }

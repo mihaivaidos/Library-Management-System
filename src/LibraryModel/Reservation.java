@@ -1,6 +1,7 @@
 package LibraryModel;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -10,7 +11,7 @@ public class Reservation implements HasID, Serializable {
     private static final long serialVersionUID = 1L;
 
     private int reservationID;
-    private Date reservationDate;
+    private LocalDate reservationDate;
     private Book book;
     private Member member;
 
@@ -22,7 +23,7 @@ public class Reservation implements HasID, Serializable {
      * @param book            the book reserved
      * @param member          the member who made the reservation
      */
-    public Reservation(int reservationID, Date reservationDate, Book book, Member member) {
+    public Reservation(int reservationID, LocalDate reservationDate, Book book, Member member) {
         this.reservationID = reservationID;
         this.reservationDate = reservationDate;
         this.book = book;
@@ -53,7 +54,7 @@ public class Reservation implements HasID, Serializable {
      *
      * @return the reservation date
      */
-    public Date getReservationDate() {
+    public LocalDate getReservationDate() {
         return reservationDate;
     }
 
@@ -62,7 +63,7 @@ public class Reservation implements HasID, Serializable {
      *
      * @param reservationDate the new reservation date
      */
-    public void setReservationDate(Date reservationDate) {
+    public void setReservationDate(LocalDate reservationDate) {
         this.reservationDate = reservationDate;
     }
 
@@ -109,11 +110,12 @@ public class Reservation implements HasID, Serializable {
      */
     @Override
     public String toString() {
-        return "Reservation{" +
-                "reservationID=" + reservationID +
-                ", reservationDate=" + reservationDate +
-                ", book=" + book +
-                ", member=" + member +
-                '}';
+        return "Reservation {\n" +
+                "  Reservation ID   : " + reservationID + "\n" +
+                "  Reservation Date : " + reservationDate + "\n" +
+                "  Book             : " + book + "\n" +
+                "  Member           : " + member + "\n" +
+                "}";
     }
+
 }

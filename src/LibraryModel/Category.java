@@ -111,11 +111,11 @@ public class Category implements HasID, Serializable {
      */
     @Override
     public String toString() {
-        return "Category{" +
-                "categoryID=" + categoryID +
-                ", categoryName='" + categoryName + '\'' +
-                ", description='" + description + '\'' +
-                ", books=" + books +
-                '}';
+        return "Category {\n" +
+                "  Category ID   : " + categoryID + "\n" +
+                "  Category Name : '" + categoryName + "'\n" +
+                "  Description   : '" + description + "'\n" +
+                "  Books         : " + books + "\n" +
+                "}";
     }
 }

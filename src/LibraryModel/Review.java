@@ -129,12 +129,13 @@ public class Review implements HasID, Serializable {
      */
     @Override
     public String toString() {
-        return "Review{" +
-                "reviewID=" + reviewID +
-                ", rating=" + rating +
-                ", comments='" + comments + '\'' +
-                ", book=" + book +
-                ", member=" + member +
-                '}';
+        return "Review {\n" +
+                "  Review ID   : " + reviewID + "\n" +
+                "  Rating      : " + rating + "\n" +
+                "  Comments    : '" + comments + "'\n" +
+                "  Book        : " + book + "\n" +
+                "  Member      : " + member + "\n" +
+                "}";
     }
+
 }

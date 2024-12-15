@@ -1,6 +1,7 @@
 package LibraryModel;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -11,9 +12,9 @@ public class Loan implements HasID, Serializable {
     private static final long serialVersionUID = 1L;
 
     private int loanID;
-    private Date loanDate;
-    private Date dueDate;
-    private Date returnDate;
+    private LocalDate loanDate;
+    private LocalDate dueDate;
+    private LocalDate returnDate;
     private String status;
     private Book book;
     private Member member;
@@ -29,7 +30,7 @@ public class Loan implements HasID, Serializable {
      * @param book        the book that is loaned
      * @param member      the member who borrowed the book
      */
-    public Loan(int loanID, Date loanDate, Date dueDate, Date returnDate, String status, Book book, Member member) {
+    public Loan(int loanID, LocalDate loanDate, LocalDate dueDate, LocalDate returnDate, String status, Book book, Member member) {
         this.loanID = loanID;
         this.loanDate = loanDate;
         this.dueDate = dueDate;
@@ -63,7 +64,7 @@ public class Loan implements HasID, Serializable {
      *
      * @return the loan date
      */
-    public Date getLoanDate() {
+    public LocalDate getLoanDate() {
         return loanDate;
     }
 
@@ -72,7 +73,7 @@ public class Loan implements HasID, Serializable {
      *
      * @param loanDate the new loan date
      */
-    public void setLoanDate(Date loanDate) {
+    public void setLoanDate(LocalDate loanDate) {
         this.loanDate = loanDate;
     }
 
@@ -81,7 +82,7 @@ public class Loan implements HasID, Serializable {
      *
      * @return the due date
      */
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
@@ -90,7 +91,7 @@ public class Loan implements HasID, Serializable {
      *
      * @param dueDate the new due date
      */
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -99,7 +100,7 @@ public class Loan implements HasID, Serializable {
      *
      * @return the return date
      */
-    public Date getReturnDate() {
+    public LocalDate getReturnDate() {
         return returnDate;
     }
 
@@ -108,7 +109,7 @@ public class Loan implements HasID, Serializable {
      *
      * @param returnDate the new return date
      */
-    public void setReturnDate(Date returnDate) {
+    public void setReturnDate(LocalDate returnDate) {
         this.returnDate = returnDate;
     }
 
@@ -173,14 +174,14 @@ public class Loan implements HasID, Serializable {
      */
     @Override
     public String toString() {
-        return "Loan{" +
-                "loanID=" + loanID +
-                ", loanDate=" + loanDate +
-                ", dueDate=" + dueDate +
-                ", returnDate=" + returnDate +
-                ", status='" + status + '\'' +
-                ", book=" + book +
-                ", member=" + member +
-                '}';
+        return "Loan {\n" +
+                "  Loan ID     : " + loanID + "\n" +
+                "  Loan Date   : " + loanDate + "\n" +
+                "  Due Date    : " + dueDate + "\n" +
+                "  Return Date : " + (returnDate != null ? returnDate : "Not Returned") + "\n" +
+                "  Status      : '" + status + "'\n" +
+                "  Book        : " + book + "\n" +
+                "  Member      : " + member + "\n" +
+                "}";
     }
 }

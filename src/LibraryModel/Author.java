@@ -51,8 +51,13 @@ public class Author extends Person implements Serializable {
      */
     @Override
     public String toString() {
-        return "Author{" +
-                "name='" + name + '\'' +
-                '}';
+        return "Author {\n" +
+                "  ID           : " + ID + "\n" +
+                "  Name         : " + name + "\n" +
+                "  Email        : " + email + "\n" +
+                "  Phone Number : " + phoneNumber + "\n" +
+                "  Books        : " + books + "\n" +
+                "}";
     }
+
 }
