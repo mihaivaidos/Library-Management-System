@@ -436,9 +436,9 @@ public class LibraryService {
             Category category = categoryRepo.get(categoryID);
             Publisher publisher = publisherRepo.get(publisherID);
             Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
-            addBookToAuthor(book.getID(), authorID);
-            addBookToCategory(book.getID(), categoryID);
-            addBookToPublisher(book.getID(), publisherID);
+            addBookToAuthor(book, authorID);
+            addBookToCategory(book, categoryID);
+            addBookToPublisher(book, publisherID);
             bookRepo.add(book);
         } catch (DatabaseException e) {
             throw new DatabaseException("Error creating book.");
@@ -644,13 +644,13 @@ public class LibraryService {
     /**
      * Adds a book to a specific category.
      *
-     * @param bookID the ID of the book to be added to the category
+     * @param book the ID of the book to be added to the category
      * @param categoryID the ID of the category to which the book will be added
      */
 
-    public void addBookToCategory(int bookID, int categoryID) throws EntityNotFoundException, DatabaseException {
+    public void addBookToCategory(Book book, int categoryID) throws EntityNotFoundException, DatabaseException {
         try {
-            Book book = bookRepo.get(bookID);
+            //Book book = bookRepo.get(bookID);
             Category category = categoryRepo.get(categoryID);
 
             if (book == null) {
@@ -669,9 +669,9 @@ public class LibraryService {
         }
     }
 
-    public void addBookToAuthor(int bookID, int authorID) throws EntityNotFoundException, DatabaseException {
+    public void addBookToAuthor(Book book, int authorID) throws EntityNotFoundException, DatabaseException {
         try {
-            Book book = bookRepo.get(bookID);
+            //Book book = bookRepo.get(bookID);
             Author author = authorRepo.get(authorID);
 
             if (book == null) {
@@ -691,9 +691,9 @@ public class LibraryService {
         }
     }
 
-    public void addBookToPublisher(int bookID, int publisherID) throws EntityNotFoundException, DatabaseException {
+    public void addBookToPublisher(Book book, int publisherID) throws EntityNotFoundException, DatabaseException {
         try {
-            Book book = bookRepo.get(bookID);
+            //Book book = bookRepo.get(bookID);
             Publisher publisher = publisherRepo.get(publisherID);
 
             if (book == null) {

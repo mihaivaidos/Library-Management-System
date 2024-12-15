@@ -178,7 +178,8 @@ public class LibraryController {
 
     public void addBookToCategory(int bookID, int categoryID) {
         try {
-            libraryService.addBookToCategory(bookID, categoryID);
+            Book book = libraryService.getAllBooks().get(bookID);
+            libraryService.addBookToCategory(book, categoryID);
             System.out.println("Book added to category successfully.");
         } catch (EntityNotFoundException e) {
             System.err.println("Entity not found error: " + e.getMessage());
