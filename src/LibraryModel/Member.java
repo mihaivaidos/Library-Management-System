@@ -91,10 +91,14 @@ public class Member extends Person implements Serializable {
      */
     @Override
     public String toString() {
-        return "Member{" +
-                "loans=" + loans +
-                ", reservations=" + reservations +
-                ", loanHistory=" + loanHistory +
-                '}';
+        return "Member {\n" +
+                "  ID             : " + ID + "\n" +
+                "  Name           : '" + name + "'\n" +
+                "  Email          : '" + email + "'\n" +
+                "  Phone Number   : '" + phoneNumber + "'\n" +
+                "  Loans          : " + loans + "\n" +
+                "  Reservations   : " + reservations + "\n" +
+                "  Loan History   : " + loanHistory + "\n" +
+                "}";
     }
 }
