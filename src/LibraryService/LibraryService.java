@@ -1,5 +1,6 @@
 package LibraryService;
 
+import Exceptions.DatabaseException;
 import LibraryModel.*;
 import LibraryRepository.IRepository;
 import LibraryRepository.InMemoryRepository;
@@ -76,7 +77,7 @@ public class LibraryService {
      * @param reviewText the text of the review
      */
 
-    public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) {
+    public void addReviewToBook(int memberID, int bookID, int rating, String reviewText) throws DatabaseException {
         Member member = memberRepo.get(memberID);
         Book book = bookRepo.get(bookID);
         if (book != null && member != null) {
@@ -97,7 +98,7 @@ public class LibraryService {
      * @return a list of borrowed books by the member
      */
 
-    public List<Book> getMemberBorrowedBooks(int memberID) {
+    public List<Book> getMemberBorrowedBooks(int memberID) throws DatabaseException {
         List<Book> books = new ArrayList<>();
         Member member = memberRepo.get(memberID);
         for(Loan loan : member.getLoanHistory()) {
@@ -112,7 +113,7 @@ public class LibraryService {
      * @param reviewID the ID of the review to be deleted
      */
 
-    public void deleteReviewFromBook(int reviewID) {
+    public void deleteReviewFromBook(int reviewID) throws DatabaseException {
         Review reviewToDelete = reviewRepo.get(reviewID);
         if (reviewToDelete != null) {
             Book book = reviewToDelete.getBook();
@@ -133,7 +134,7 @@ public class LibraryService {
      * @return a list of reviews for the specified book
      */
 
-    public List<Review> getAllReviewsOfBook(int bookID) {
+    public List<Review> getAllReviewsOfBook(int bookID) throws DatabaseException {
         Book book = bookRepo.get(bookID);
         return book != null ? book.getReviews() : new ArrayList<>();
     }
@@ -146,7 +147,7 @@ public class LibraryService {
      * @param bookID the ID of the book to be borrowed
      */
 
-    public void borrowBook(int memberID, int bookID) {
+    public void borrowBook(int memberID, int bookID) throws DatabaseException {
         Book book = bookRepo.get(bookID);
         Member member = memberRepo.get(memberID);
 
@@ -171,7 +172,7 @@ public class LibraryService {
      * @param book the book that is borrowed
      * @param member the member that borrows the book
      */
-    public void createLoan(Book book, Member member) {
+    public void createLoan(Book book, Member member) throws DatabaseException {
         Loan loan = new Loan(++newLoanID, new Date(), calculateDueDate(), null, "ACTIVE", book, member);
         loanRepo.add(loan);
         book.setCopiesAvailable(book.getCopiesAvailable() - 1);
@@ -188,7 +189,7 @@ public class LibraryService {
      * @param book the book that is reserved
      * @param member the member that makes the reservation
      */
-    public void createReservation(Book book, Member member) {
+    public void createReservation(Book book, Member member) throws DatabaseException {
         Reservation reservation = new Reservation(++newReservationID, new Date(), book, member);
         reservationRepo.add(reservation);
         member.getReservations().add(reservation);
@@ -201,7 +202,7 @@ public class LibraryService {
      * @return true if the member has overdue loans, false otherwise
      */
 
-    public boolean checkMemberHasOverdueLoans(int memberID) {
+    public boolean checkMemberHasOverdueLoans(int memberID) throws DatabaseException {
         Member member = memberRepo.get(memberID);
         List<Loan> memberLoans = member.getLoans();
 
@@ -221,7 +222,7 @@ public class LibraryService {
      * @param loanID the ID of the loan to be returned
      */
 
-    public void returnBook(int loanID) {
+    public void returnBook(int loanID) throws DatabaseException {
         Loan loan = loanRepo.get(loanID);
         Book book = loan.getBook();
         if (loan != null && "ACTIVE".equals(loan.getStatus())) {
@@ -253,7 +254,7 @@ public class LibraryService {
      *
      * @param book the book in the reservation
      */
-    public void nextReservation(Book book) {
+    public void nextReservation(Book book) throws DatabaseException {
         Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
                 .filter(reservation -> reservation.getBook().equals(book))
                 .findFirst();
@@ -275,7 +276,7 @@ public class LibraryService {
      * @return a list of active loans for the specified member, sorted by loan date
      */
 
-    public List<Loan> getActiveLoansForMember(int memberID) {
+    public List<Loan> getActiveLoansForMember(int memberID) throws DatabaseException {
         Member member = memberRepo.get(memberID);
         if (member != null) {
 //            return member.getLoans().stream()
@@ -308,7 +309,7 @@ public class LibraryService {
      * @param copiesAvailable the number of copies of the book
      */
 
-    public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) {
+    public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) throws DatabaseException {
         Author author = authorRepo.get(authorID);
         Category category = categoryRepo.get(categoryID);
         Publisher publisher = publisherRepo.get(publisherID);
@@ -325,7 +326,7 @@ public class LibraryService {
      * @param position the position of the staff member
      */
 
-    public void addStaff(String name, String email, String phoneNumber, String position) {
+    public void addStaff(String name, String email, String phoneNumber, String position) throws DatabaseException {
         Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
         staffRepo.add(staff);
     }
@@ -337,7 +338,7 @@ public class LibraryService {
      * @return true if the user is a staff member, false otherwise
      */
 
-    public boolean isStaff(String email) {
+    public boolean isStaff(String email) throws DatabaseException {
         List<Staff> staffs = staffRepo.getAll();
         for(Staff staff : staffs ) {
             if(staff.getEmail().equals(email)) {
@@ -358,7 +359,7 @@ public class LibraryService {
      * @param newPublisherID the new publisher ID
      */
 
-    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) {
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) throws DatabaseException {
         Book book = bookRepo.get(bookID);
         Author author = authorRepo.get(newAuthorID);
         Category category = categoryRepo.get(newCategoryID);
@@ -390,7 +391,7 @@ public class LibraryService {
      * @param bookID the ID of the book to be deleted
      */
 
-    public void deleteBook(int bookID) {
+    public void deleteBook(int bookID) throws DatabaseException {
         Book book = bookRepo.get(bookID);
         if (book != null) {
             bookRepo.delete(bookID);
@@ -404,7 +405,7 @@ public class LibraryService {
      * @return a list of books published by the specified publisher
      */
 
-    public List<Book> getBooksByPublisher(int publisherID) {
+    public List<Book> getBooksByPublisher(int publisherID) throws DatabaseException {
         return bookRepo.getAll().stream()
             .filter(book -> book.getPublisher().getID() == publisherID)
             .collect(Collectors.toList());
@@ -417,7 +418,7 @@ public class LibraryService {
      * @return a list of books written by the specified author
      */
 
-    public List<Book> getBooksByAuthor(int authorID) {
+    public List<Book> getBooksByAuthor(int authorID) throws DatabaseException {
         return bookRepo.getAll().stream()
                 .filter(book -> book.getAuthor().getID() == authorID)
                 .collect(Collectors.toList());
@@ -430,7 +431,7 @@ public class LibraryService {
      * @return a list of active reservations for the specified member
      */
 
-    public List<Reservation> getActiveReservationsForMember(int memberID) {
+    public List<Reservation> getActiveReservationsForMember(int memberID) throws DatabaseException {
         Member member = memberRepo.get(memberID);
         return member.getReservations();
     }
@@ -442,7 +443,7 @@ public class LibraryService {
      * @return a list of loans that the specified member has previously borrowed
      */
 
-    public List<Loan> getLoanHistoryForMember(int memberID) {
+    public List<Loan> getLoanHistoryForMember(int memberID) throws DatabaseException {
         Member member = memberRepo.get(memberID);
         if (member != null) {
             return member.getLoanHistory();
@@ -459,7 +460,7 @@ public class LibraryService {
      * @param categoryID the ID of the category to which the book will be added
      */
 
-    public void addBookToCategory(int bookID, int categoryID) {
+    public void addBookToCategory(int bookID, int categoryID) throws DatabaseException {
         Book book = bookRepo.get(bookID);
         Category category = categoryRepo.get(categoryID);
 
@@ -476,7 +477,7 @@ public class LibraryService {
      * @return a list of books in the specified category
      */
 
-    public List<Book> getAllBooksInCategory(int categoryID) {
+    public List<Book> getAllBooksInCategory(int categoryID) throws DatabaseException {
         return bookRepo.getAll().stream()
                 .filter(book -> book.getCategory().getID() == categoryID)
                 .collect(Collectors.toList());
@@ -488,7 +489,7 @@ public class LibraryService {
      * @return a list of all publishers
      */
 
-    public List<Publisher> getAllPublishers() {
+    public List<Publisher> getAllPublishers() throws DatabaseException {
         return publisherRepo.getAll();
     }
 
@@ -498,7 +499,7 @@ public class LibraryService {
      * @return a list of all authors
      */
 
-    public List<Author> getAllAuthors() {
+    public List<Author> getAllAuthors() throws DatabaseException {
         return authorRepo.getAll();
     }
 
@@ -508,7 +509,7 @@ public class LibraryService {
      * @return a list of all categories
      */
 
-    public List<Category> getAllCategories() {
+    public List<Category> getAllCategories() throws DatabaseException {
         return categoryRepo.getAll();
     }
 
@@ -518,7 +519,7 @@ public class LibraryService {
      * @return a list of all reservations
      */
 
-    public List<Reservation> getAllReservations() {
+    public List<Reservation> getAllReservations() throws DatabaseException {
         return reservationRepo.getAll();
     }
 
@@ -528,7 +529,7 @@ public class LibraryService {
      * @return a list of all loans
      */
 
-    public List<Loan> getAllLoans() {
+    public List<Loan> getAllLoans() throws DatabaseException {
         return loanRepo.getAll();
     }
 
@@ -538,7 +539,7 @@ public class LibraryService {
      * @return a list of all members
      */
 
-    public List<Member> getAllMembers() {
+    public List<Member> getAllMembers() throws DatabaseException {
         return memberRepo.getAll();
     }
 
@@ -548,7 +549,7 @@ public class LibraryService {
      * @return a list of all reviews
      */
 
-    public List<Review> getAllReviews() {
+    public List<Review> getAllReviews() throws DatabaseException {
         return reviewRepo.getAll();
     }
 
@@ -558,7 +559,7 @@ public class LibraryService {
      * @return a list of all books
      */
 
-    public List<Book> getAllBooks() {
+    public List<Book> getAllBooks() throws DatabaseException {
         return bookRepo.getAll();
     }
 
@@ -570,7 +571,7 @@ public class LibraryService {
      * @param phoneNumber the phone number of the member
      */
 
-    public void addMember(String name, String email, String phoneNumber) {
+    public void addMember(String name, String email, String phoneNumber) throws DatabaseException {
         Member member = new Member(++newMemberID, name, email, phoneNumber);
         memberRepo.add(member);
     }
@@ -586,7 +587,7 @@ public class LibraryService {
      * @param phoneNumber the phone number of the author
      */
 
-    public void addAuthor(String name, String email, String phoneNumber) {
+    public void addAuthor(String name, String email, String phoneNumber) throws DatabaseException {
         Author author = new Author(++newAuthorID, name, email, phoneNumber);
         List<Book> books = new ArrayList<>();
         authorRepo.add(author);
@@ -603,7 +604,7 @@ public class LibraryService {
      * @param phoneNumber the phone number of the publisher
      */
 
-    public void addPublisher(String name, String email, String phoneNumber) {
+    public void addPublisher(String name, String email, String phoneNumber) throws DatabaseException {
         Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
         List<Book> publishedBooks = new ArrayList<>();
         publisherRepo.add(publisher);
@@ -616,7 +617,7 @@ public class LibraryService {
      * @return the ID of the person or -1 if they don't exist
      */
 
-    public int getIDbyEmail(String email) {
+    public int getIDbyEmail(String email) throws DatabaseException {
         List<Member> members = memberRepo.getAll();
         List<Staff> staffs = staffRepo.getAll();
         for(Member member : members) {
@@ -641,7 +642,7 @@ public class LibraryService {
      *         returns a sorted list of all books if the search term is empty
      */
 
-    public List<Book> searchBook(String title) {
+    public List<Book> searchBook(String title) throws DatabaseException {
         if (title == null || title.trim().isEmpty()) {
             return getAllBooksSortedByTitle();
         }
@@ -658,7 +659,7 @@ public class LibraryService {
      * @return a list of all books sorted by title
      */
 
-    public List<Book> getAllBooksSortedByTitle() {
+    public List<Book> getAllBooksSortedByTitle() throws DatabaseException {
         return bookRepo.getAll().stream()
                 .sorted(Comparator.comparing(Book::getBookName))
                 .collect(Collectors.toList());
@@ -670,7 +671,7 @@ public class LibraryService {
      * @param memberID the ID of the member
      * @return a list of all recommended books for that member
      */
-    public List<Book> recommendBooksForMember(int memberID) {
+    public List<Book> recommendBooksForMember(int memberID) throws DatabaseException {
         Member member = memberRepo.get(memberID);
 
         if (member == null) {
@@ -699,7 +700,7 @@ public class LibraryService {
      *
      * @return list of sorted books
      */
-    public List<Book> sortBooksByAvgRating() {
+    public List<Book> sortBooksByAvgRating() throws DatabaseException {
         List<Book> books = new ArrayList<>(bookRepo.getAll());
         books.sort((b1, b2) -> Double.compare(calculateAverageRating(b1), calculateAverageRating(b2)));
         return books;

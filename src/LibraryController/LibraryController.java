@@ -1,5 +1,6 @@
 package LibraryController;
 
+import Exceptions.DatabaseException;
 import LibraryModel.*;
 import LibraryService.LibraryService;
 
@@ -32,7 +33,7 @@ public class LibraryController {
      * @param comments the comments accompanying the review
      */
 
-    public void addReviewToBook(int memberID, int bookID, int rating, String comments) {
+    public void addReviewToBook(int memberID, int bookID, int rating, String comments) throws DatabaseException {
         libraryService.addReviewToBook(memberID, bookID, rating, comments);
         System.out.println("Review added successfully!");
     }
@@ -43,7 +44,7 @@ public class LibraryController {
      * @param reviewID the ID of the review to be deleted
      */
 
-    public void deleteReviewFromBook(int reviewID) {
+    public void deleteReviewFromBook(int reviewID) throws DatabaseException {
         libraryService.deleteReviewFromBook(reviewID);
         System.out.println("Review deleted successfully!");
     }
@@ -54,7 +55,7 @@ public class LibraryController {
      * @param bookID the ID of the book for which reviews are to be displayed
      */
 
-    public void viewAllReviewsOfBook(int bookID) {
+    public void viewAllReviewsOfBook(int bookID) throws DatabaseException {
         List<Review> reviews = libraryService.getAllReviewsOfBook(bookID);
         System.out.println("Reviews for book: " + bookID);
         for (Review review : reviews) {
@@ -63,7 +64,7 @@ public class LibraryController {
         }
     }
 
-    public void viewAllReviews() {
+    public void viewAllReviews() throws DatabaseException {
         System.out.println("Reviews: ");
         List<Review> reviews = libraryService.getAllReviews();
         for (Review review : reviews) {
@@ -79,7 +80,7 @@ public class LibraryController {
      * @param bookID the ID of the book to be borrowed
      */
 
-    public void borrowBook(int memberID, int bookID) {
+    public void borrowBook(int memberID, int bookID) throws DatabaseException {
         libraryService.borrowBook(memberID, bookID);
         System.out.println("Book borrowed or reserved successfully for member ID: " + memberID);
     }
@@ -90,7 +91,7 @@ public class LibraryController {
      * @param loanID the ID of the loan associated with the book being returned
      */
 
-    public void returnBook(int loanID) {
+    public void returnBook(int loanID) throws DatabaseException {
         libraryService.returnBook(loanID);
         System.out.println("Book returned successfully with Loan ID: " + loanID);
     }
@@ -101,7 +102,7 @@ public class LibraryController {
      * @param memberID the ID of the member whose active loans are to be displayed
      */
 
-    public void viewActiveLoans(int memberID) {
+    public void viewActiveLoans(int memberID) throws DatabaseException {
         List<Loan> loans = libraryService.getActiveLoansForMember(memberID);
         System.out.println("Active loans for member ID: " + memberID);
 
@@ -128,7 +129,7 @@ public class LibraryController {
      * @param categoryID the ID of the category to which the book is to be added
      */
 
-    public void addBookToCategory(int bookID, int categoryID) {
+    public void addBookToCategory(int bookID, int categoryID) throws DatabaseException {
         libraryService.addBookToCategory(bookID, categoryID);
         System.out.println("Book added to category successfully.");
     }
@@ -139,7 +140,7 @@ public class LibraryController {
      * @param categoryID the ID of the category whose books are to be displayed
      */
 
-    public void viewAllBooksInCategory(int categoryID) {
+    public void viewAllBooksInCategory(int categoryID) throws DatabaseException {
         System.out.println("Available Books in category: " + categoryID);
         List<Book> books = libraryService.getAllBooksInCategory(categoryID);
         printBooks(books);
@@ -149,7 +150,7 @@ public class LibraryController {
      * Displays all categories available in the library.
      */
 
-    public void viewAllCategories() {
+    public void viewAllCategories() throws DatabaseException {
         System.out.println("Categories:");
         List<Category> categories = libraryService.getAllCategories();
         for (Category category : categories) {
@@ -162,7 +163,7 @@ public class LibraryController {
      * Displays all books available in the library.
      */
 
-    public void viewAllBooks() {
+    public void viewAllBooks() throws DatabaseException {
         System.out.println("Available Books:");
         List<Book> books = libraryService.getAllBooks();
         printBooks(books);
@@ -173,7 +174,7 @@ public class LibraryController {
      *
      * @param memberID the ID of the member
      */
-    public void viewMemberBorrowedBooks(int memberID) {
+    public void viewMemberBorrowedBooks(int memberID) throws DatabaseException {
         System.out.println("Member borrowed books: " + memberID);
         List<Book> books = libraryService.getMemberBorrowedBooks(memberID);
         printBooks(books);
@@ -183,7 +184,7 @@ public class LibraryController {
      * Displays all publishers registered in the library system.
      */
 
-    public void viewAllPublishers() {
+    public void viewAllPublishers() throws DatabaseException {
         System.out.println("Publishers:");
         List<Publisher> publishers = libraryService.getAllPublishers();
         for (Publisher publisher : publishers) {
@@ -196,7 +197,7 @@ public class LibraryController {
      * Displays all authors registered in the library system.
      */
 
-    public void viewAllAuthors() {
+    public void viewAllAuthors() throws DatabaseException {
         System.out.println("Authors:");
         List<Author> authors = libraryService.getAllAuthors();
         for (Author author : authors) {
@@ -211,7 +212,7 @@ public class LibraryController {
      * @param publisherID the ID of the publisher whose books are to be displayed
      */
 
-    public void viewBooksByPublisher(int publisherID) {
+    public void viewBooksByPublisher(int publisherID) throws DatabaseException {
         System.out.println("Books by publisher: " + publisherID);
         List<Book> publisherBooks = libraryService.getBooksByPublisher(publisherID);
         printBooks(publisherBooks);
@@ -223,7 +224,7 @@ public class LibraryController {
      * @param authorID the ID of the author whose books are to be displayed
      */
 
-    public void viewBooksByAuthor(int authorID) {
+    public void viewBooksByAuthor(int authorID) throws DatabaseException {
         System.out.println("Books by author: " + authorID);
         List<Book> books = libraryService.getBooksByAuthor(authorID);
         printBooks(books);
@@ -235,7 +236,7 @@ public class LibraryController {
      * @param memberID the ID of the member whose active reservations are to be displayed
      */
 
-    public void viewActiveReservations(int memberID) {
+    public void viewActiveReservations(int memberID) throws DatabaseException {
         List<Reservation> reservations = libraryService.getActiveReservationsForMember(memberID);
         System.out.println("Active reservations for member ID: " + memberID);
         for(Reservation reservation : reservations) {
@@ -250,7 +251,7 @@ public class LibraryController {
      * @param memberID the ID of the member whose loan history is to be displayed
      */
 
-    public void viewLoanHistoryForMember(int memberID) {
+    public void viewLoanHistoryForMember(int memberID) throws DatabaseException {
         List<Loan> loans = libraryService.getLoanHistoryForMember(memberID);
         System.out.println("Loan History for member ID: " + memberID);
         for(Loan loan : loans) {
@@ -270,7 +271,7 @@ public class LibraryController {
      * @param copies the number of copies of the book
      */
 
-    public void addBook(String title, int authorID, int categoryID, int publisherID, int copies) {
+    public void addBook(String title, int authorID, int categoryID, int publisherID, int copies) throws DatabaseException {
         libraryService.addBook(title, authorID, categoryID, publisherID, copies);
         System.out.println("Book added successfully: " + title);
     }
@@ -287,7 +288,7 @@ public class LibraryController {
      * @param newCopies the new number of copies of the book
      */
 
-    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) {
+    public void updateBook(int bookID, String newBookName, int newAuthorID, boolean newIsAvailable, int newCategoryID, int newPublisherID, int newCopies) throws DatabaseException {
         libraryService.updateBook(bookID, newBookName, newAuthorID, newIsAvailable, newCategoryID, newPublisherID, newCopies);
         System.out.println("Book updated successfully: " + newBookName);
     }
@@ -298,7 +299,7 @@ public class LibraryController {
      * @param bookID the ID of the book to be deleted
      */
 
-    public void deleteBook(int bookID) {
+    public void deleteBook(int bookID) throws DatabaseException {
         libraryService.deleteBook(bookID);
         System.out.println("Book deleted successfully: " + bookID);
     }
@@ -312,7 +313,7 @@ public class LibraryController {
      * @param position the position of the staff member in the library
      */
 
-    public void addStaff(String name, String email, String phoneNumber, String position) {
+    public void addStaff(String name, String email, String phoneNumber, String position) throws DatabaseException {
         libraryService.addStaff(name, email, phoneNumber, position);
         System.out.println("Staff added successfully: " + name);
     }
@@ -324,7 +325,7 @@ public class LibraryController {
      * @return true if the email belongs to a staff member, false otherwise
      */
 
-    public boolean isStaff(String email) {
+    public boolean isStaff(String email) throws DatabaseException {
         if(libraryService.isStaff(email)) {
             System.out.println("You are a staff!");
             return true;
@@ -342,7 +343,7 @@ public class LibraryController {
      * @param phoneNumber the phone number of the member
      */
 
-    public void addMember(String name, String email, String phoneNumber) {
+    public void addMember(String name, String email, String phoneNumber) throws DatabaseException {
         libraryService.addMember(name, email, phoneNumber);
         System.out.println("Member added successfully: " + name);
     }
@@ -355,7 +356,7 @@ public class LibraryController {
      * @param phoneNumber the phone number of the author
      */
 
-    public void addAuthor(String name, String email, String phoneNumber) {
+    public void addAuthor(String name, String email, String phoneNumber) throws DatabaseException {
         libraryService.addAuthor(name, email, phoneNumber);
         System.out.println("Author added successfully: " + name);
     }
@@ -368,7 +369,7 @@ public class LibraryController {
      * @param phoneNumber the phone number of the publisher
      */
 
-    public void addPublisher(String name, String email, String phoneNumber) {
+    public void addPublisher(String name, String email, String phoneNumber) throws DatabaseException {
         libraryService.addPublisher(name, email, phoneNumber);
         System.out.println("Publisher added successfully: " + name);
     }
@@ -379,7 +380,7 @@ public class LibraryController {
      * @param email the email of the staff or member
      * @return the ID or -1
      */
-    public int getIDbyEmail(String email) {
+    public int getIDbyEmail(String email) throws DatabaseException {
         return libraryService.getIDbyEmail(email);
     }
 
@@ -392,7 +393,7 @@ public class LibraryController {
      * @return list of the books found
      */
 
-    public List<Book> searchBook(String title) {
+    public List<Book> searchBook(String title) throws DatabaseException {
         System.out.println("Searching for books with title containing: " + (title != null ? title : "No search term provided"));
         List<Book> books = libraryService.searchBook(title);
         printBooks(books);
@@ -403,7 +404,7 @@ public class LibraryController {
      * Displays all books available in the library sorted by title.
      */
 
-    public void viewAllBooksSortedByTitle() {
+    public void viewAllBooksSortedByTitle() throws DatabaseException {
         System.out.println("Available Books (Sorted by Title):");
         List<Book> books = libraryService.getAllBooksSortedByTitle();
         printBooks(books);
@@ -437,7 +438,7 @@ public class LibraryController {
      *
      * @param memberID the ID of the member that wants to see the recommendations
      */
-    public void recommendBooksForMember(int memberID) {
+    public void recommendBooksForMember(int memberID) throws DatabaseException {
         List<Book> recommendedBooks = libraryService.recommendBooksForMember(memberID);
         if (recommendedBooks.isEmpty()) {
             System.out.println("No recommendations available. The member has not borrowed any books yet.");
@@ -451,7 +452,7 @@ public class LibraryController {
     /**
      * Prints the books sorted by their rating
      */
-    public void sortBooksByAvgRating() {
+    public void sortBooksByAvgRating() throws DatabaseException {
         List<Book> sortedBooks = libraryService.sortBooksByAvgRating();
         System.out.println("Books sorted by average rating:");
         printBooks(sortedBooks);

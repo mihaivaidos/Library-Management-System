@@ -1,4 +1,5 @@
 package LibraryDataInitializer;
+import Exceptions.DatabaseException;
 import LibraryModel.*;
 import LibraryRepository.IRepository;
 
@@ -16,7 +17,7 @@ public class DataInitializer {
             IRepository<Author> authorRepo,
             IRepository<Publisher> publisherRepo,
             IRepository<Staff> staffRepo
-    ) {
+    ) throws DatabaseException {
 
         // Initialize Categories
         Category fiction = new Category(1, "Fiction", "Fictional books");
