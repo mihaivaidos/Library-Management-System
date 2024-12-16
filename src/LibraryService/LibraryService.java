@@ -243,6 +243,10 @@ public class LibraryService {
      * @param member the member that borrows the book
      */
     public void createLoan(Book book, Member member) throws DatabaseException {
+        if (!book.isAvailable() || book.getCopiesAvailable() < 1) {
+            throw new DatabaseException("Book is not available for loan.");
+        }
+
         try {
             Loan loan = new Loan(++newLoanID, LocalDate.now(), calculateDueDate(), null, "ACTIVE", book, member);
             loanRepo.add(loan);
@@ -267,7 +271,11 @@ public class LibraryService {
      * @param book the book that is reserved
      * @param member the member that makes the reservation
      */
-    public void createReservation(Book book, Member member) throws DatabaseException {
+    public void createReservation(Book book, Member member) throws DatabaseException, EntityNotFoundException {
+        if (book == null || bookRepo.get(book.getID()) == null) {
+            throw new EntityNotFoundException("Book not found.");
+        }
+
         try {
             Reservation reservation = new Reservation(++newReservationID, LocalDate.now(), book, member);
             reservationRepo.add(reservation);
@@ -355,8 +363,10 @@ public class LibraryService {
 
             memberRepo.update(member);
             bookRepo.update(book);
-            loanRepo.update(loan);
-        } catch (DatabaseException e) {
+
+
+        }
+        catch (DatabaseException e) {
             throw new DatabaseException("Error removing loan.");
         }
     }
@@ -366,7 +376,10 @@ public class LibraryService {
      *
      * @param book the book in the reservation
      */
-    public void nextReservation(Book book) throws DatabaseException {
+    public void nextReservation(Book book) throws DatabaseException, EntityNotFoundException {
+        if (book == null) {
+            throw new EntityNotFoundException("Book not found.");
+        }
         try {
             Optional<Reservation> nextReservation = reservationRepo.getAll().stream()
                     .filter(reservation -> reservation.getBook().equals(book))
@@ -455,6 +468,9 @@ public class LibraryService {
      */
 
     public void addStaff(String name, String email, String phoneNumber, String position) throws DatabaseException {
+        if (name == null || name.trim().isEmpty()) {
+            throw new DatabaseException("Invalid name provided.");
+        }
         try {
             Staff staff = new Staff(++newStaffID, name, email, phoneNumber, position);
             staffRepo.add(staff);
@@ -878,6 +894,9 @@ public class LibraryService {
      */
 
     public void addAuthor(String name, String email, String phoneNumber) throws DatabaseException {
+        if (name == null || name.trim().isEmpty()) {
+            throw new DatabaseException("Invalid name provided.");
+        }
         try {
             Author author = new Author(++newAuthorID, name, email, phoneNumber);
             authorRepo.add(author);
@@ -898,6 +917,9 @@ public class LibraryService {
      */
 
     public void addPublisher(String name, String email, String phoneNumber) throws DatabaseException {
+        if (name == null || name.trim().isEmpty()) {
+            throw new DatabaseException("Invalid name provided.");
+        }
         try {
             Publisher publisher = new Publisher(++newPublisherID, name, email, phoneNumber);
             publisherRepo.add(publisher);
