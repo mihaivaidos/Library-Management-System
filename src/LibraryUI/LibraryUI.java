@@ -71,8 +71,8 @@ public class LibraryUI {
                     String choice = scanner.nextLine().toLowerCase();
                     continueLoop = choice.equals("yes");
                 }
-            } catch (Exception e) {
-                System.err.println("Error occurred: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
             }
         }
 
@@ -86,9 +86,8 @@ public class LibraryUI {
     private void memberMenu() {
         while (true) {
             printMemberMenu();
-
-            int choice = Integer.parseInt(scanner.nextLine());
             try {
+                int choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
                     case 1 -> bookMenu();
                     case 2 -> borrowBook();
@@ -105,8 +104,8 @@ public class LibraryUI {
                     }
                     default -> System.out.println("Invalid choice! Please try again.");
                 }
-            } catch (Exception e) {
-                System.err.println("Error occurred: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
             }
         }
     }
@@ -136,9 +135,8 @@ public class LibraryUI {
     private void staffMenu() {
         while (true) {
             printStaffMenu();
-
-            int choice = Integer.parseInt(scanner.nextLine());
             try {
+                int choice = Integer.parseInt(scanner.nextLine());
                 switch (choice) {
                     case 1 -> addBook();
                     case 2 -> updateBook();
@@ -163,8 +161,8 @@ public class LibraryUI {
                     }
                     default -> System.out.println("Invalid choice! Please try again.");
                 }
-            } catch (Exception e) {
-                System.err.println("Error occurred: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
             }
         }
     }

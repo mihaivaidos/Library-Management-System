@@ -256,7 +256,7 @@ public class LibraryService {
             }
             member.getLoans().add(loan);
             member.getLoanHistory().add(loan);
-            member = loan.getMember();
+            //member = loan.getMember();
             bookRepo.update(book);
             memberRepo.update(member);
             loanRepo.update(loan);
@@ -363,7 +363,7 @@ public class LibraryService {
 
             memberRepo.update(member);
             bookRepo.update(book);
-
+            loanRepo.update(loan);
 
         }
         catch (DatabaseException e) {
@@ -414,11 +414,10 @@ public class LibraryService {
             if (member == null) {
                 throw new EntityNotFoundException("Member not found.");
             }
-            if(member.getLoans().isEmpty()) {
-                throw new BusinessLogicException("Member has no loans.");
-            }
-
-            return member.getLoans();
+            System.out.println(member.getID() + member.getName() + member.getEmail() + member.getPhoneNumber() + member.getLoans().size());
+            return loanRepo.getAll().stream()
+                    .filter(loan -> loan.getMember().getID() == memberID && loan.getStatus().equals("ACTIVE"))
+                    .collect(Collectors.toList());
         } catch (DatabaseException e) {
             throw new DatabaseException("Error getting active loans.");
         }
@@ -453,14 +452,14 @@ public class LibraryService {
                 throw new EntityNotFoundException("Author not found.");
             }
 
-            Category category = categoryRepo.get(categoryID);
-            if(category == null) {
-                throw new EntityNotFoundException("Category not found.");
-            }
-
             Publisher publisher = publisherRepo.get(publisherID);
             if(publisher == null) {
                 throw new EntityNotFoundException("Publisher not found.");
+            }
+
+            Category category = categoryRepo.get(categoryID);
+            if(category == null) {
+                throw new EntityNotFoundException("Category not found.");
             }
 
             Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
@@ -644,8 +643,9 @@ public class LibraryService {
             if (member == null) {
                 throw new EntityNotFoundException("Member not found.");
             }
-
-            return member.getReservations();
+            return reservationRepo.getAll().stream()
+                    .filter(reservation -> reservation.getMember().getID() == memberID)
+                    .collect(Collectors.toList());
         } catch (DatabaseException e) {
             throw new DatabaseException("Error getting active reservations.");
         }
@@ -666,7 +666,9 @@ public class LibraryService {
                 throw new EntityNotFoundException("Member not found.");
             }
 
-            return member.getLoanHistory();
+            return loanRepo.getAll().stream()
+                    .filter(loan -> loan.getMember().getID() == memberID)
+                    .collect(Collectors.toList());
         } catch (DatabaseException e) {
             throw new DatabaseException("Error getting loan history.");
         }

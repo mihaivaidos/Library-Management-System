@@ -29,7 +29,7 @@ public class Main {
         IRepository<Publisher> publisherRepo = RepositoryFactory.createRepository(Publisher.class, repositoryType);
         IRepository<Staff> staffRepo = RepositoryFactory.createRepository(Staff.class, repositoryType);
 
-        if (repositoryType.equals("inmemory") || repositoryType.equals("file")) {
+        if (repositoryType.equals("inmemory")) {
             DataInitializer.initializeRepositories(bookRepo, loanRepo, reservationRepo, categoryRepo, memberRepo, reviewRepo, authorRepo, publisherRepo, staffRepo);
         }
 
