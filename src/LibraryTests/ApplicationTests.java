@@ -55,9 +55,9 @@ class ApplicationTests {
 
         List<Book> books = bookRepo.getAll();
         assertEquals(1, books.size());
-        assertEquals("Cele 4 anotimpuri", books.get(0).getBookName());
+        assertEquals("Cele 4 anotimpuri", books.getFirst().getBookName());
 
-        Book addedBook = books.get(0);
+        Book addedBook = books.getFirst();
         libraryService.updateBook(addedBook.getID(), "Updated Book Name", author.getID(), true, category.getID(), publisher.getID(), 10);
 
         Book updatedBook = bookRepo.get(addedBook.getID());
@@ -91,7 +91,7 @@ class ApplicationTests {
 
         List<Review> reviews = book.getReviews();
         assertEquals(1, reviews.size());
-        assertEquals("Great book!", reviews.get(0).getComments());
+        assertEquals("Great book!", reviews.getFirst().getComments());
     }
 
     @Test
@@ -129,8 +129,8 @@ class ApplicationTests {
 
         List<Loan> loans = loanRepo.getAll();
         assertEquals(1, loans.size());
-        assertEquals(book, loans.get(0).getBook());
-        assertEquals(member, loans.get(0).getMember());
+        assertEquals(book, loans.getFirst().getBook());
+        assertEquals(member, loans.getFirst().getMember());
     }
 
     @Test
@@ -138,9 +138,7 @@ class ApplicationTests {
         Member member = new Member(1, "John Doe", "john@example.com", "1234567890");
         memberRepo.add(member);
 
-        assertThrows(EntityNotFoundException.class, () -> {
-            libraryService.borrowBook(member.getID(), 999);
-        });
+        assertThrows(EntityNotFoundException.class, () -> libraryService.borrowBook(member.getID(), 999));
     }
 
     @Test
@@ -161,7 +159,7 @@ class ApplicationTests {
         assertEquals(1, loans.size());
         assertEquals(4, book.getCopiesAvailable());
 
-        libraryService.returnBook(loans.get(0).getID());
+        libraryService.returnBook(loans.getFirst().getID());
 
         assertEquals("RETURNED",loanRepo.getAll().getFirst().getStatus());
         assertEquals(5, book.getCopiesAvailable());
@@ -191,7 +189,7 @@ class ApplicationTests {
 
         List<Book> borrowedBooks = libraryService.getMemberBorrowedBooks(member.getID());
         assertEquals(1, borrowedBooks.size());
-        assertEquals(book, borrowedBooks.get(0));
+        assertEquals(book, borrowedBooks.getFirst());
     }
 
     @Test
@@ -221,7 +219,7 @@ class ApplicationTests {
         List<Review> reviews = book.getReviews();
         assertEquals(1, reviews.size(), "There should be one review after adding.");
 
-        libraryService.deleteReviewFromBook(reviews.get(0).getID());
+        libraryService.deleteReviewFromBook(reviews.getFirst().getID());
 
         assertEquals(0, book.getReviews().size(), "There should be no reviews after deletion.");
     }
@@ -332,11 +330,11 @@ class ApplicationTests {
         List<Book> recommendedBooks = libraryService.recommendBooksForMember(member.getID());
 
         assertEquals(1, recommendedBooks.size());
-        assertEquals(book3, recommendedBooks.get(0)); // Non-Fiction Book should be recommended
+        assertEquals(book3, recommendedBooks.getFirst()); // Non-Fiction Book should be recommended
     }
 
     @Test
-    public void testRecommendBooksForMember_NoRecommendations() throws DatabaseException, EntityNotFoundException, BusinessLogicException {
+    public void testRecommendBooksForMember_NoRecommendations() throws DatabaseException, EntityNotFoundException {
         Member member = new Member(1, "John Doe", "john@example.com", "1234567890");
         memberRepo.add(member);
         Author author = new Author(1, "Author Name", "author@example.com", "1234567890");
@@ -418,7 +416,7 @@ class ApplicationTests {
         libraryService.addMember("John Doe", "john@example.com", "1234567890");
 
         assertEquals(1, memberRepo.getAll().size());
-        Member addedMember = memberRepo.getAll().get(0);
+        Member addedMember = memberRepo.getAll().getFirst();
         assertEquals("John Doe", addedMember.getName());
         assertEquals("john@example.com", addedMember.getEmail());
     }
@@ -439,13 +437,13 @@ class ApplicationTests {
         libraryService.addCategory("Fiction", "Fictional books");
 
         assertEquals(1, categoryRepo.getAll().size());
-        Category addedCategory = categoryRepo.getAll().get(0);
+        Category addedCategory = categoryRepo.getAll().getFirst();
         assertEquals("Fiction", addedCategory.getCategoryName());
         assertEquals("Fictional books", addedCategory.getDescription());
     }
 
     @Test
-    public void testCreateLoan_Success() throws DatabaseException, EntityNotFoundException {
+    public void testCreateLoan_Success() throws DatabaseException {
         Member member = new Member(1, "John Doe", "john@example.com", "1234567890");
         memberRepo.add(member);
         Book book = new Book(1, "Test Book", new Author(1, "Author", "author@example.com", "1234567890"), true, new Category(1, "Fiction", "Fictional books"), new Publisher(1, "Publisher", "publisher@example.com", "0987654321"), 5);
@@ -454,7 +452,7 @@ class ApplicationTests {
         libraryService.createLoan(book, member);
 
         assertEquals(1, loanRepo.getAll().size());
-        assertEquals("ACTIVE", loanRepo.getAll().get(0).getStatus());
+        assertEquals("ACTIVE", loanRepo.getAll().getFirst().getStatus());
     }
 
     @Test
@@ -479,7 +477,7 @@ class ApplicationTests {
         libraryService.createReservation(book, member);
 
         assertEquals(1, reservationRepo.getAll().size());
-        assertEquals(book, reservationRepo.getAll().get(0).getBook());
+        assertEquals(book, reservationRepo.getAll().getFirst().getBook());
     }
 
     @Test
@@ -541,7 +539,7 @@ class ApplicationTests {
     }
 
     @Test
-    public void testGetActiveLoansForMember_Success() throws DatabaseException, EntityNotFoundException {
+    public void testGetActiveLoansForMember_Success() throws DatabaseException, EntityNotFoundException, BusinessLogicException {
         Member member = new Member(1, "John Doe", "john@example.com", "1234567890");
         memberRepo.add(member);
         Book book = new Book(1, "Test Book", new Author(1, "Author", "author@example.com", "1234567890"), true, new Category(1, "Fiction", "Fictional books"), new Publisher(1, "Publisher", "publisher@example.com", "0987654321"), 5);
@@ -553,7 +551,7 @@ class ApplicationTests {
         List<Loan> activeLoans = libraryService.getActiveLoansForMember(member.getID());
 
         assertEquals(1, activeLoans.size());
-        assertEquals(loan, activeLoans.get(0));
+        assertEquals(loan, activeLoans.getFirst());
     }
 
     @Test
@@ -574,7 +572,7 @@ class ApplicationTests {
         libraryService.addStaff("Jane Doe", "jane@example.com", "0987654321", "Librarian");
 
         assertEquals(1, staffRepo.getAll().size());
-        Staff addedStaff = staffRepo.getAll().get(0);
+        Staff addedStaff = staffRepo.getAll().getFirst();
         assertEquals("Jane Doe", addedStaff.getName());
     }
 
@@ -631,7 +629,7 @@ class ApplicationTests {
         List<Book> books = libraryService.getBooksByPublisher(publisher.getID());
 
         assertEquals(1, books.size());
-        assertEquals(book, books.get(0));
+        assertEquals(book, books.getFirst());
     }
 
     @Test
@@ -655,7 +653,7 @@ class ApplicationTests {
         List<Book> books = libraryService.getBooksByAuthor(author.getID());
 
         assertEquals(1, books.size());
-        assertEquals(book, books.get(0));
+        assertEquals(book, books.getFirst());
     }
 
     @Test
@@ -684,7 +682,7 @@ class ApplicationTests {
         List<Reservation> reservations = libraryService.getActiveReservationsForMember(member.getID());
 
         assertEquals(1, reservations.size());
-        assertEquals(reservation, reservations.get(0));
+        assertEquals(reservation, reservations.getFirst());
     }
 
     @Test
@@ -713,7 +711,7 @@ class ApplicationTests {
         List<Loan> loanHistory = libraryService.getLoanHistoryForMember(member.getID());
 
         assertEquals(1, loanHistory.size());
-        assertEquals(loan, loanHistory.get(0));
+        assertEquals(loan, loanHistory.getFirst());
     }
 
     @Test
@@ -810,7 +808,7 @@ class ApplicationTests {
         List<Book> books = libraryService.getAllBooksInCategory(category.getID());
 
         assertEquals(1, books.size());
-        assertEquals(book, books.get(0));
+        assertEquals(book, books.getFirst());
     }
 
     @Test
@@ -828,7 +826,7 @@ class ApplicationTests {
         List<Publisher> publishers = libraryService.getAllPublishers();
 
         assertEquals(1, publishers.size());
-        assertEquals(publisher, publishers.get(0));
+        assertEquals(publisher, publishers.getFirst());
     }
 
     @Test
@@ -839,7 +837,7 @@ class ApplicationTests {
         List<Author> authors = libraryService.getAllAuthors();
 
         assertEquals(1, authors.size());
-        assertEquals(author, authors.get(0));
+        assertEquals(author, authors.getFirst());
     }
 
     @Test
@@ -850,7 +848,7 @@ class ApplicationTests {
         List<Category> categories = libraryService.getAllCategories();
 
         assertEquals(1, categories.size());
-        assertEquals(category, categories.get(0));
+        assertEquals(category, categories.getFirst());
     }
 
     @Test
@@ -871,7 +869,7 @@ class ApplicationTests {
         List<Reservation> reservations = libraryService.getAllReservations();
 
         assertEquals(1, reservations.size());
-        assertEquals(reservation, reservations.get(0));
+        assertEquals(reservation, reservations.getFirst());
     }
 
     @Test
@@ -892,7 +890,7 @@ class ApplicationTests {
         List<Loan> loans = libraryService.getAllLoans();
 
         assertEquals(1, loans.size());
-        assertEquals(loan, loans.get(0));
+        assertEquals(loan, loans.getFirst());
     }
 
     @Test
@@ -913,7 +911,7 @@ class ApplicationTests {
          List<Review> reviews = libraryService.getAllReviews();
 
          assertEquals(1, reviews.size());
-         assertEquals(review, reviews.get(0));
+         assertEquals(review, reviews.getFirst());
     }
 
     @Test
@@ -921,7 +919,7 @@ class ApplicationTests {
         libraryService.addAuthor("New Author", "newauthor@example.com", "1234567890");
 
         assertEquals(1, authorRepo.getAll().size());
-        Author addedAuthor = authorRepo.getAll().get(0);
+        Author addedAuthor = authorRepo.getAll().getFirst();
         assertEquals("New Author", addedAuthor.getName());
     }
 
@@ -937,7 +935,7 @@ class ApplicationTests {
         libraryService.addPublisher("New Publisher", "newpublisher@example.com", "0987654321");
 
         assertEquals(1, publisherRepo.getAll().size());
-        Publisher addedPublisher = publisherRepo.getAll().get(0);
+        Publisher addedPublisher = publisherRepo.getAll().getFirst();
         assertEquals("New Publisher", addedPublisher.getName());
     }
 
@@ -979,7 +977,7 @@ class ApplicationTests {
         List<Book> foundBooks = libraryService.searchBook("Test Book");
 
         assertEquals(1, foundBooks.size());
-        assertEquals(book, foundBooks.get(0));
+        assertEquals(book, foundBooks.getFirst());
     }
 
     @Test

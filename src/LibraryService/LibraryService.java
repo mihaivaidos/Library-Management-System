@@ -407,12 +407,15 @@ public class LibraryService {
      * @return a list of active loans for the specified member, sorted by loan date
      */
 
-    public List<Loan> getActiveLoansForMember(int memberID) throws EntityNotFoundException, DatabaseException {
+    public List<Loan> getActiveLoansForMember(int memberID) throws EntityNotFoundException, DatabaseException, BusinessLogicException {
         try {
             Member member = memberRepo.get(memberID);
 
             if (member == null) {
                 throw new EntityNotFoundException("Member not found.");
+            }
+            if(member.getLoans().isEmpty()) {
+                throw new BusinessLogicException("Member has no loans.");
             }
 
             return member.getLoans();
@@ -446,8 +449,20 @@ public class LibraryService {
     public void addBook(String bookName, int authorID, int categoryID, int publisherID, int copiesAvailable) throws EntityNotFoundException, DatabaseException {
         try {
             Author author = authorRepo.get(authorID);
+            if(author == null) {
+                throw new EntityNotFoundException("Author not found.");
+            }
+
             Category category = categoryRepo.get(categoryID);
+            if(category == null) {
+                throw new EntityNotFoundException("Category not found.");
+            }
+
             Publisher publisher = publisherRepo.get(publisherID);
+            if(publisher == null) {
+                throw new EntityNotFoundException("Publisher not found.");
+            }
+
             Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
             addBookToAuthor(book, authorID);
             addBookToCategory(book, categoryID);

@@ -244,44 +244,46 @@ public class LibraryUI {
      */
 
     private void addBook() {
-        try {
-            System.out.print("Enter book title: ");
-            String title = scanner.nextLine();
-            if(title.isEmpty()) {
-                throw new ValidationException("Title cannot be empty.");
-            }
+        while(true) {
+            try {
+                System.out.print("Enter book title: ");
+                String title = scanner.nextLine();
+                if (title.isEmpty()) {
+                    throw new ValidationException("Title cannot be empty.");
+                }
 
-            viewAllAuthors();
-            System.out.println("Enter author ID: ");
-            int authorID = Integer.parseInt(scanner.nextLine());
-            if(authorID <= 0) {
-                throw new ValidationException("Author ID must be a positive integer.");
-            }
+                viewAllAuthors();
+                System.out.println("Enter author ID: ");
+                int authorID = Integer.parseInt(scanner.nextLine());
+                if (authorID <= 0) {
+                    throw new ValidationException("Author ID must be a positive integer.");
+                }
 
-            viewAllPublishers();
-            System.out.println("Enter publisher ID: ");
-            int publisherID = Integer.parseInt(scanner.nextLine());
-            if(publisherID <= 0) {
-                throw new ValidationException("Publisher ID must be a positive integer.");
-            }
-            viewAllCategories();
-            System.out.println("Enter category ID: ");
-            int categoryID = Integer.parseInt(scanner.nextLine());
-            if(categoryID <= 0) {
-                throw new ValidationException("Category ID must be a positive integer.");
-            }
+                viewAllPublishers();
+                System.out.println("Enter publisher ID: ");
+                int publisherID = Integer.parseInt(scanner.nextLine());
+                if (publisherID <= 0) {
+                    throw new ValidationException("Publisher ID must be a positive integer.");
+                }
+                viewAllCategories();
+                System.out.println("Enter category ID: ");
+                int categoryID = Integer.parseInt(scanner.nextLine());
+                if (categoryID <= 0) {
+                    throw new ValidationException("Category ID must be a positive integer.");
+                }
 
-            System.out.println("Enter the number of copies of the book: ");
-            int copies = Integer.parseInt(scanner.nextLine());
-            if(copies <= 0) {
-                throw new ValidationException("Number of copies must be a positive integer.");
+                System.out.println("Enter the number of copies of the book: ");
+                int copies = Integer.parseInt(scanner.nextLine());
+                if (copies <= 0) {
+                    throw new ValidationException("Number of copies must be a positive integer.");
+                }
+                controller.addBook(title, authorID, publisherID, categoryID, copies);
+                break;
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
             }
-
-            controller.addBook(title, authorID, publisherID, categoryID, copies);
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
         }
     }
 
@@ -292,51 +294,54 @@ public class LibraryUI {
      */
 
     private void updateBook() {
-        try {
-            viewAllBooks();
-            System.out.print("Enter book ID: ");
-            int bookID = Integer.parseInt(scanner.nextLine());
-            if(bookID <= 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
-            }
+        while(true) {
+            try {
+                viewAllBooks();
+                System.out.print("Enter book ID: ");
+                int bookID = Integer.parseInt(scanner.nextLine());
+                if (bookID <= 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
 
-            System.out.print("Enter new book title: ");
-            String title = scanner.nextLine();
-            if(title.isEmpty()) {
-                throw new ValidationException("Title cannot be empty.");
-            }
+                System.out.print("Enter new book title: ");
+                String title = scanner.nextLine();
+                if (title.isEmpty()) {
+                    throw new ValidationException("Title cannot be empty.");
+                }
 
-            System.out.println("Enter new author ID: ");
-            int authorID = Integer.parseInt(scanner.nextLine());
-            if(authorID <= 0) {
-                throw new ValidationException("Author ID must be a positive integer.");
-            }
+                System.out.println("Enter new author ID: ");
+                int authorID = Integer.parseInt(scanner.nextLine());
+                if (authorID <= 0) {
+                    throw new ValidationException("Author ID must be a positive integer.");
+                }
 
-            System.out.println("Enter new availability status: ");
-            boolean newIsAvailable = Boolean.parseBoolean(scanner.nextLine());
-            System.out.print("Enter new category ID: ");
-            int categoryID = Integer.parseInt(scanner.nextLine());
-            if(categoryID <= 0) {
-                throw new ValidationException("Category ID must be a positive integer.");
-            }
+                System.out.println("Enter new availability status: ");
+                boolean newIsAvailable = Boolean.parseBoolean(scanner.nextLine());
+                System.out.print("Enter new category ID: ");
+                int categoryID = Integer.parseInt(scanner.nextLine());
+                if (categoryID <= 0) {
+                    throw new ValidationException("Category ID must be a positive integer.");
+                }
 
-            System.out.print("Enter new publisher ID: ");
-            int publisherID = Integer.parseInt(scanner.nextLine());
-            if(publisherID <= 0) {
-                throw new ValidationException("Publisher ID must be a positive integer.");
-            }
+                System.out.print("Enter new publisher ID: ");
+                int publisherID = Integer.parseInt(scanner.nextLine());
+                if (publisherID <= 0) {
+                    throw new ValidationException("Publisher ID must be a positive integer.");
+                }
 
-            System.out.println("Enter new number of copies available: ");
-            int copiesAvailable = Integer.parseInt(scanner.nextLine());
-            if(copiesAvailable <= 0) {
-                throw new ValidationException("Number of copies available must be a positive integer.");
-            }
+                System.out.println("Enter new number of copies available: ");
+                int copiesAvailable = Integer.parseInt(scanner.nextLine());
+                if (copiesAvailable <= 0) {
+                    throw new ValidationException("Number of copies available must be a positive integer.");
+                }
 
-            controller.updateBook(bookID, title, authorID, newIsAvailable, categoryID, publisherID, copiesAvailable);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
+                controller.updateBook(bookID, title, authorID, newIsAvailable, categoryID, publisherID, copiesAvailable);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }
     }
 
@@ -345,18 +350,21 @@ public class LibraryUI {
      * Prompts the user for the book ID to be deleted.
      */
     private void deleteBook() {
-        try {
-            viewAllBooks();
-            System.out.print("Enter book ID: ");
-            int bookID = Integer.parseInt(scanner.nextLine());
-            if(bookID <= 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllBooks();
+                System.out.print("Enter book ID: ");
+                int bookID = Integer.parseInt(scanner.nextLine());
+                if (bookID <= 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
+                controller.deleteBook(bookID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.deleteBook(bookID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -366,18 +374,21 @@ public class LibraryUI {
      */
 
     private void viewBooksByPublisher() {
-        try {
-            viewAllPublishers();
-            System.out.println("Enter publisher ID: ");
-            int publisherID = Integer.parseInt(scanner.nextLine());
-            if(publisherID <= 0) {
-                throw new ValidationException("Publisher ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllPublishers();
+                System.out.println("Enter publisher ID: ");
+                int publisherID = Integer.parseInt(scanner.nextLine());
+                if (publisherID <= 0) {
+                    throw new ValidationException("Publisher ID must be a positive integer.");
+                }
+                controller.viewBooksByPublisher(publisherID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.viewBooksByPublisher(publisherID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -387,18 +398,21 @@ public class LibraryUI {
      */
 
     private void viewBooksByAuthor() {
-        try {
-            viewAllAuthors();
-            System.out.println("Enter author ID: ");
-            int authorID = Integer.parseInt(scanner.nextLine());
-            if(authorID <= 0) {
-                throw new ValidationException("Author ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllAuthors();
+                System.out.println("Enter author ID: ");
+                int authorID = Integer.parseInt(scanner.nextLine());
+                if (authorID <= 0) {
+                    throw new ValidationException("Author ID must be a positive integer.");
+                }
+                controller.viewBooksByAuthor(authorID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.viewBooksByAuthor(authorID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -424,36 +438,39 @@ public class LibraryUI {
      */
 
     private void addReviewToBook() {
-        try {
-            System.out.println("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
+        while(true) {
+            try {
+                System.out.println("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
+                controller.viewMemberBorrowedBooks(memberID);
+                System.out.print("Enter book ID: ");
+                int bookID = Integer.parseInt(scanner.nextLine());
+                if (bookID <= 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
+                System.out.print("Enter rating: ");
+                int rating = Integer.parseInt(scanner.nextLine());
+                if (rating > 5 || rating < 1) {
+                    throw new ValidationException("Rating must be a integer between 1 and 5.");
+                }
+                System.out.print("Enter comments: ");
+                String comments = scanner.nextLine();
+                if (comments.isEmpty()) {
+                    throw new ValidationException("Comments cannot be empty.");
+                }
+                controller.addReviewToBook(memberID, bookID, rating, comments);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
-            controller.viewMemberBorrowedBooks(memberID);
-            System.out.print("Enter book ID: ");
-            int bookID = Integer.parseInt(scanner.nextLine());
-            if(bookID <= 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
-            }
-            System.out.print("Enter rating: ");
-            int rating = Integer.parseInt(scanner.nextLine());
-            if(rating > 5 || rating < 1) {
-                throw new ValidationException("Rating must be a integer between 1 and 5.");
-            }
-            System.out.print("Enter comments: ");
-            String comments = scanner.nextLine();
-            if(comments.isEmpty()) {
-                throw new ValidationException("Comments cannot be empty.");
-            }
-            controller.addReviewToBook(memberID, bookID, rating, comments);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -461,18 +478,21 @@ public class LibraryUI {
      * Shows all reviews first and then prompts the user for a reviewID
      */
     private void deleteReviewFromBook() {
-        try {
-            viewAllReviews();
-            System.out.println("Enter review ID: ");
-            int reviewID = Integer.parseInt(scanner.nextLine());
-            if(reviewID <= 0) {
-                throw new ValidationException("Review ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllReviews();
+                System.out.println("Enter review ID: ");
+                int reviewID = Integer.parseInt(scanner.nextLine());
+                if (reviewID <= 0) {
+                    throw new ValidationException("Review ID must be a positive integer.");
+                }
+                controller.deleteReviewFromBook(reviewID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.deleteReviewFromBook(reviewID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -482,18 +502,21 @@ public class LibraryUI {
      */
 
     private void viewAllReviewsOfBook() {
-        try {
-            viewAllBooks();
-            System.out.print("Enter book ID: ");
-            int bookID = Integer.parseInt(scanner.nextLine());
-            if(bookID <= 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllBooks();
+                System.out.print("Enter book ID: ");
+                int bookID = Integer.parseInt(scanner.nextLine());
+                if (bookID <= 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
+                controller.viewAllReviewsOfBook(bookID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.viewAllReviewsOfBook(bookID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -511,66 +534,69 @@ public class LibraryUI {
      */
 
     private void borrowBook() {
-        try {
-            System.out.print("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
-            }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
-            System.out.println("Do you want to see the recommended books for you? (yes/no): ");
-            String rec = scanner.nextLine().toLowerCase();
-            if (rec.equals("yes")) {
-                controller.recommendBooksForMember(memberID);
-            }
-
-
-            System.out.print("Enter book title to search (or leave blank to view all): ");
-            String searchTerm = scanner.nextLine();
-
-            List<Book> books = controller.searchBook(searchTerm);
-
-            if (books.isEmpty()) {
-                System.out.println("No books found matching your search criteria.");
-                return;
-            }
-
-            System.out.println("\nAvailable Books:");
-            for (Book book : books) {
-                System.out.println("Book ID: " + book.getID() + ", Title: " + book.getBookName());
-            }
-
-            System.out.print("Enter book ID to borrow (or 0 to cancel): ");
-            int choice = Integer.parseInt(scanner.nextLine());
-
-            if(choice < 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
-            }
-
-            if (choice == 0) {
-                System.out.println("Borrowing cancelled.");
-                return;
-            }
-
-            boolean bookFound = false;
-            for (Book book : books) {
-                if (book.getID() == choice) {
-                    controller.borrowBook(memberID, choice);
-                    bookFound = true;
-                    System.out.println("You have successfully borrowed: " + book.getBookName());
-                    break;
+        while(true) {
+            try {
+                System.out.print("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
                 }
-            }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
+                System.out.println("Do you want to see the recommended books for you? (yes/no): ");
+                String rec = scanner.nextLine().toLowerCase();
+                if (rec.equals("yes")) {
+                    controller.recommendBooksForMember(memberID);
+                }
 
-            if (!bookFound) {
-                System.out.println("Invalid selection. Borrowing cancelled.");
+
+                System.out.print("Enter book title to search (or leave blank to view all): ");
+                String searchTerm = scanner.nextLine();
+
+                List<Book> books = controller.searchBook(searchTerm);
+
+                if (books.isEmpty()) {
+                    System.out.println("No books found matching your search criteria.");
+                    return;
+                }
+
+                System.out.println("\nAvailable Books:");
+                for (Book book : books) {
+                    System.out.println("Book ID: " + book.getID() + ", Title: " + book.getBookName());
+                }
+
+                System.out.print("Enter book ID to borrow (or 0 to cancel): ");
+                int choice = Integer.parseInt(scanner.nextLine());
+
+                if (choice < 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
+
+                if (choice == 0) {
+                    System.out.println("Borrowing cancelled.");
+                    return;
+                }
+
+                boolean bookFound = false;
+                for (Book book : books) {
+                    if (book.getID() == choice) {
+                        controller.borrowBook(memberID, choice);
+                        bookFound = true;
+                        System.out.println("You have successfully borrowed: " + book.getBookName());
+                        break;
+                    }
+                }
+
+                if (!bookFound) {
+                    System.out.println("Invalid selection. Borrowing cancelled.");
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 //    private void borrowBook() {
@@ -588,26 +614,29 @@ public class LibraryUI {
      */
 
     private void returnBook() {
-        try {
-            System.out.print("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
+        while(true) {
+            try {
+                System.out.print("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
+                controller.viewActiveLoans(memberID);
+                System.out.print("Enter loan ID: ");
+                int loanID = Integer.parseInt(scanner.nextLine());
+                if (loanID <= 0) {
+                    throw new ValidationException("Loan ID must be a positive integer.");
+                }
+                controller.returnBook(loanID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
-            controller.viewActiveLoans(memberID);
-            System.out.print("Enter loan ID: ");
-            int loanID = Integer.parseInt(scanner.nextLine());
-            if(loanID <= 0) {
-                throw new ValidationException("Loan ID must be a positive integer.");
-            }
-            controller.returnBook(loanID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -617,20 +646,23 @@ public class LibraryUI {
      */
 
     private void viewLoanHistoryForMember() {
-        try {
-            System.out.print("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
+        while(true) {
+            try {
+                System.out.print("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
+                controller.viewLoanHistoryForMember(memberID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
-            controller.viewLoanHistoryForMember(memberID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -640,26 +672,29 @@ public class LibraryUI {
      */
 
     private void addBookToCategory() {
-        try {
-            viewAllBooks();
-            System.out.print("Enter book ID: ");
-            int bookID = Integer.parseInt(scanner.nextLine());
-            if(bookID <= 0) {
-                throw new ValidationException("Book ID must be a positive integer.");
-            }
+        while(true) {
+            try {
+                viewAllBooks();
+                System.out.print("Enter book ID: ");
+                int bookID = Integer.parseInt(scanner.nextLine());
+                if (bookID <= 0) {
+                    throw new ValidationException("Book ID must be a positive integer.");
+                }
 
-            viewAllCategories();
-            System.out.print("Enter category ID: ");
-            int categoryID = Integer.parseInt(scanner.nextLine());
-            if(categoryID <= 0) {
-                throw new ValidationException("Category ID must be a positive integer.");
-            }
+                viewAllCategories();
+                System.out.print("Enter category ID: ");
+                int categoryID = Integer.parseInt(scanner.nextLine());
+                if (categoryID <= 0) {
+                    throw new ValidationException("Category ID must be a positive integer.");
+                }
 
-            controller.addBookToCategory(bookID, categoryID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
+                controller.addBookToCategory(bookID, categoryID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }
     }
 
@@ -669,18 +704,21 @@ public class LibraryUI {
      */
 
     private void viewAllBooksInCategory() {
-        try {
-            viewAllCategories();
-            System.out.print("Enter category ID: ");
-            int categoryID = Integer.parseInt(scanner.nextLine());
-            if(categoryID <= 0) {
-                throw new ValidationException("Category ID must be a positive integer.");
+        while(true) {
+            try {
+                viewAllCategories();
+                System.out.print("Enter category ID: ");
+                int categoryID = Integer.parseInt(scanner.nextLine());
+                if (categoryID <= 0) {
+                    throw new ValidationException("Category ID must be a positive integer.");
+                }
+                controller.viewAllBooksInCategory(categoryID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            controller.viewAllBooksInCategory(categoryID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -698,20 +736,23 @@ public class LibraryUI {
      */
 
     private void viewActiveLoans() {
-        try {
-            System.out.print("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
+        while(true) {
+            try {
+                System.out.print("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member ID must be yours.");
+                }
+                controller.viewActiveLoans(memberID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            if(userID != memberID) {
-                throw new ValidationException("Member ID must be yours.");
-            }
-            controller.viewActiveLoans(memberID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -721,21 +762,24 @@ public class LibraryUI {
      */
 
     private void viewActiveReservations() {
-        try {
-            System.out.print("Enter member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
-            }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
+        while(true) {
+            try {
+                System.out.print("Enter member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
 
-            controller.viewActiveReservations(memberID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
+                controller.viewActiveReservations(memberID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }
     }
 
@@ -773,27 +817,30 @@ public class LibraryUI {
      */
 
     private void addMember() {
-        try {
-            System.out.print("Enter member name: ");
-            String name = scanner.nextLine();
-            if(name.isEmpty()) {
-                throw new ValidationException("Member name cannot be empty.");
+        while(true) {
+            try {
+                System.out.print("Enter member name: ");
+                String name = scanner.nextLine();
+                if (name.isEmpty()) {
+                    throw new ValidationException("Member name cannot be empty.");
+                }
+                System.out.print("Enter member email: ");
+                String email = scanner.nextLine();
+                if (email.isEmpty()) {
+                    throw new ValidationException("Member email cannot be empty.");
+                }
+                System.out.print("Enter member phone number: ");
+                String phoneNumber = scanner.nextLine();
+                if (phoneNumber.isEmpty()) {
+                    throw new ValidationException("Member phone number cannot be empty.");
+                }
+                controller.addMember(name, email, phoneNumber);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            System.out.print("Enter member email: ");
-            String email = scanner.nextLine();
-            if(email.isEmpty()) {
-                throw new ValidationException("Member email cannot be empty.");
-            }
-            System.out.print("Enter member phone number: ");
-            String phoneNumber = scanner.nextLine();
-            if(phoneNumber.isEmpty()) {
-                throw new ValidationException("Member phone number cannot be empty.");
-            }
-            controller.addMember(name, email, phoneNumber);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -803,27 +850,30 @@ public class LibraryUI {
      */
 
     private void addAuthor() {
-        try {
-            System.out.print("Enter author name: ");
-            String name = scanner.nextLine();
-            if(name.isEmpty()) {
-                throw new ValidationException("Author name cannot be empty.");
+        while(true) {
+            try {
+                System.out.print("Enter author name: ");
+                String name = scanner.nextLine();
+                if (name.isEmpty()) {
+                    throw new ValidationException("Author name cannot be empty.");
+                }
+                System.out.print("Enter author email: ");
+                String email = scanner.nextLine();
+                if (email.isEmpty()) {
+                    throw new ValidationException("Author email cannot be empty.");
+                }
+                System.out.print("Enter author phone number: ");
+                String phoneNumber = scanner.nextLine();
+                if (phoneNumber.isEmpty()) {
+                    throw new ValidationException("Author phone number cannot be empty.");
+                }
+                controller.addAuthor(name, email, phoneNumber);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            System.out.print("Enter author email: ");
-            String email = scanner.nextLine();
-            if(email.isEmpty()) {
-                throw new ValidationException("Author email cannot be empty.");
-            }
-            System.out.print("Enter author phone number: ");
-            String phoneNumber = scanner.nextLine();
-            if(phoneNumber.isEmpty()) {
-                throw new ValidationException("Author phone number cannot be empty.");
-            }
-            controller.addAuthor(name, email, phoneNumber);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -833,27 +883,30 @@ public class LibraryUI {
      */
 
     private void addPublisher() {
-        try {
-            System.out.print("Enter publisher name: ");
-            String name = scanner.nextLine();
-            if(name.isEmpty()) {
-                throw new ValidationException("Publisher name cannot be empty.");
+        while(true) {
+            try {
+                System.out.print("Enter publisher name: ");
+                String name = scanner.nextLine();
+                if (name.isEmpty()) {
+                    throw new ValidationException("Publisher name cannot be empty.");
+                }
+                System.out.print("Enter publisher email: ");
+                String email = scanner.nextLine();
+                if (email.isEmpty()) {
+                    throw new ValidationException("Publisher email cannot be empty.");
+                }
+                System.out.print("Enter member phone number: ");
+                String phoneNumber = scanner.nextLine();
+                if (phoneNumber.isEmpty()) {
+                    throw new ValidationException("Publisher phone number cannot be empty.");
+                }
+                controller.addPublisher(name, email, phoneNumber);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            System.out.print("Enter publisher email: ");
-            String email = scanner.nextLine();
-            if(email.isEmpty()) {
-                throw new ValidationException("Publisher email cannot be empty.");
-            }
-            System.out.print("Enter member phone number: ");
-            String phoneNumber = scanner.nextLine();
-            if(phoneNumber.isEmpty()) {
-                throw new ValidationException("Publisher phone number cannot be empty.");
-            }
-            controller.addPublisher(name, email, phoneNumber);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 
@@ -871,27 +924,31 @@ public class LibraryUI {
      * If the choice is 'no', the loop will stop
      */
     private void register() {
-        try {
-            System.out.println("Do you want to register? (yes/no): ");
-            String choice = scanner.nextLine().toLowerCase();
-            if(!choice.equals("yes") && !choice.equals("no")) {
-                throw new ValidationException("You have entered an invalid choice.");
-            }
-            if (choice.equals("yes")) {
-                addMember();
-                System.out.println("Enter your email for confirmation: ");
-                String email = scanner.nextLine();
-                if(email.isEmpty()) {
-                    throw new ValidationException("Email cannot be empty.");
+        while(true) {
+            try {
+                System.out.println("Do you want to register? (yes/no): ");
+                String choice = scanner.nextLine().toLowerCase();
+                if (!choice.equals("yes") && !choice.equals("no")) {
+                    throw new ValidationException("You have entered an invalid choice.");
                 }
-                viewID(email);
-            } else {
-                continueLoop = false;
+                if (choice.equals("yes")) {
+                    addMember();
+                    System.out.println("Enter your email for confirmation: ");
+                    String email = scanner.nextLine();
+                    if (email.isEmpty()) {
+                        throw new ValidationException("Email cannot be empty.");
+                    }
+                    viewID(email);
+                    break;
+                } else {
+                    continueLoop = false;
+                    break;
+                }
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
             }
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
         }
     }
 
@@ -899,20 +956,23 @@ public class LibraryUI {
      * Prompts the user for a member ID and prints the recommended books
      */
     public void recommendBooks() {
-        try {
-            System.out.print("Enter Member ID: ");
-            int memberID = Integer.parseInt(scanner.nextLine());
-            if(memberID <= 0) {
-                throw new ValidationException("Member ID must be a positive integer.");
+        while(true) {
+            try {
+                System.out.print("Enter Member ID: ");
+                int memberID = Integer.parseInt(scanner.nextLine());
+                if (memberID <= 0) {
+                    throw new ValidationException("Member ID must be a positive integer.");
+                }
+                if (userID != memberID) {
+                    throw new ValidationException("Member IDs must be the same.");
+                }
+                controller.recommendBooksForMember(memberID);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
             }
-            if(userID != memberID) {
-                throw new ValidationException("Member IDs must be the same.");
-            }
-            controller.recommendBooksForMember(memberID);
-        } catch (NumberFormatException e) {
-            System.err.println("Error: Invalid number format. Please try again.");
-        } catch (ValidationException e) {
-            System.err.println("Error: " + e.getMessage());
         }
     }
 

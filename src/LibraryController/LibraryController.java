@@ -166,6 +166,8 @@ public class LibraryController {
             System.err.println("Entity not found error: " + e.getMessage());
         } catch (DatabaseException e) {
             System.err.println("Database error: " + e.getMessage());
+        } catch (BusinessLogicException e) {
+            System.err.println("Business logic error: " + e.getMessage());
         }
     }
 
