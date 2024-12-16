@@ -414,7 +414,6 @@ public class LibraryService {
             if (member == null) {
                 throw new EntityNotFoundException("Member not found.");
             }
-            System.out.println(member.getID() + member.getName() + member.getEmail() + member.getPhoneNumber() + member.getLoans().size());
             return loanRepo.getAll().stream()
                     .filter(loan -> loan.getMember().getID() == memberID && loan.getStatus().equals("ACTIVE"))
                     .collect(Collectors.toList());
