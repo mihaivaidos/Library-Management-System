@@ -992,6 +992,7 @@ public class LibraryUI {
                         throw new ValidationException("Email cannot be empty.");
                     }
                     viewID(email);
+                    userID = controller.getIDbyEmail(email);
                     break;
                 } else {
                     continueLoop = false;
