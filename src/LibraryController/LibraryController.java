@@ -523,6 +523,21 @@ public class LibraryController {
     }
 
     /**
+     * Adds a new category to the library
+     *
+     * @param name the name of the category
+     * @param description the description of the category
+     */
+    public void addCategory(String name, String description) {
+        try {
+             libraryService.addCategory(name, description);
+             System.out.println("Category added successfully: " + name);
+        } catch (DatabaseException e) {
+            System.err.println("Database error: " + e.getMessage());
+        }
+    }
+
+    /**
      * Gets the ID of a person (member or staff)
      *
      * @param email the email of the staff or member

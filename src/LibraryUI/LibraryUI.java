@@ -251,23 +251,42 @@ public class LibraryUI {
                 }
 
                 viewAllAuthors();
-                System.out.println("Enter author ID: ");
+                System.out.println("Enter author ID (0 if you want to add a new author): ");
                 int authorID = Integer.parseInt(scanner.nextLine());
-                if (authorID <= 0) {
+                if (authorID < 0) {
                     throw new ValidationException("Author ID must be a positive integer.");
+                }
+                if(authorID == 0) {
+                    addAuthor();
+                    viewAllAuthors();
+                    System.out.println("Enter author ID: ");
+                    authorID = Integer.parseInt(scanner.nextLine());
                 }
 
                 viewAllPublishers();
-                System.out.println("Enter publisher ID: ");
+                System.out.println("Enter publisher ID (0 if you want to add a new publisher): ");
                 int publisherID = Integer.parseInt(scanner.nextLine());
-                if (publisherID <= 0) {
+                if (publisherID < 0) {
                     throw new ValidationException("Publisher ID must be a positive integer.");
                 }
+                if(publisherID == 0) {
+                    addPublisher();
+                    viewAllPublishers();
+                    System.out.println("Enter publisher ID: ");
+                    publisherID = Integer.parseInt(scanner.nextLine());
+                }
+
                 viewAllCategories();
-                System.out.println("Enter category ID: ");
+                System.out.println("Enter category ID (0 if you want to add a new category): ");
                 int categoryID = Integer.parseInt(scanner.nextLine());
-                if (categoryID <= 0) {
+                if (categoryID < 0) {
                     throw new ValidationException("Category ID must be a positive integer.");
+                }
+                if(categoryID == 0) {
+                    addCategory();
+                    viewAllCategories();
+                    System.out.println("Enter category ID: ");
+                    categoryID = Integer.parseInt(scanner.nextLine());
                 }
 
                 System.out.println("Enter the number of copies of the book: ");
@@ -907,6 +926,34 @@ public class LibraryUI {
                     throw new ValidationException("Publisher phone number cannot be empty.");
                 }
                 controller.addPublisher(name, email, phoneNumber);
+                break;
+            } catch (NumberFormatException e) {
+                System.err.println("Error: Invalid number format. Please try again.");
+            } catch (ValidationException e) {
+                System.err.println("Error: " + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     *  Adds a new category to the library system.
+     *  Prompts the user for the category's name and description.
+     */
+    private void addCategory() {
+        while(true) {
+            try {
+                System.out.println("Enter category name: ");
+                String name = scanner.nextLine();
+                if(name.isEmpty() || !name.matches("^[a-zA-Z]+([\\s-][a-zA-Z]+)*$")) {
+                    throw new ValidationException("Category name cannot be empty or contain numbers.");
+                }
+
+                System.out.println("Enter category description: ");
+                String description = scanner.nextLine();
+                if(description.isEmpty()) {
+                    throw new ValidationException("Category description cannot be empty.");
+                }
+                controller.addCategory(name, description);
                 break;
             } catch (NumberFormatException e) {
                 System.err.println("Error: Invalid number format. Please try again.");
