@@ -307,20 +307,28 @@ public class LibraryUI {
                     throw new ValidationException("Title cannot be empty.");
                 }
 
+                viewAllAuthors();
                 System.out.println("Enter new author ID: ");
                 int authorID = Integer.parseInt(scanner.nextLine());
                 if (authorID <= 0) {
                     throw new ValidationException("Author ID must be a positive integer.");
                 }
 
-                System.out.println("Enter new availability status: ");
-                boolean newIsAvailable = Boolean.parseBoolean(scanner.nextLine());
+                System.out.println("Enter new availability status (true / false): ");
+                String input = scanner.nextLine();
+                if (!input.equalsIgnoreCase("true") && !input.equalsIgnoreCase("false")) {
+                    throw new ValidationException("Availability status must be 'true' or 'false'.");
+                }
+                boolean newIsAvailable = Boolean.parseBoolean(input);
+
+                viewAllCategories();
                 System.out.print("Enter new category ID: ");
                 int categoryID = Integer.parseInt(scanner.nextLine());
                 if (categoryID <= 0) {
                     throw new ValidationException("Category ID must be a positive integer.");
                 }
 
+                viewAllPublishers();
                 System.out.print("Enter new publisher ID: ");
                 int publisherID = Integer.parseInt(scanner.nextLine());
                 if (publisherID <= 0) {
@@ -819,7 +827,7 @@ public class LibraryUI {
             try {
                 System.out.print("Enter member name: ");
                 String name = scanner.nextLine();
-                if (name.isEmpty()) {
+                if (name.isEmpty() || !name.matches("^[a-zA-Z]+([\\s-][a-zA-Z]+)*$")) {
                     throw new ValidationException("Member name cannot be empty.");
                 }
                 System.out.print("Enter member email: ");
@@ -852,8 +860,8 @@ public class LibraryUI {
             try {
                 System.out.print("Enter author name: ");
                 String name = scanner.nextLine();
-                if (name.isEmpty()) {
-                    throw new ValidationException("Author name cannot be empty.");
+                if (name.isEmpty() || !name.matches("^[a-zA-Z]+([\\s-][a-zA-Z]+)*$")) {
+                    throw new ValidationException("Author name cannot be empty or contain numbers.");
                 }
                 System.out.print("Enter author email: ");
                 String email = scanner.nextLine();
@@ -885,8 +893,8 @@ public class LibraryUI {
             try {
                 System.out.print("Enter publisher name: ");
                 String name = scanner.nextLine();
-                if (name.isEmpty()) {
-                    throw new ValidationException("Publisher name cannot be empty.");
+                if (name.isEmpty() || !name.matches("^[a-zA-Z]+([\\s-][a-zA-Z]+)*$")) {
+                    throw new ValidationException("Publisher name cannot be empty or contain numbers.");
                 }
                 System.out.print("Enter publisher email: ");
                 String email = scanner.nextLine();
