@@ -462,10 +462,10 @@ public class LibraryService {
             }
 
             Book book = new Book(++newBookID, bookName, author, true, category, publisher, copiesAvailable);
+            bookRepo.add(book);
             addBookToAuthor(book, authorID);
             addBookToCategory(book, categoryID);
             addBookToPublisher(book, publisherID);
-            bookRepo.add(book);
         } catch (DatabaseException e) {
             throw new DatabaseException("Error creating book.");
         }

@@ -294,7 +294,7 @@ public class LibraryUI {
                 if (copies <= 0) {
                     throw new ValidationException("Number of copies must be a positive integer.");
                 }
-                controller.addBook(title, authorID, publisherID, categoryID, copies);
+                controller.addBook(title, authorID, categoryID, publisherID, copies);
                 break;
             } catch (ValidationException e) {
                 System.err.println("Error: " + e.getMessage());
