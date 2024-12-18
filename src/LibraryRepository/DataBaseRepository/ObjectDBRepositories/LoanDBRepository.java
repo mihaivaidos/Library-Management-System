@@ -46,14 +46,15 @@ public class LoanDBRepository extends DBRepository<Loan> {
 
     @Override
     public void add(Loan loan) throws DatabaseException {
-        String query = "INSERT INTO Loan (Loan_date, Due_date, Return_date, Status, ID_book, ID_member) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO Loan (ID, Loan_date, Due_date, Return_date, Status, ID_book, ID_member) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setDate(1, Date.valueOf(loan.getLoanDate()));
-            statement.setDate(2, Date.valueOf(loan.getDueDate()));
-            statement.setDate(3, loan.getReturnDate() != null ? Date.valueOf(loan.getReturnDate()) : null);
-            statement.setString(4, loan.getStatus());
-            statement.setInt(5, loan.getBook().getID());
-            statement.setInt(6, loan.getMember().getID());
+            statement.setInt(1, loan.getID());
+            statement.setDate(2, Date.valueOf(loan.getLoanDate()));
+            statement.setDate(3, Date.valueOf(loan.getDueDate()));
+            statement.setDate(4, loan.getReturnDate() != null ? Date.valueOf(loan.getReturnDate()) : null);
+            statement.setString(5, loan.getStatus());
+            statement.setInt(6, loan.getBook().getID());
+            statement.setInt(7, loan.getMember().getID());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

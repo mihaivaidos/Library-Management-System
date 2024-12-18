@@ -32,10 +32,11 @@ public class CategoryDBRepository extends DBRepository<Category> {
 
     @Override
     public void add(Category category) throws DatabaseException {
-        String query = "INSERT INTO Category (Name, Description) VALUES (?, ?)";
+        String query = "INSERT INTO Category (ID, Name, Description) VALUES (?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, category.getCategoryName());
-            statement.setString(2, category.getDescription());
+            statement.setInt(1, category.getID());
+            statement.setString(2, category.getCategoryName());
+            statement.setString(3, category.getDescription());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

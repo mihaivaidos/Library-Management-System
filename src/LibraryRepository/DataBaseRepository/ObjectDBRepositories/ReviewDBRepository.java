@@ -44,12 +44,13 @@ public class ReviewDBRepository extends DBRepository<Review> {
 
     @Override
     public void add(Review review) throws DatabaseException {
-        String query = "INSERT INTO Review (Rating, Comments, ID_book, ID_member) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Review (ID, Rating, Comments, ID_book, ID_member) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, review.getRating());
-            statement.setString(2, review.getComments());
-            statement.setInt(3, review.getBook().getID());
-            statement.setInt(4, review.getMember().getID());
+            statement.setInt(1, review.getID());
+            statement.setInt(2, review.getRating());
+            statement.setString(3, review.getComments());
+            statement.setInt(4, review.getBook().getID());
+            statement.setInt(5, review.getMember().getID());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

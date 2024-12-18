@@ -28,11 +28,12 @@ public class AuthorDBRepository extends DBRepository<Author> {
 
     @Override
     public void add(Author author) throws DatabaseException {
-        String query = "INSERT INTO Author (Name, Email, Phone_number) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Author (ID, Name, Email, Phone_number) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, author.getName());
-            statement.setString(2, author.getEmail());
-            statement.setString(3, author.getPhoneNumber());
+            statement.setInt(1, author.getID());
+            statement.setString(2, author.getName());
+            statement.setString(3, author.getEmail());
+            statement.setString(4, author.getPhoneNumber());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

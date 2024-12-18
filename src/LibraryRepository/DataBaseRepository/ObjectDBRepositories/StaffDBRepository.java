@@ -34,12 +34,13 @@ public class StaffDBRepository extends DBRepository<Staff> {
 
     @Override
     public void add(Staff staff) throws DatabaseException {
-        String query = "INSERT INTO Staff (Name, Email, Phone_number, Position) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Staff (ID, Name, Email, Phone_number, Position) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, staff.getName());
-            statement.setString(2, staff.getEmail());
-            statement.setString(3, staff.getPhoneNumber());
-            statement.setString(4, staff.getPosition());
+            statement.setInt(1, staff.getID());
+            statement.setString(2, staff.getName());
+            statement.setString(3, staff.getEmail());
+            statement.setString(4, staff.getPhoneNumber());
+            statement.setString(5, staff.getPosition());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

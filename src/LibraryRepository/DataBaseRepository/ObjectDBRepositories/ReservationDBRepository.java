@@ -43,11 +43,12 @@ public class ReservationDBRepository extends DBRepository<Reservation> {
 
     @Override
     public void add(Reservation reservation) throws DatabaseException {
-        String query = "INSERT INTO Reservation (Reservation_date, ID_book, ID_member) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Reservation (ID, Reservation_date, ID_book, ID_member) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setDate(1, Date.valueOf(reservation.getReservationDate()));
-            statement.setInt(2, reservation.getBook().getID());
-            statement.setInt(3, reservation.getMember().getID());
+            statement.setInt(1, reservation.getID());
+            statement.setDate(2, Date.valueOf(reservation.getReservationDate()));
+            statement.setInt(3, reservation.getBook().getID());
+            statement.setInt(4, reservation.getMember().getID());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);

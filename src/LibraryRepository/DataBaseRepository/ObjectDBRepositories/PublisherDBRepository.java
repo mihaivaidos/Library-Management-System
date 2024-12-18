@@ -33,11 +33,12 @@ public class PublisherDBRepository extends DBRepository<Publisher> {
 
     @Override
     public void add(Publisher publisher) throws DatabaseException {
-        String query = "INSERT INTO Publisher (Name, Email, Phone_number) VALUES (?, ?, ?)";
+        String query = "INSERT INTO Publisher (ID, Name, Email, Phone_number) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, publisher.getName());
-            statement.setString(2, publisher.getEmail());
-            statement.setString(3, publisher.getPhoneNumber());
+            statement.setInt(1, publisher.getID());
+            statement.setString(2, publisher.getName());
+            statement.setString(3, publisher.getEmail());
+            statement.setString(4, publisher.getPhoneNumber());
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);
