@@ -9,7 +9,6 @@ import java.util.List;
  * and a list of books associated with the category.
  */
 public class Category implements HasID, Serializable {
-    private static final long serialVersionUID = 1L;
 
     private int categoryID;
     private String categoryName;

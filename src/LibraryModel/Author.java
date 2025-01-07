@@ -9,7 +9,6 @@ import java.util.List;
  * Includes the author's details and a list of books written by the author.
  */
 public class Author extends Person implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     private List<Book> books;
 

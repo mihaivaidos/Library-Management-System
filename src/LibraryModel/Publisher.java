@@ -9,7 +9,6 @@ import java.util.List;
  * Extends the Person class.
  */
 public class Publisher extends Person implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     private List<Book> publishedBooks;
 

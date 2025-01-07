@@ -7,7 +7,6 @@ import java.io.Serializable;
  * This abstract class provides common properties for specific types of persons, such as members or authors.
  */
 public abstract class Person implements HasID, Serializable {
-    private static final long serialVersionUID = 1L;
 
     protected int ID;
     protected String name;

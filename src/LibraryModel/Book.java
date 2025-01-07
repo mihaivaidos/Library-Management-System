@@ -9,7 +9,6 @@ import java.util.List;
  * category, publisher, and reviews.
  */
 public class Book implements HasID, Serializable {
-    private static final long serialVersionUID = 1L;
 
     private int bookID;
     private String bookName;
