@@ -851,13 +851,13 @@ public class LibraryUI {
                 }
                 System.out.print("Enter member email: ");
                 String email = scanner.nextLine();
-                if (email.isEmpty()) {
-                    throw new ValidationException("Member email cannot be empty.");
+                if (email.isEmpty() || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                    throw new ValidationException("Member email cannot be empty or does not match the pattern.");
                 }
                 System.out.print("Enter member phone number: ");
                 String phoneNumber = scanner.nextLine();
-                if (phoneNumber.isEmpty()) {
-                    throw new ValidationException("Member phone number cannot be empty.");
+                if (!phoneNumber.matches("^0\\d+$") || phoneNumber.length() != 10) {
+                    throw new ValidationException("Member phone number cannot be empty or does not match the pattern.");
                 }
                 controller.addMember(name, email, phoneNumber);
                 break;
@@ -884,13 +884,13 @@ public class LibraryUI {
                 }
                 System.out.print("Enter author email: ");
                 String email = scanner.nextLine();
-                if (email.isEmpty()) {
-                    throw new ValidationException("Author email cannot be empty.");
+                if (email.isEmpty() || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                    throw new ValidationException("Author email cannot be empty or does not match the pattern.");
                 }
                 System.out.print("Enter author phone number: ");
                 String phoneNumber = scanner.nextLine();
-                if (phoneNumber.isEmpty()) {
-                    throw new ValidationException("Author phone number cannot be empty.");
+                if (!phoneNumber.matches("^0\\d+$") || phoneNumber.length() != 10) {
+                    throw new ValidationException("Author phone number cannot be empty or does not match the pattern.");
                 }
                 controller.addAuthor(name, email, phoneNumber);
                 break;
@@ -917,13 +917,13 @@ public class LibraryUI {
                 }
                 System.out.print("Enter publisher email: ");
                 String email = scanner.nextLine();
-                if (email.isEmpty()) {
-                    throw new ValidationException("Publisher email cannot be empty.");
+                if (email.isEmpty() || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                    throw new ValidationException("Publisher email cannot be empty or does not match the pattern.");
                 }
                 System.out.print("Enter member phone number: ");
                 String phoneNumber = scanner.nextLine();
-                if (phoneNumber.isEmpty()) {
-                    throw new ValidationException("Publisher phone number cannot be empty.");
+                if (!phoneNumber.matches("^0\\d+$") || phoneNumber.length() != 10) {
+                    throw new ValidationException("Publisher phone number cannot be empty or does not match the pattern.");
                 }
                 controller.addPublisher(name, email, phoneNumber);
                 break;
