@@ -10,12 +10,23 @@ import LibraryModel.Category;
 import LibraryModel.Publisher;
 import LibraryRepository.DataBaseRepository.DBRepository;
 
+/**
+ * Repository class for managing books in the database.
+ */
 public class BookDBRepository extends DBRepository<Book> {
 
     private final CategoryDBRepository categoryDBRepository;
     private final PublisherDBRepository publisherDBRepository;
     private final AuthorDBRepository authorDBRepository;
 
+    /**
+     * Constructs a BookDBRepository and establishes connections to related repositories.
+     *
+     * @param databaseUrl the URL of the database.
+     * @param username    the username for the database connection.
+     * @param password    the password for the database connection.
+     * @throws DatabaseException if a database connection error occurs.
+     */
     public BookDBRepository(String databaseUrl, String username, String password) throws DatabaseException {
         super(databaseUrl, username, password);
         this.categoryDBRepository = new CategoryDBRepository(databaseUrl, username, password);
@@ -23,6 +34,13 @@ public class BookDBRepository extends DBRepository<Book> {
         this.authorDBRepository = new AuthorDBRepository(databaseUrl, username, password);
     }
 
+    /**
+     * Maps a row from the ResultSet to a Book object.
+     *
+     * @param resultSet the ResultSet containing the row data.
+     * @return the Book object created from the row.
+     * @throws DatabaseException if an error occurs while mapping the data.
+     */
     protected Book mapResultSetToEntity(ResultSet resultSet) throws DatabaseException {
         try {
             int categoryID = resultSet.getInt("ID_category");
@@ -47,10 +65,16 @@ public class BookDBRepository extends DBRepository<Book> {
         }
     }
 
+    /**
+     * Adds a new book to the database.
+     *
+     * @param book the book to add.
+     * @throws DatabaseException if a database error occurs during the operation.
+     */
     @Override
     public void add(Book book) throws DatabaseException {
         String query = "INSERT INTO Book (ID, Title, ID_author, Is_available, ID_category, ID_publisher, Copies_available) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try(PreparedStatement statement = connection.prepareStatement(query)){
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, book.getID());
             statement.setString(2, book.getBookName());
             statement.setInt(3, book.getAuthor().getID());
@@ -59,17 +83,27 @@ public class BookDBRepository extends DBRepository<Book> {
             statement.setInt(6, book.getPublisher().getID());
             statement.setInt(7, book.getCopiesAvailable());
             statement.executeUpdate();
-        }
-        catch(SQLException e){
+        } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);
         }
     }
 
+    /**
+     * Returns the name of the table associated with this repository.
+     *
+     * @return the name of the table.
+     */
     @Override
     protected String getTableName() {
         return "Book";
     }
 
+    /**
+     * Updates an existing book in the database.
+     *
+     * @param book the book to update.
+     * @throws DatabaseException if a database error occurs during the operation.
+     */
     @Override
     public void update(Book book) throws DatabaseException {
         String query = "UPDATE Book SET Title = ?, ID_author = ?, Is_available = ?, ID_category = ?, ID_publisher = ?, Copies_available = ? WHERE ID = ?";
@@ -85,8 +119,6 @@ public class BookDBRepository extends DBRepository<Book> {
         } catch (SQLException e) {
             throw new DatabaseException("Database error occurred: " + e.getMessage(), e);
         }
-
-        System.out.println("Asta e in BookDBRepo");
 
         AuthorBooksDBRepository authorBooksDBRepository = new AuthorBooksDBRepository(connection);
         authorBooksDBRepository.updateAuthorBooks(List.of(book), book.getAuthor().getID());
